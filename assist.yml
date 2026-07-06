@@ -17,5 +17,42 @@ run:
     args:
       - run
       - build
+  - name: verify:knip
+    command: npx
+    args:
+      - knip
+      - --no-progress
+      - --treat-config-hints-as-errors
+  - name: verify:duplicate-code
+    command: npx
+    args:
+      - jscpd
+      - --format
+      - "'typescript,tsx'"
+      - --exit-code
+      - "1"
+      - --ignore
+      - "'**/*.test.*'"
+      - -r
+      - consoleFull
+      - src
+  - name: verify:circular-deps
+    command: npx
+    args:
+      - -y
+      - skott
+      - --displayMode=raw
+      - --showCircularDependencies
+      - --exitCodeOnCircularDependencies=1
+      - src/main.tsx
+    quiet: true
+  - name: verify:maintainability
+    command: assist
+    args:
+      - complexity
+      - maintainability
+      - ./src
+      - --threshold
+      - "60"
 commit:
   push: true
