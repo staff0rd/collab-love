@@ -1,0 +1,21 @@
+run:
+  - name: verify:lint
+    command: npx
+    args:
+      - oxlint
+      - --config
+      - .oxlintrc.json
+      - --fix
+      - .
+  - name: verify:format
+    command: npx
+    args:
+      - oxfmt
+      - .
+  - name: verify:build
+    command: npm
+    args:
+      - run
+      - build
+commit:
+  push: true

@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "style": "error"
+  },
+  "rules": {
+    "typescript/consistent-type-definitions": ["error", "type"],
+    "prefer-template": "error",
+    "sort-imports": "off"
+  }
+}
