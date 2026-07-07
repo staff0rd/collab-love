@@ -1,0 +1,5 @@
+# SPA fallback so client-side routes (e.g. /home) resolve on direct load/refresh.
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200

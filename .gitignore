@@ -22,3 +22,6 @@ dist-ssr
 # Capacitor native platforms (generated; added in later phases)
 /ios
 /android
+
+# Local Netlify folder
+.netlify
