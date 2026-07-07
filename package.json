@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build --logLevel error",
     "preview": "vite preview",
     "ios:sync": "npm run build && cap sync ios",
-    "ios:run": "npm run build && cap run ios"
+    "ios:run": "npm run build && cap run ios --target FADDB257-6AC2-43BF-A04E-F269F3343A68",
+    "ios:open": "cap open ios"
   },
   "dependencies": {
     "@capacitor/cli": "^8.4.1",
