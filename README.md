@@ -73,6 +73,18 @@ Each device schedules its owner's reminders locally. Shared item data lives in S
 
 Push to `main` triggers GitHub Actions to build and upload a new iOS build to TestFlight (auto-installing on both our phones) and deploy the latest web build.
 
+The iOS pipeline (`.github/workflows/ios-testflight.yml`) builds the web bundle, runs `cap sync ios`, then uses [Fastlane](https://fastlane.tools/) (`ios/fastlane/`) to archive, sign, and upload to TestFlight. Each push gets a unique build number from the GitHub run number. Signing is automatic via the App Store Connect API key (`-allowProvisioningUpdates`).
+
+Required GitHub Actions secrets:
+
+| Secret | What it is |
+| --- | --- |
+| `ASC_KEY_ID` | App Store Connect API key ID |
+| `ASC_ISSUER_ID` | App Store Connect API key issuer ID |
+| `ASC_KEY_CONTENT` | Base64-encoded `.p8` private key (`base64 -i AuthKey_XXXX.p8`) |
+| `APPLE_TEAM_ID` | Apple Developer team ID used for signing |
+| `NETLIFY_AUTH_TOKEN` | Netlify token for the web deploy |
+
 ## Roadmap
 
 The full backlog lives in `assist backlog` (`assist backlog list`). Planned work:
