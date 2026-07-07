@@ -14,6 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Capacitor 8 xcframework needs Swift 6 / Xcode 16+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
