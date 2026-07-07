@@ -54,6 +54,11 @@ run:
       - ./src
       - --threshold
       - "60"
+  - name: run
+    command: npm
+    args:
+      - run
+      - ios:run
 commit:
   push: true
   pull: true
