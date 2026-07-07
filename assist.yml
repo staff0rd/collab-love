@@ -56,3 +56,4 @@ run:
       - "60"
 commit:
   push: true
+  pull: true
