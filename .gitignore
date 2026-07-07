@@ -19,8 +19,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Capacitor native platforms (generated; added in later phases)
-/ios
+# Capacitor native platforms
 /android
 
 # Local Netlify folder
