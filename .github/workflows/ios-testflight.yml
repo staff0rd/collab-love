@@ -10,11 +10,11 @@ concurrency:
 
 jobs:
   testflight:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
-      # Capacitor 8 xcframework needs Swift 6 / Xcode 16+
+      # Capacitor 8 xcframework needs recent Xcode/Swift
       - uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
