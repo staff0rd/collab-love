@@ -73,7 +73,20 @@ Each device schedules its owner's reminders locally. Shared item data lives in S
 
 Push to `main` triggers GitHub Actions to build and upload a new iOS build to TestFlight (auto-installing on both our phones) and deploy the latest web build.
 
-The iOS pipeline (`.github/workflows/ios-testflight.yml`) builds the web bundle, runs `cap sync ios`, then uses [Fastlane](https://fastlane.tools/) (`ios/fastlane/`) to archive, sign, and upload to TestFlight. Each push gets a unique build number from the GitHub run number. Signing is automatic via the App Store Connect API key (`-allowProvisioningUpdates`).
+The iOS pipeline (`.github/workflows/ios-testflight.yml`) builds the web bundle, runs `cap sync ios`, then uses [Fastlane](https://fastlane.tools/) (`ios/fastlane/`) to sync signing assets, archive, and upload to TestFlight. Each push gets a unique build number from the GitHub run number.
+
+Code signing uses [fastlane match](https://docs.fastlane.tools/actions/match/): the distribution certificate and App Store provisioning profile are generated once and stored encrypted in a separate private repo, then synced read-only by CI (and by both Macs). CI never mutates the Apple account.
+
+### One-time signing bootstrap (on a Mac)
+
+1. Create an **empty private** GitHub repo for the certs (referenced in `ios/fastlane/Matchfile`, e.g. `collab-love-certificates`).
+2. From `ios/`, generate and push the cert + profile (pick a passphrase for `MATCH_PASSWORD`):
+   ```
+   cd ios
+   bundle install
+   MATCH_PASSWORD=<passphrase> bundle exec fastlane match appstore
+   ```
+3. Add the GitHub Actions secrets below.
 
 Required GitHub Actions secrets:
 
@@ -83,6 +96,8 @@ Required GitHub Actions secrets:
 | `ASC_ISSUER_ID` | App Store Connect API key issuer ID |
 | `ASC_KEY_CONTENT` | Base64-encoded `.p8` private key (`base64 -i AuthKey_XXXX.p8`) |
 | `APPLE_TEAM_ID` | Apple Developer team ID used for signing |
+| `MATCH_PASSWORD` | Passphrase that encrypts the match certs repo |
+| `MATCH_GIT_BASIC_AUTHORIZATION` | Base64 of `user:token` with read access to the certs repo (`echo -n user:TOKEN \| base64`) |
 | `NETLIFY_AUTH_TOKEN` | Netlify token for the web deploy |
 
 ## Roadmap
