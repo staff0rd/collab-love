@@ -15,6 +15,7 @@ App/App/config.xml
 # Fastlane build output
 fastlane/report.xml
 fastlane/README.md
+fastlane/AuthKey.p8
 *.ipa
 *.app.dSYM.zip
 vendor/bundle

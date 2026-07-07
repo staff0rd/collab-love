@@ -33,12 +33,19 @@ jobs:
           bundler-cache: true
           working-directory: ios
 
+      - name: Write App Store Connect API key
+        working-directory: ios
+        run: |
+          mkdir -p fastlane
+          echo "$ASC_KEY_CONTENT" | base64 --decode > fastlane/AuthKey.p8
+        env:
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+
       - name: Build and upload to TestFlight
         working-directory: ios
         run: bundle exec fastlane beta
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           BUILD_NUMBER: ${{ github.run_number }}
