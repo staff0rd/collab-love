@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "ignore": ["scripts/**"],
+  "ignore": ["scripts/**", "ios/App/App/public/**", "ios/DerivedData/**"],
   "ignoreDependencies": ["jscpd", "oxfmt", "oxlint"],
   "ignoreBinaries": ["supabase", "scripts/push-supabase-config.sh"]
 }
