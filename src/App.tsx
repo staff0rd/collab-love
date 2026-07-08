@@ -1,8 +1,7 @@
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
-import { Redirect, Route } from "react-router-dom";
+import { IonApp, setupIonicReact } from "@ionic/react";
 
-import Home from "./pages/Home.tsx";
+import AuthenticatedApp from "./AuthenticatedApp.tsx";
+import { AuthProvider } from "./auth/AuthProvider.tsx";
 
 import "@ionic/react/css/core.css";
 import "@ionic/react/css/normalize.css";
@@ -21,16 +20,9 @@ setupIonicReact();
 
 const App = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <AuthProvider>
+      <AuthenticatedApp />
+    </AuthProvider>
   </IonApp>
 );
 

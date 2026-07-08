@@ -59,6 +59,13 @@ run:
     args:
       - run
       - ios:run
+  - name: supabase:deploy
+    command: supabase
+    args:
+      - db
+      - push
+  - name: supabase:config
+    command: scripts/push-supabase-config.sh
 commit:
   push: true
   pull: true

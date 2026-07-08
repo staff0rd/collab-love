@@ -10,14 +10,18 @@
     "ios:sync": "npm run build && cap sync ios",
     "ios:run": "npm run build && cap run ios --target FADDB257-6AC2-43BF-A04E-F269F3343A68",
     "ios:open": "cap open ios",
-    "assets:generate": "capacitor-assets generate --ios"
+    "assets:generate": "capacitor-assets generate --ios",
+    "supabase:deploy": "supabase db push",
+    "supabase:config": "scripts/push-supabase-config.sh"
   },
   "dependencies": {
+    "@capacitor-community/apple-sign-in": "^7.1.0",
     "@capacitor/cli": "^8.4.1",
     "@capacitor/core": "^8.4.1",
     "@capacitor/ios": "^8.4.1",
     "@ionic/react": "^8.8.13",
     "@ionic/react-router": "^8.8.13",
+    "@supabase/supabase-js": "^2.110.0",
     "ionicons": "^8.0.13",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
