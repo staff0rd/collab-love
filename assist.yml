@@ -66,6 +66,11 @@ run:
       - push
   - name: supabase:config
     command: scripts/push-supabase-config.sh
+  - name: match:sync
+    command: bash
+    args:
+      - scripts/match-sync.sh
+    cwd: .
 commit:
   push: true
   pull: true
