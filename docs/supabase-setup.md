@@ -42,6 +42,21 @@ the household/schedule tables are exposed:
 `.env` is gitignored. The anon key is a public client key (it ships in the web bundle);
 data is protected by Row Level Security, not by hiding this key.
 
+### CI builds
+
+`.env` is local-only, so CI has no values to read from — the build inlines them from
+GitHub Actions **repository variables** instead (they are public client values, not
+secrets, so `vars` rather than `secrets`). Both `npm run build` steps in
+`.github/workflows/web-deploy.yml` (web deploy and the iOS TestFlight bundle) pass:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+Add both under **Settings → Secrets and variables → Actions → Variables**. Without them
+the bundle boots to a black screen (`supabaseClient` throws `Missing Supabase
+configuration` at module load); the pre-deploy boot check (`verify:boot`) now fails the
+workflow instead of shipping it.
+
 ## 3. Configure Sign in with Apple (Apple Developer)
 
 You need a paid Apple Developer account. In the
