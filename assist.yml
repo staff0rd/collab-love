@@ -17,6 +17,10 @@ run:
     args:
       - run
       - build
+  - name: verify:boot
+    command: node
+    args:
+      - scripts/boot-check.mjs
   - name: verify:knip
     command: npx
     args:
