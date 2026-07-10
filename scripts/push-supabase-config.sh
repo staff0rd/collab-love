@@ -18,11 +18,10 @@ APPLE_TEAM_ID="${APPLE_TEAM_ID:-D663PHG24B}"
 
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-p8="$(mktemp)"
-trap 'rm -f "$p8"' EXIT
-op read "$OP_APPLE_P8_REF" > "$p8"
+export APPLE_KEY_ID APPLE_TEAM_ID APPLE_SIGNIN_KEY
+APPLE_SIGNIN_KEY="$(op read "$OP_APPLE_P8_REF")"
 
 export SUPABASE_AUTH_EXTERNAL_APPLE_SECRET
-SUPABASE_AUTH_EXTERNAL_APPLE_SECRET="$(node "$here/apple-secret.mjs" "$p8" "$APPLE_KEY_ID" "$APPLE_TEAM_ID")"
+SUPABASE_AUTH_EXTERNAL_APPLE_SECRET="$(node "$here/apple-secret.mjs")"
 
 supabase config push

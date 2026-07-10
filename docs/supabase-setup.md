@@ -100,7 +100,8 @@ assist run supabase:config
 
 This writes to the production project, so run it yourself. Override `OP_APPLE_P8_REF`,
 `APPLE_KEY_ID`, or `APPLE_TEAM_ID` if the defaults in the script do not match your setup.
-Rotating the secret before it expires is automated separately (backlog item #625).
+Because it expires, the secret is also rotated automatically in CI — see
+[Rotating the Apple client secret](#9-rotating-the-apple-client-secret-automated).
 
 ## 5. Verify the web flow
 
@@ -144,3 +145,33 @@ assist run supabase:deploy
 2. Tap **Sign in with Apple** — the native sheet appears; completing it lands on Home.
 3. Home shows the household name and member count; signing in with the second account
    shows the same household with the count at **2**.
+
+## 9. Rotating the Apple client secret (automated)
+
+The Apple client secret is an ES256 JWT that Apple caps at a ~6-month lifetime, so it has
+to be re-minted and pushed to Supabase before it expires or web sign-in breaks. The
+`.github/workflows/apple-secret-rotate.yml` workflow does this with no dashboard steps: it
+runs `scripts/apple-secret.mjs` to sign a fresh secret from the stored `.p8`, then PATCHes
+the [Supabase Management API](https://supabase.com/docs/reference/api) auth config
+(`external_apple_secret`) on the linked project.
+
+Trigger it on demand from the **Actions** tab → **Rotate Apple client secret** → **Run
+workflow**. (A monthly `schedule` trigger is added in phase 2.)
+
+### Required repository secrets
+
+Add these under **Settings → Secrets and variables → Actions → Secrets**:
+
+| Secret                  | Value                                                                                                                                                                  |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `APPLE_SIGNIN_KEY`      | The full contents of the Sign in with Apple `.p8` key file (paste the whole PEM, `-----BEGIN PRIVATE KEY-----` through `-----END PRIVATE KEY-----`, newlines and all). |
+| `APPLE_KEY_ID`          | The key's 10-char Key ID (from the Apple Developer portal, same key as the `.p8`).                                                                                     |
+| `APPLE_TEAM_ID`         | Your Apple Team ID.                                                                                                                                                    |
+| `SUPABASE_ACCESS_TOKEN` | A Supabase personal access token with access to the project. Generate one at **Supabase dashboard → Account → Access Tokens**.                                         |
+
+The workflow derives the project ref from the existing `VITE_SUPABASE_URL` repository
+**variable** (`https://<ref>.supabase.co`), so there is no separate ref secret to set. The
+Services ID defaults to `love.collab.app.web`; override it by setting an `APPLE_SERVICES_ID`
+env var on the workflow step if that ever changes.
+
+The minted secret is masked in the workflow logs (`::add-mask::`), so it is never printed.

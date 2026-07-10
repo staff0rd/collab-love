@@ -1,11 +1,16 @@
-import { readFileSync } from "node:fs";
 import { sign } from "node:crypto";
 
-const [p8Path, keyId, teamId] = process.argv.slice(2);
-const serviceId = "love.collab.app.web";
+const {
+  APPLE_SIGNIN_KEY,
+  APPLE_KEY_ID,
+  APPLE_TEAM_ID,
+  APPLE_SERVICES_ID = "love.collab.app.web",
+} = process.env;
 
-if (!p8Path || !keyId || !teamId) {
-  console.error("Usage: node apple-secret.mjs <path-to.p8> <KEY_ID> <TEAM_ID>");
+if (!APPLE_SIGNIN_KEY || !APPLE_KEY_ID || !APPLE_TEAM_ID) {
+  console.error(
+    "Missing required env vars: set APPLE_SIGNIN_KEY (.p8 contents), APPLE_KEY_ID and APPLE_TEAM_ID (and optionally APPLE_SERVICES_ID).",
+  );
   process.exit(1);
 }
 
@@ -14,20 +19,19 @@ const now = Math.floor(Date.now() / 1000);
 
 const b64 = (obj) => Buffer.from(JSON.stringify(obj)).toString("base64url");
 
-const header = { alg: "ES256", kid: keyId };
+const header = { alg: "ES256", kid: APPLE_KEY_ID };
 const payload = {
   aud: "https://appleid.apple.com",
   exp: now + SIX_MONTHS,
   iat: now,
-  iss: teamId,
-  sub: serviceId,
+  iss: APPLE_TEAM_ID,
+  sub: APPLE_SERVICES_ID,
 };
 
 const signingInput = `${b64(header)}.${b64(payload)}`;
-const key = readFileSync(p8Path);
 const signature = sign("sha256", Buffer.from(signingInput), {
   dsaEncoding: "ieee-p1363",
-  key,
+  key: APPLE_SIGNIN_KEY,
 }).toString("base64url");
 
-console.log(`${signingInput}.${signature}`);
+process.stdout.write(`${signingInput}.${signature}`);
