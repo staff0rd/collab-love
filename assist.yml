@@ -58,7 +58,7 @@ run:
       - ./src
       - --threshold
       - "60"
-  - name: run
+  - name: run-ios
     command: npm
     args:
       - run

@@ -1,25 +1,9 @@
-import {
-  IonItem,
-  IonItemOption,
-  IonItemOptions,
-  IonItemSliding,
-  IonLabel,
-  IonList,
-  IonNote,
-  IonSpinner,
-  IonText,
-  useIonAlert,
-} from "@ionic/react";
+import { Loader2 } from "lucide-react";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import ScheduledItemRow from "./ScheduledItemRow.tsx";
 
 const EMPTY_COUNT = 0;
-
-const formatScheduledAt = (value: string) =>
-  new Date(value).toLocaleString(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
 
 type ScheduledItemListProps = {
   items: ScheduledItem[];
@@ -29,59 +13,29 @@ type ScheduledItemListProps = {
 };
 
 const ScheduledItemList = ({ items, loading, onEdit, onDelete }: ScheduledItemListProps) => {
-  const [presentAlert] = useIonAlert();
-
   if (loading) {
     return (
-      <div className="home-status">
-        <IonSpinner />
+      <div className="flex justify-center py-16 text-muted-foreground">
+        <Loader2 className="size-6 animate-spin" />
       </div>
     );
   }
 
   if (items.length === EMPTY_COUNT) {
     return (
-      <div className="home-status">
-        <h1>What&apos;s coming up</h1>
-        <IonText color="medium">
-          <p>Nothing scheduled yet. Tap + to add the first item.</p>
-        </IonText>
+      <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed py-16 text-center">
+        <p className="font-medium">Nothing scheduled yet</p>
+        <p className="text-sm text-muted-foreground">Add your first item to get started.</p>
       </div>
     );
   }
 
-  const confirmDelete = (item: ScheduledItem) => {
-    void presentAlert({
-      buttons: [
-        { role: "cancel", text: "Cancel" },
-        { handler: () => onDelete(item), role: "destructive", text: "Delete" },
-      ],
-      header: "Delete item?",
-      message: `"${item.title}" will be permanently removed.`,
-    });
-  };
-
   return (
-    <IonList>
+    <ul className="flex flex-col gap-2">
       {items.map((item) => (
-        <IonItemSliding key={item.id}>
-          <IonItem button detail={false} onClick={() => onEdit(item)}>
-            <IonLabel>
-              <h2>{item.title}</h2>
-              <p>{formatScheduledAt(item.scheduledAt)}</p>
-              {item.notes && <p>{item.notes}</p>}
-            </IonLabel>
-            {item.owner && <IonNote slot="end">{item.owner}</IonNote>}
-          </IonItem>
-          <IonItemOptions slot="end">
-            <IonItemOption onClick={() => onEdit(item)}>Edit</IonItemOption>
-            <IonItemOption color="danger" onClick={() => confirmDelete(item)}>
-              Delete
-            </IonItemOption>
-          </IonItemOptions>
-        </IonItemSliding>
+        <ScheduledItemRow key={item.id} item={item} onEdit={onEdit} onDelete={onDelete} />
       ))}
-    </IonList>
+    </ul>
   );
 };
 

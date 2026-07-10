@@ -1,51 +1,51 @@
-import { IonDatetime, IonInput, IonItem, IonLabel, IonList, IonTextarea } from "@ionic/react";
+import { Input } from "@/components/ui/input.tsx";
+import { Label } from "@/components/ui/label.tsx";
+import { Textarea } from "@/components/ui/textarea.tsx";
 
+import DateTimePicker from "./DateTimePicker.tsx";
 import type { ScheduledItemFormState } from "./useScheduledItemForm.ts";
 
 const ScheduledItemFields = ({ form }: { form: ScheduledItemFormState }) => (
-  <IonList>
-    <IonItem>
-      <IonInput
-        label="Title"
-        labelPlacement="stacked"
+  <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="scheduled-item-title">Title</Label>
+      <Input
+        id="scheduled-item-title"
         placeholder="What's happening?"
         value={form.title}
-        onIonInput={(event) => form.setTitle(event.detail.value ?? "")}
+        onChange={(event) => form.setTitle(event.target.value)}
       />
-    </IonItem>
-    <IonItem>
-      <IonInput
-        label="Owner"
-        labelPlacement="stacked"
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="scheduled-item-datetime">Date &amp; time</Label>
+      <DateTimePicker
+        id="scheduled-item-datetime"
+        value={form.scheduledAt}
+        onChange={form.setScheduledAt}
+      />
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="scheduled-item-owner">Owner</Label>
+      <Input
+        id="scheduled-item-owner"
         placeholder="Who's responsible?"
         value={form.owner}
-        onIonInput={(event) => form.setOwner(event.detail.value ?? "")}
+        onChange={(event) => form.setOwner(event.target.value)}
       />
-    </IonItem>
-    <IonItem>
-      <IonTextarea
-        autoGrow
-        label="Notes"
-        labelPlacement="stacked"
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <Label htmlFor="scheduled-item-notes">Notes</Label>
+      <Textarea
+        id="scheduled-item-notes"
         placeholder="Anything to remember?"
         value={form.notes}
-        onIonInput={(event) => form.setNotes(event.detail.value ?? "")}
+        onChange={(event) => form.setNotes(event.target.value)}
       />
-    </IonItem>
-    <IonItem>
-      <IonLabel position="stacked">Date &amp; time</IonLabel>
-      <IonDatetime
-        presentation="date-time"
-        value={form.scheduledAt || undefined}
-        onIonChange={(event) => {
-          const { value } = event.detail;
-          if (typeof value === "string") {
-            form.setScheduledAt(value);
-          }
-        }}
-      />
-    </IonItem>
-  </IonList>
+    </div>
+  </div>
 );
 
 export default ScheduledItemFields;

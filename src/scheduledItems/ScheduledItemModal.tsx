@@ -1,13 +1,14 @@
+import { type FormEvent, useEffect } from "react";
+
+import { Button } from "@/components/ui/button.tsx";
 import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonModal,
-  IonText,
-  IonTitle,
-  IonToolbar,
-} from "@ionic/react";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog.tsx";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import ScheduledItemFields from "./ScheduledItemFields.tsx";
@@ -26,48 +27,63 @@ const ScheduledItemModal = ({ isOpen, item, onClose, onSaved }: ScheduledItemMod
     onClose();
   });
 
-  const handleDismiss = () => {
-    form.reset();
-    onClose();
-  };
-
-  const handleWillPresent = () => {
-    if (item) {
-      form.load(item);
-    } else {
-      form.reset();
+  useEffect(() => {
+    if (isOpen) {
+      if (item) {
+        form.load(item);
+      } else {
+        form.reset();
+      }
     }
-  };
+  }, [isOpen, item]);
 
   let heading = "New item";
   if (form.isEditing) {
     heading = "Edit item";
   }
 
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    void form.handleSave();
+  };
+
   return (
-    <IonModal isOpen={isOpen} onWillPresent={handleWillPresent} onDidDismiss={handleDismiss}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton onClick={handleDismiss}>Cancel</IonButton>
-          </IonButtons>
-          <IonTitle>{heading}</IonTitle>
-          <IonButtons slot="end">
-            <IonButton strong disabled={!form.canSave} onClick={form.handleSave}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+        }
+      }}
+    >
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{heading}</DialogTitle>
+          <DialogDescription>
+            Schedule something for your household to see what&apos;s coming up.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <ScheduledItemFields form={form} />
+
+          {form.error && (
+            <p role="alert" className="text-sm text-destructive">
+              {form.error}
+            </p>
+          )}
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={!form.canSave}>
               Save
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className="ion-padding">
-        <ScheduledItemFields form={form} />
-        {form.error && (
-          <IonText color="danger">
-            <p>{form.error}</p>
-          </IonText>
-        )}
-      </IonContent>
-    </IonModal>
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

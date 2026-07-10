@@ -1,6 +1,5 @@
-import { IonContent, IonPage, IonRouterOutlet, IonSpinner } from "@ionic/react";
-import { IonReactRouter } from "@ionic/react-router";
-import { Redirect, Route } from "react-router-dom";
+import { LoaderCircle } from "lucide-react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 import { useAuth } from "./auth/useAuth.ts";
 import Home from "./pages/Home.tsx";
@@ -11,11 +10,9 @@ const AuthenticatedApp = () => {
 
   if (loading) {
     return (
-      <IonPage>
-        <IonContent className="ion-flex ion-justify-content-center ion-align-items-center">
-          <IonSpinner />
-        </IonContent>
-      </IonPage>
+      <div className="flex min-h-dvh items-center justify-center bg-background">
+        <LoaderCircle className="size-6 animate-spin text-muted-foreground" />
+      </div>
     );
   }
 
@@ -24,16 +21,12 @@ const AuthenticatedApp = () => {
   }
 
   return (
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/home" element={<Home />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
