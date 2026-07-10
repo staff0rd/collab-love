@@ -1,6 +1,7 @@
 import { Loader2 } from "lucide-react";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import { groupScheduledItems } from "./groupScheduledItems.ts";
 import ScheduledItemRow from "./ScheduledItemRow.tsx";
 
 const EMPTY_COUNT = 0;
@@ -30,12 +31,23 @@ const ScheduledItemList = ({ items, loading, onEdit, onDelete }: ScheduledItemLi
     );
   }
 
+  const groups = groupScheduledItems(items, new Date());
+
   return (
-    <ul className="flex flex-col gap-2">
-      {items.map((item) => (
-        <ScheduledItemRow key={item.id} item={item} onEdit={onEdit} onDelete={onDelete} />
+    <div className="flex flex-col gap-6">
+      {groups.map((group) => (
+        <section key={group.key} className="flex flex-col gap-2">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {group.label}
+          </h3>
+          <ul className="flex flex-col gap-2">
+            {group.items.map((item) => (
+              <ScheduledItemRow key={item.id} item={item} onEdit={onEdit} onDelete={onDelete} />
+            ))}
+          </ul>
+        </section>
       ))}
-    </ul>
+    </div>
   );
 };
 

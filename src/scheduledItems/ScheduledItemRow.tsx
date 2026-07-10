@@ -1,4 +1,5 @@
 import { Pencil, Trash2 } from "lucide-react";
+import { Link } from "react-router";
 
 import {
   AlertDialog,
@@ -12,11 +13,25 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
+import { cn } from "@/lib/utils.ts";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import { scheduledItemStatus, type ScheduledItemStatus } from "./scheduledItemStatus.ts";
 
 const formatScheduledAt = (value: string) =>
   new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+
+const rowStyles: Record<ScheduledItemStatus, string> = {
+  overdue: "border-destructive/40 bg-destructive/5",
+  today: "border-primary/40 bg-primary/5",
+  upcoming: "border bg-card",
+};
+
+const timeStyles: Record<ScheduledItemStatus, string> = {
+  overdue: "font-medium text-destructive",
+  today: "font-medium text-primary",
+  upcoming: "text-muted-foreground",
+};
 
 type ScheduledItemRowProps = {
   item: ScheduledItem;
@@ -51,32 +66,44 @@ const DeleteItemButton = ({ item, onDelete }: Omit<ScheduledItemRowProps, "onEdi
   </AlertDialog>
 );
 
-const ScheduledItemRow = ({ item, onEdit, onDelete }: ScheduledItemRowProps) => (
-  <li className="flex items-start gap-3 rounded-lg border bg-card p-4 text-card-foreground">
-    <div className="flex min-w-0 flex-1 flex-col gap-1">
-      <div className="flex flex-wrap items-center gap-2">
-        <h3 className="font-medium">{item.title}</h3>
-        {item.owner && (
-          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
-            {item.owner}
-          </span>
-        )}
-      </div>
-      <p className="text-sm text-muted-foreground">{formatScheduledAt(item.scheduledAt)}</p>
-      {item.notes && <p className="text-sm">{item.notes}</p>}
-    </div>
-    <div className="flex shrink-0 items-center gap-1">
-      <Button
-        size="icon"
-        variant="ghost"
-        aria-label={`Edit ${item.title}`}
-        onClick={() => onEdit(item)}
+const ScheduledItemRow = ({ item, onEdit, onDelete }: ScheduledItemRowProps) => {
+  const status = scheduledItemStatus(item.scheduledAt, new Date());
+
+  return (
+    <li
+      className={cn(
+        "flex items-start gap-3 rounded-lg border p-4 text-card-foreground",
+        rowStyles[status],
+      )}
+    >
+      <Link
+        to={`/items/${item.id}`}
+        className="flex min-w-0 flex-1 flex-col gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <Pencil />
-      </Button>
-      <DeleteItemButton item={item} onDelete={onDelete} />
-    </div>
-  </li>
-);
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="font-medium">{item.title}</h3>
+          {item.owner && (
+            <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
+              {item.owner}
+            </span>
+          )}
+        </div>
+        <p className={cn("text-sm", timeStyles[status])}>{formatScheduledAt(item.scheduledAt)}</p>
+        {item.notes && <p className="text-sm">{item.notes}</p>}
+      </Link>
+      <div className="flex shrink-0 items-center gap-1">
+        <Button
+          size="icon"
+          variant="ghost"
+          aria-label={`Edit ${item.title}`}
+          onClick={() => onEdit(item)}
+        >
+          <Pencil />
+        </Button>
+        <DeleteItemButton item={item} onDelete={onDelete} />
+      </div>
+    </li>
+  );
+};
 
 export default ScheduledItemRow;
