@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 
 import DateTimePicker from "./DateTimePicker.tsx";
+import RecurrenceField from "./RecurrenceField.tsx";
 import type { ScheduledItemFormState } from "./useScheduledItemForm.ts";
 
 const ScheduledItemFields = ({ form }: { form: ScheduledItemFormState }) => (
@@ -25,6 +26,8 @@ const ScheduledItemFields = ({ form }: { form: ScheduledItemFormState }) => (
         onChange={form.setScheduledAt}
       />
     </div>
+
+    <RecurrenceField form={form} />
 
     <div className="flex flex-col gap-2">
       <Label htmlFor="scheduled-item-owner">Owner</Label>

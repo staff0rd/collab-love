@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Repeat, Trash2 } from "lucide-react";
 import { Link } from "react-router";
 
 import {
@@ -16,10 +16,12 @@ import { Button } from "@/components/ui/button.tsx";
 import { cn } from "@/lib/utils.ts";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import { nextOccurrence } from "./nextOccurrence.ts";
+import { recurrenceLabel } from "./recurrenceLabel.ts";
 import { scheduledItemStatus, type ScheduledItemStatus } from "./scheduledItemStatus.ts";
 
-const formatScheduledAt = (value: string) =>
-  new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+const formatOccurrence = (value: Date) =>
+  value.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
 
 const rowStyles: Record<ScheduledItemStatus, string> = {
   overdue: "border-destructive/40 bg-destructive/5",
@@ -67,7 +69,9 @@ const DeleteItemButton = ({ item, onDelete }: Omit<ScheduledItemRowProps, "onEdi
 );
 
 const ScheduledItemRow = ({ item, onEdit, onDelete }: ScheduledItemRowProps) => {
-  const status = scheduledItemStatus(item.scheduledAt, new Date());
+  const occurrence = nextOccurrence(item, new Date());
+  const status = scheduledItemStatus(occurrence, new Date());
+  const repeat = recurrenceLabel(item);
 
   return (
     <li
@@ -88,7 +92,13 @@ const ScheduledItemRow = ({ item, onEdit, onDelete }: ScheduledItemRowProps) => 
             </span>
           )}
         </div>
-        <p className={cn("text-sm", timeStyles[status])}>{formatScheduledAt(item.scheduledAt)}</p>
+        <p className={cn("text-sm", timeStyles[status])}>{formatOccurrence(occurrence)}</p>
+        {repeat && (
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <Repeat className="size-3" />
+            {repeat}
+          </span>
+        )}
         {item.notes && <p className="text-sm">{item.notes}</p>}
       </Link>
       <div className="flex shrink-0 items-center gap-1">

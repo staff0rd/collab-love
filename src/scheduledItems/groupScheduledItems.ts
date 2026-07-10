@@ -1,4 +1,5 @@
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import { nextOccurrence } from "./nextOccurrence.ts";
 
 export type ScheduledItemGroup = {
   key: string;
@@ -45,22 +46,24 @@ const describeDay = (day: Date, context: DayContext): { key: string; label: stri
 const addItem = (
   byKey: Map<string, ScheduledItemGroup>,
   item: ScheduledItem,
-  context: DayContext,
+  descriptor: { key: string; label: string },
 ): void => {
-  const { key, label } = describeDay(startOfDay(new Date(item.scheduledAt)), context);
-  const existing = byKey.get(key);
+  const existing = byKey.get(descriptor.key);
   if (existing) {
     existing.items.push(item);
     return;
   }
-  byKey.set(key, { items: [item], key, label });
+  byKey.set(descriptor.key, { items: [item], key: descriptor.key, label: descriptor.label });
 };
 
 export const groupScheduledItems = (items: ScheduledItem[], now: Date): ScheduledItemGroup[] => {
   const context = dayContext(now);
+  const scheduled = items
+    .map((item) => ({ item, occurrence: nextOccurrence(item, now) }))
+    .sort((left, right) => left.occurrence.getTime() - right.occurrence.getTime());
   const byKey = new Map<string, ScheduledItemGroup>();
-  for (const item of items) {
-    addItem(byKey, item, context);
+  for (const { item, occurrence } of scheduled) {
+    addItem(byKey, item, describeDay(startOfDay(occurrence), context));
   }
   return [...byKey.values()];
 };

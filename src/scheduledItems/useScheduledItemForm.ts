@@ -1,41 +1,31 @@
 import { useState } from "react";
 
-import { createScheduledItem, type NewScheduledItem } from "./createScheduledItem.ts";
-import type { ScheduledItem } from "./getScheduledItems.ts";
-import { updateScheduledItem } from "./updateScheduledItem.ts";
-
-const trimmedOrNull = (value: string) => {
-  const trimmed = value.trim();
-  if (trimmed === "") {
-    return null;
-  }
-  return trimmed;
-};
-
-const persist = (editingId: string | null, values: NewScheduledItem) => {
-  if (editingId === null) {
-    return createScheduledItem(values);
-  }
-  return updateScheduledItem(editingId, values);
-};
+import type { Recurrence, ScheduledItem } from "./getScheduledItems.ts";
+import {
+  EMPTY_VALUES,
+  type FormValues,
+  persistScheduledItem,
+  valuesFrom,
+} from "./scheduledItemFormValues.ts";
 
 export type ScheduledItemFormState = ReturnType<typeof useScheduledItemForm>;
 
 export const useScheduledItemForm = (onSuccess: () => void) => {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [title, setTitle] = useState("");
-  const [scheduledAt, setScheduledAt] = useState("");
-  const [notes, setNotes] = useState("");
-  const [owner, setOwner] = useState("");
+  const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const setField = <Key extends keyof FormValues>(key: Key, value: FormValues[Key]) =>
+    setValues((prev) => ({ ...prev, [key]: value }));
+
   const resetTo = (item: ScheduledItem | null) => {
     setEditingId(item?.id ?? null);
-    setTitle(item?.title ?? "");
-    setScheduledAt(item?.scheduledAt ?? "");
-    setNotes(item?.notes ?? "");
-    setOwner(item?.owner ?? "");
+    if (item) {
+      setValues(valuesFrom(item));
+    } else {
+      setValues(EMPTY_VALUES);
+    }
     setSaving(false);
     setError(null);
   };
@@ -44,12 +34,7 @@ export const useScheduledItemForm = (onSuccess: () => void) => {
     setSaving(true);
     setError(null);
     try {
-      await persist(editingId, {
-        notes: trimmedOrNull(notes),
-        owner: trimmedOrNull(owner),
-        scheduledAt,
-        title: title.trim(),
-      });
+      await persistScheduledItem(editingId, values);
       resetTo(null);
       onSuccess();
     } catch {
@@ -59,19 +44,23 @@ export const useScheduledItemForm = (onSuccess: () => void) => {
   };
 
   return {
-    canSave: title.trim() !== "" && scheduledAt !== "" && !saving,
+    canSave: values.title.trim() !== "" && values.scheduledAt !== "" && !saving,
     error,
     handleSave,
+    interval: values.interval,
     isEditing: editingId !== null,
     load: (item: ScheduledItem) => resetTo(item),
-    notes,
-    owner,
+    notes: values.notes,
+    owner: values.owner,
+    recurrence: values.recurrence,
     reset: () => resetTo(null),
-    scheduledAt,
-    setNotes,
-    setOwner,
-    setScheduledAt,
-    setTitle,
-    title,
+    scheduledAt: values.scheduledAt,
+    setInterval: (value: number) => setField("interval", value),
+    setNotes: (value: string) => setField("notes", value),
+    setOwner: (value: string) => setField("owner", value),
+    setRecurrence: (value: Recurrence) => setField("recurrence", value),
+    setScheduledAt: (value: string) => setField("scheduledAt", value),
+    setTitle: (value: string) => setField("title", value),
+    title: values.title,
   };
 };
