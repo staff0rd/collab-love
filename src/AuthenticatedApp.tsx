@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { useAuth } from "./auth/useAuth.ts";
 import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
+import Requests from "./pages/Requests.tsx";
 import ScheduledItemDetail from "./pages/ScheduledItemDetail.tsx";
 import Settings from "./pages/Settings.tsx";
 
@@ -26,7 +27,11 @@ const AuthenticatedApp = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/home" element={<Home />} />
+<<<<<<< Updated upstream
         <Route path="/settings" element={<Settings />} />
+=======
+        <Route path="/requests" element={<Requests />} />
+>>>>>>> Stashed changes
         <Route path="/items/:id" element={<ScheduledItemDetail />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
