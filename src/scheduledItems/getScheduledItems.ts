@@ -7,7 +7,7 @@ export type ScheduledItem = {
   title: string;
   scheduledAt: string;
   notes: string | null;
-  owner: string | null;
+  ownerUserId: string | null;
   recurrence: Recurrence;
   recurrenceInterval: number | null;
 };
@@ -17,18 +17,18 @@ export type ScheduledItemRow = {
   title: string;
   scheduled_at: string;
   notes: string | null;
-  owner: string | null;
+  owner_user_id: string | null;
   recurrence: Recurrence;
   recurrence_interval: number | null;
 };
 
 export const SCHEDULED_ITEM_COLUMNS =
-  "id, title, scheduled_at, notes, owner, recurrence, recurrence_interval";
+  "id, title, scheduled_at, notes, owner_user_id, recurrence, recurrence_interval";
 
 export const mapScheduledItemRow = (row: ScheduledItemRow): ScheduledItem => ({
   id: row.id,
   notes: row.notes,
-  owner: row.owner,
+  ownerUserId: row.owner_user_id,
   recurrence: row.recurrence,
   recurrenceInterval: row.recurrence_interval,
   scheduledAt: row.scheduled_at,

@@ -1,19 +1,47 @@
 import { Loader2 } from "lucide-react";
 
+import type { HouseholdMember } from "../household/getHousehold.ts";
+
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { groupScheduledItems } from "./groupScheduledItems.ts";
 import ScheduledItemRow from "./ScheduledItemRow.tsx";
 
 const EMPTY_COUNT = 0;
 
+const EmptyState = ({ filtered }: { filtered: boolean }) => {
+  if (filtered) {
+    return (
+      <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed py-16 text-center">
+        <p className="font-medium">Nothing for this filter</p>
+        <p className="text-sm text-muted-foreground">Try a different person.</p>
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed py-16 text-center">
+      <p className="font-medium">Nothing scheduled yet</p>
+      <p className="text-sm text-muted-foreground">Add your first item to get started.</p>
+    </div>
+  );
+};
+
 type ScheduledItemListProps = {
   items: ScheduledItem[];
+  members: HouseholdMember[];
   loading: boolean;
+  filtered?: boolean;
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
 };
 
-const ScheduledItemList = ({ items, loading, onEdit, onDelete }: ScheduledItemListProps) => {
+const ScheduledItemList = ({
+  items,
+  members,
+  loading,
+  filtered = false,
+  onEdit,
+  onDelete,
+}: ScheduledItemListProps) => {
   if (loading) {
     return (
       <div className="flex justify-center py-16 text-muted-foreground">
@@ -23,12 +51,7 @@ const ScheduledItemList = ({ items, loading, onEdit, onDelete }: ScheduledItemLi
   }
 
   if (items.length === EMPTY_COUNT) {
-    return (
-      <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed py-16 text-center">
-        <p className="font-medium">Nothing scheduled yet</p>
-        <p className="text-sm text-muted-foreground">Add your first item to get started.</p>
-      </div>
-    );
+    return <EmptyState filtered={filtered} />;
   }
 
   const groups = groupScheduledItems(items, new Date());
@@ -42,7 +65,13 @@ const ScheduledItemList = ({ items, loading, onEdit, onDelete }: ScheduledItemLi
           </h3>
           <ul className="flex flex-col gap-2">
             {group.items.map((item) => (
-              <ScheduledItemRow key={item.id} item={item} onEdit={onEdit} onDelete={onDelete} />
+              <ScheduledItemRow
+                key={item.id}
+                item={item}
+                members={members}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
             ))}
           </ul>
         </section>

@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button.tsx";
 
+import { useHousehold } from "../household/useHousehold.ts";
 import { deleteScheduledItem } from "../scheduledItems/deleteScheduledItem.ts";
 import { getScheduledItem } from "../scheduledItems/getScheduledItem.ts";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
@@ -14,6 +15,7 @@ import ScheduledItemDetailContent from "./ScheduledItemDetailContent.tsx";
 const ScheduledItemDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { household } = useHousehold();
   const [item, setItem] = useState<ScheduledItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -78,6 +80,7 @@ const ScheduledItemDetail = () => {
         >
           <ScheduledItemDetailContent
             item={item}
+            members={household?.members ?? []}
             loading={loading}
             onEdit={() => setIsEditOpen(true)}
             onDelete={() => void handleDelete()}

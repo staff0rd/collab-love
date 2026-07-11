@@ -1,11 +1,13 @@
 import { Loader2 } from "lucide-react";
 
+import type { HouseholdMember } from "../household/getHousehold.ts";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 
 import ScheduledItemDetailBody from "./ScheduledItemDetailBody.tsx";
 
 type ScheduledItemDetailContentProps = {
   item: ScheduledItem | null;
+  members: HouseholdMember[];
   loading: boolean;
   onEdit: () => void;
   onDelete: () => void;
@@ -13,6 +15,7 @@ type ScheduledItemDetailContentProps = {
 
 const ScheduledItemDetailContent = ({
   item,
+  members,
   loading,
   onEdit,
   onDelete,
@@ -34,7 +37,9 @@ const ScheduledItemDetailContent = ({
     );
   }
 
-  return <ScheduledItemDetailBody item={item} onEdit={onEdit} onDelete={onDelete} />;
+  return (
+    <ScheduledItemDetailBody item={item} members={members} onEdit={onEdit} onDelete={onDelete} />
+  );
 };
 
 export default ScheduledItemDetailContent;

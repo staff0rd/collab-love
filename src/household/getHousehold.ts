@@ -1,9 +1,16 @@
 import { supabase } from "../lib/supabaseClient.ts";
 
+import { getMemberNames } from "./getMemberNames.ts";
+
+export type HouseholdMember = {
+  userId: string;
+  displayName: string | null;
+};
+
 export type Household = {
   id: string;
   name: string;
-  memberIds: string[];
+  members: HouseholdMember[];
 };
 
 type HouseholdRow = {
@@ -11,6 +18,9 @@ type HouseholdRow = {
   name: string;
   household_members: { user_id: string }[];
 };
+
+export const memberDisplayName = (member: HouseholdMember): string =>
+  member.displayName?.trim() || "Unnamed";
 
 export const getHousehold = async (): Promise<Household | null> => {
   const { data, error } = await supabase
@@ -26,9 +36,13 @@ export const getHousehold = async (): Promise<Household | null> => {
     return null;
   }
 
+  const names = await getMemberNames();
+
   return {
     id: row.id,
-    memberIds: row.household_members.map((member) => member.user_id),
+    members: row.household_members
+      .map((member) => ({ displayName: names[member.user_id] ?? null, userId: member.user_id }))
+      .sort((left, right) => left.userId.localeCompare(right.userId)),
     name: row.name,
   };
 };

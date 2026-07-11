@@ -5,14 +5,14 @@ export type NewScheduledItem = {
   title: string;
   scheduledAt: string;
   notes: string | null;
-  owner: string | null;
+  ownerUserId: string | null;
   recurrence: Recurrence;
   recurrenceInterval: number | null;
 };
 
 export const scheduledItemToRow = (item: NewScheduledItem) => ({
   notes: item.notes,
-  owner: item.owner,
+  owner_user_id: item.ownerUserId,
   recurrence: item.recurrence,
   recurrence_interval: item.recurrenceInterval,
   scheduled_at: item.scheduledAt,

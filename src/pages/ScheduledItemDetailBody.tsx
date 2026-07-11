@@ -1,26 +1,18 @@
-import { Pencil, Repeat, Trash2 } from "lucide-react";
+import { Repeat } from "lucide-react";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog.tsx";
-import { Button } from "@/components/ui/button.tsx";
 import { cn } from "@/lib/utils.ts";
 
+import type { HouseholdMember } from "../household/getHousehold.ts";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { nextOccurrence } from "../scheduledItems/nextOccurrence.ts";
+import { ownerLabel } from "../scheduledItems/ownerLabel.ts";
 import { recurrenceLabel } from "../scheduledItems/recurrenceLabel.ts";
 import {
   scheduledItemStatus,
   type ScheduledItemStatus,
 } from "../scheduledItems/scheduledItemStatus.ts";
+
+import ScheduledItemDetailActions from "./ScheduledItemDetailActions.tsx";
 
 const formatOccurrence = (value: Date) =>
   value.toLocaleString(undefined, { dateStyle: "full", timeStyle: "short" });
@@ -39,14 +31,21 @@ const statusStyles: Record<ScheduledItemStatus, string> = {
 
 type ScheduledItemDetailBodyProps = {
   item: ScheduledItem;
+  members: HouseholdMember[];
   onEdit: () => void;
   onDelete: () => void;
 };
 
-const ScheduledItemDetailBody = ({ item, onEdit, onDelete }: ScheduledItemDetailBodyProps) => {
+const ScheduledItemDetailBody = ({
+  item,
+  members,
+  onEdit,
+  onDelete,
+}: ScheduledItemDetailBodyProps) => {
   const occurrence = nextOccurrence(item, new Date());
   const status = scheduledItemStatus(occurrence, new Date());
   const repeat = recurrenceLabel(item);
+  const owner = ownerLabel(item.ownerUserId, members);
 
   return (
     <div className="flex flex-col gap-4">
@@ -56,11 +55,9 @@ const ScheduledItemDetailBody = ({ item, onEdit, onDelete }: ScheduledItemDetail
         >
           {statusLabels[status]}
         </span>
-        {item.owner && (
-          <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-secondary-foreground">
-            {item.owner}
-          </span>
-        )}
+        <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-secondary-foreground">
+          {owner}
+        </span>
       </div>
 
       <div className="flex flex-col gap-1">
@@ -76,37 +73,7 @@ const ScheduledItemDetailBody = ({ item, onEdit, onDelete }: ScheduledItemDetail
 
       {item.notes && <p className="whitespace-pre-wrap text-foreground">{item.notes}</p>}
 
-      <div className="flex items-center gap-2 pt-2">
-        <Button variant="outline" onClick={onEdit}>
-          <Pencil />
-          Edit
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline">
-              <Trash2 className="text-destructive" />
-              Delete
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete item?</AlertDialogTitle>
-              <AlertDialogDescription>
-                &ldquo;{item.title}&rdquo; will be permanently removed.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                onClick={onDelete}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+      <ScheduledItemDetailActions title={item.title} onEdit={onEdit} onDelete={onDelete} />
     </div>
   );
 };

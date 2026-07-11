@@ -2,11 +2,19 @@ import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
 
+import type { HouseholdMember } from "../household/getHousehold.ts";
+
 import DateTimePicker from "./DateTimePicker.tsx";
+import OwnerField from "./OwnerField.tsx";
 import RecurrenceField from "./RecurrenceField.tsx";
 import type { ScheduledItemFormState } from "./useScheduledItemForm.ts";
 
-const ScheduledItemFields = ({ form }: { form: ScheduledItemFormState }) => (
+type ScheduledItemFieldsProps = {
+  form: ScheduledItemFormState;
+  members: HouseholdMember[];
+};
+
+const ScheduledItemFields = ({ form, members }: ScheduledItemFieldsProps) => (
   <div className="flex flex-col gap-4">
     <div className="flex flex-col gap-2">
       <Label htmlFor="scheduled-item-title">Title</Label>
@@ -29,15 +37,7 @@ const ScheduledItemFields = ({ form }: { form: ScheduledItemFormState }) => (
 
     <RecurrenceField form={form} />
 
-    <div className="flex flex-col gap-2">
-      <Label htmlFor="scheduled-item-owner">Owner</Label>
-      <Input
-        id="scheduled-item-owner"
-        placeholder="Who's responsible?"
-        value={form.owner}
-        onChange={(event) => form.setOwner(event.target.value)}
-      />
-    </div>
+    <OwnerField form={form} members={members} />
 
     <div className="flex flex-col gap-2">
       <Label htmlFor="scheduled-item-notes">Notes</Label>

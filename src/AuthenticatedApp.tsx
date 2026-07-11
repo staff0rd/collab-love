@@ -5,6 +5,7 @@ import { useAuth } from "./auth/useAuth.ts";
 import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
 import ScheduledItemDetail from "./pages/ScheduledItemDetail.tsx";
+import Settings from "./pages/Settings.tsx";
 
 const AuthenticatedApp = () => {
   const { session, loading } = useAuth();
@@ -25,6 +26,7 @@ const AuthenticatedApp = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/home" element={<Home />} />
+        <Route path="/settings" element={<Settings />} />
         <Route path="/items/:id" element={<ScheduledItemDetail />} />
         <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>

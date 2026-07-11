@@ -8,7 +8,7 @@ export type FormValues = {
   title: string;
   scheduledAt: string;
   notes: string;
-  owner: string;
+  ownerUserId: string | null;
   recurrence: Recurrence;
   interval: number;
 };
@@ -16,7 +16,7 @@ export type FormValues = {
 export const EMPTY_VALUES: FormValues = {
   interval: DEFAULT_INTERVAL,
   notes: "",
-  owner: "",
+  ownerUserId: null,
   recurrence: "once",
   scheduledAt: "",
   title: "",
@@ -25,7 +25,7 @@ export const EMPTY_VALUES: FormValues = {
 export const valuesFrom = (item: ScheduledItem): FormValues => ({
   interval: item.recurrenceInterval ?? DEFAULT_INTERVAL,
   notes: item.notes ?? "",
-  owner: item.owner ?? "",
+  ownerUserId: item.ownerUserId,
   recurrence: item.recurrence,
   scheduledAt: item.scheduledAt,
   title: item.title,
@@ -48,7 +48,7 @@ const intervalFor = (recurrence: Recurrence, interval: number): number | null =>
 
 const toPayload = (values: FormValues): NewScheduledItem => ({
   notes: trimmedOrNull(values.notes),
-  owner: trimmedOrNull(values.owner),
+  ownerUserId: values.ownerUserId,
   recurrence: values.recurrence,
   recurrenceInterval: intervalFor(values.recurrence, values.interval),
   scheduledAt: values.scheduledAt,

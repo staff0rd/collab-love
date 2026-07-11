@@ -10,6 +10,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog.tsx";
 
+import { useHousehold } from "../household/useHousehold.ts";
+
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import ScheduledItemFields from "./ScheduledItemFields.tsx";
 import { useScheduledItemForm } from "./useScheduledItemForm.ts";
@@ -26,6 +28,7 @@ const ScheduledItemModal = ({ isOpen, item, onClose, onSaved }: ScheduledItemMod
     onSaved();
     onClose();
   });
+  const { household } = useHousehold();
 
   useEffect(() => {
     if (isOpen) {
@@ -65,7 +68,7 @@ const ScheduledItemModal = ({ isOpen, item, onClose, onSaved }: ScheduledItemMod
         </DialogHeader>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <ScheduledItemFields form={form} />
+          <ScheduledItemFields form={form} members={household?.members ?? []} />
 
           {form.error && (
             <p role="alert" className="text-sm text-destructive">

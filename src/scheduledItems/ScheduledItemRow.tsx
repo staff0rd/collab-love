@@ -15,8 +15,11 @@ import {
 import { Button } from "@/components/ui/button.tsx";
 import { cn } from "@/lib/utils.ts";
 
+import type { HouseholdMember } from "../household/getHousehold.ts";
+
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { nextOccurrence } from "./nextOccurrence.ts";
+import { ownerLabel } from "./ownerLabel.ts";
 import { recurrenceLabel } from "./recurrenceLabel.ts";
 import { scheduledItemStatus, type ScheduledItemStatus } from "./scheduledItemStatus.ts";
 
@@ -37,11 +40,12 @@ const timeStyles: Record<ScheduledItemStatus, string> = {
 
 type ScheduledItemRowProps = {
   item: ScheduledItem;
+  members: HouseholdMember[];
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
 };
 
-const DeleteItemButton = ({ item, onDelete }: Omit<ScheduledItemRowProps, "onEdit">) => (
+const DeleteItemButton = ({ item, onDelete }: Pick<ScheduledItemRowProps, "item" | "onDelete">) => (
   <AlertDialog>
     <AlertDialogTrigger asChild>
       <Button size="icon" variant="ghost" aria-label={`Delete ${item.title}`}>
@@ -68,10 +72,11 @@ const DeleteItemButton = ({ item, onDelete }: Omit<ScheduledItemRowProps, "onEdi
   </AlertDialog>
 );
 
-const ScheduledItemRow = ({ item, onEdit, onDelete }: ScheduledItemRowProps) => {
+const ScheduledItemRow = ({ item, members, onEdit, onDelete }: ScheduledItemRowProps) => {
   const occurrence = nextOccurrence(item, new Date());
   const status = scheduledItemStatus(occurrence, new Date());
   const repeat = recurrenceLabel(item);
+  const owner = ownerLabel(item.ownerUserId, members);
 
   return (
     <li
@@ -86,11 +91,9 @@ const ScheduledItemRow = ({ item, onEdit, onDelete }: ScheduledItemRowProps) => 
       >
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-medium">{item.title}</h3>
-          {item.owner && (
-            <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
-              {item.owner}
-            </span>
-          )}
+          <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
+            {owner}
+          </span>
         </div>
         <p className={cn("text-sm", timeStyles[status])}>{formatOccurrence(occurrence)}</p>
         {repeat && (
