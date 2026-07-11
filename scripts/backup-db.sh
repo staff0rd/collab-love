@@ -46,3 +46,10 @@ dest="s3://$S3_BUCKET/$S3_PREFIX/$(basename "$archive")"
 echo "Uploading to $dest"
 aws s3 cp "$archive" "$dest"
 echo "Backup complete"
+
+if [ -n "${GITHUB_OUTPUT:-}" ]; then
+  {
+    echo "s3_url=$dest"
+    echo "archive_name=$(basename "$archive")"
+  } >> "$GITHUB_OUTPUT"
+fi
