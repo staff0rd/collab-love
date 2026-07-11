@@ -3,22 +3,10 @@ import type { ScheduledItem } from "./getScheduledItems.ts";
 const MS_PER_DAY = 86_400_000;
 const DAYS_PER_WEEK = 7;
 const MONTHS_PER_YEAR = 12;
-const HALF_YEAR_MONTHS = 6;
 const MIN_INTERVAL = 1;
 const NEXT_YEAR = 1;
 const NEXT_STEP = 1;
 const NO_STEPS = 0;
-
-const MAY = 4;
-const NOVEMBER = 10;
-const FIRST_OF_MONTH = 1;
-
-type MonthDay = { month: number; day: number };
-
-const SOUTHERN_SEASON_TARGET: Record<"before-winter" | "before-summer", MonthDay> = {
-  "before-summer": { day: FIRST_OF_MONTH, month: NOVEMBER },
-  "before-winter": { day: FIRST_OF_MONTH, month: MAY },
-};
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
@@ -50,22 +38,23 @@ const weeklyOccurrence = (anchor: Date, now: Date, interval: number): Date => {
   return addDays(anchor, steps * stepDays);
 };
 
-const annualOccurrenceOn = (source: Date, now: Date, target: MonthDay): Date => {
-  const todayStart = startOfDay(now).getTime();
-  const thisYear = atTimeOf(new Date(now.getFullYear(), target.month, target.day), source);
-  if (startOfDay(thisYear).getTime() >= todayStart) {
-    return thisYear;
-  }
-  return atTimeOf(new Date(now.getFullYear() + NEXT_YEAR, target.month, target.day), source);
-};
-
 const yearlyOccurrence = (anchor: Date, now: Date): Date => {
   const anchorStart = startOfDay(anchor).getTime();
   const todayStart = startOfDay(now).getTime();
   if (anchorStart >= todayStart) {
     return anchor;
   }
-  return annualOccurrenceOn(anchor, now, { day: anchor.getDate(), month: anchor.getMonth() });
+  const thisYear = atTimeOf(
+    new Date(now.getFullYear(), anchor.getMonth(), anchor.getDate()),
+    anchor,
+  );
+  if (startOfDay(thisYear).getTime() >= todayStart) {
+    return thisYear;
+  }
+  return atTimeOf(
+    new Date(now.getFullYear() + NEXT_YEAR, anchor.getMonth(), anchor.getDate()),
+    anchor,
+  );
 };
 
 const monthlyOccurrence = (anchor: Date, now: Date, stepMonths: number): Date => {
@@ -87,14 +76,11 @@ export const nextOccurrence = (item: ScheduledItem, now: Date): Date => {
   if (item.recurrence === "weekly") {
     return weeklyOccurrence(anchor, now, item.recurrenceInterval ?? MIN_INTERVAL);
   }
+  if (item.recurrence === "monthly") {
+    return monthlyOccurrence(anchor, now, item.recurrenceInterval ?? MIN_INTERVAL);
+  }
   if (item.recurrence === "yearly") {
     return yearlyOccurrence(anchor, now);
-  }
-  if (item.recurrence === "half-yearly") {
-    return monthlyOccurrence(anchor, now, HALF_YEAR_MONTHS);
-  }
-  if (item.recurrence === "before-winter" || item.recurrence === "before-summer") {
-    return annualOccurrenceOn(anchor, now, SOUTHERN_SEASON_TARGET[item.recurrence]);
   }
   return anchor;
 };

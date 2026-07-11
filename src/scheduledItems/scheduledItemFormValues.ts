@@ -40,7 +40,7 @@ const trimmedOrNull = (value: string) => {
 };
 
 const intervalFor = (recurrence: Recurrence, interval: number): number | null => {
-  if (recurrence === "weekly") {
+  if (recurrence === "weekly" || recurrence === "monthly") {
     return Math.max(DEFAULT_INTERVAL, Math.trunc(interval));
   }
   return null;

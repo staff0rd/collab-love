@@ -1,12 +1,6 @@
 import { supabase } from "../lib/supabaseClient.ts";
 
-export type Recurrence =
-  | "once"
-  | "weekly"
-  | "yearly"
-  | "half-yearly"
-  | "before-winter"
-  | "before-summer";
+export type Recurrence = "once" | "weekly" | "monthly" | "yearly";
 
 export type ScheduledItem = {
   id: string;

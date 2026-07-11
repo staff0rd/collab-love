@@ -1,36 +1,23 @@
+import { Fragment } from "react";
+
 import { Button } from "@/components/ui/button.tsx";
-import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 
 import type { Recurrence } from "./getScheduledItems.ts";
+import IntervalStepper from "./IntervalStepper.tsx";
 import { recurrenceLabel } from "./recurrenceLabel.ts";
 import type { ScheduledItemFormState } from "./useScheduledItemForm.ts";
-
-const MIN_INTERVAL = 1;
-const RADIX = 10;
 
 const OPTIONS: { value: Recurrence; label: string }[] = [
   { label: "Once", value: "once" },
   { label: "Weekly", value: "weekly" },
+  { label: "Monthly", value: "monthly" },
   { label: "Yearly", value: "yearly" },
-  { label: "Twice a year", value: "half-yearly" },
-  { label: "Before winter", value: "before-winter" },
-  { label: "Before summer", value: "before-summer" },
 ];
 
-const parseInterval = (value: string): number => {
-  const parsed = Number.parseInt(value, RADIX);
-  if (Number.isNaN(parsed)) {
-    return MIN_INTERVAL;
-  }
-  return Math.max(MIN_INTERVAL, parsed);
-};
-
-const weeksLabel = (interval: number): string => {
-  if (interval === MIN_INTERVAL) {
-    return "week";
-  }
-  return "weeks";
+const STEPPER_UNIT: Partial<Record<Recurrence, string>> = {
+  monthly: "month",
+  weekly: "week",
 };
 
 const variantFor = (selected: boolean): "default" | "outline" => {
@@ -41,10 +28,22 @@ const variantFor = (selected: boolean): "default" | "outline" => {
 };
 
 const previewInterval = (recurrence: Recurrence, interval: number): number | null => {
-  if (recurrence === "weekly") {
+  if (recurrence in STEPPER_UNIT) {
     return interval;
   }
   return null;
+};
+
+const OptionStepper = ({ value, form }: { value: Recurrence; form: ScheduledItemFormState }) => {
+  const unit = STEPPER_UNIT[value];
+  if (form.recurrence !== value || !unit) {
+    return null;
+  }
+  return (
+    <div className="col-span-2">
+      <IntervalStepper interval={form.interval} unit={unit} onChange={form.setInterval} />
+    </div>
+  );
 };
 
 const RecurrenceField = ({ form }: { form: ScheduledItemFormState }) => {
@@ -59,32 +58,19 @@ const RecurrenceField = ({ form }: { form: ScheduledItemFormState }) => {
       <Label>Repeat</Label>
       <div className="grid grid-cols-2 gap-2">
         {OPTIONS.map((option) => (
-          <Button
-            key={option.value}
-            type="button"
-            variant={variantFor(form.recurrence === option.value)}
-            className="w-full"
-            onClick={() => form.setRecurrence(option.value)}
-          >
-            {option.label}
-          </Button>
+          <Fragment key={option.value}>
+            <Button
+              type="button"
+              variant={variantFor(form.recurrence === option.value)}
+              className="w-full"
+              onClick={() => form.setRecurrence(option.value)}
+            >
+              {option.label}
+            </Button>
+            <OptionStepper value={option.value} form={form} />
+          </Fragment>
         ))}
       </div>
-
-      {form.recurrence === "weekly" && (
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Every</span>
-          <Input
-            type="number"
-            min={MIN_INTERVAL}
-            aria-label="Weeks between occurrences"
-            className="w-20"
-            value={String(form.interval)}
-            onChange={(event) => form.setInterval(parseInterval(event.target.value))}
-          />
-          <span className="text-sm text-muted-foreground">{weeksLabel(form.interval)}</span>
-        </div>
-      )}
 
       {preview && <p className="text-xs text-muted-foreground">{preview}</p>}
     </div>

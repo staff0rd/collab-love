@@ -1,7 +1,17 @@
 import type { ScheduledItem } from "./getScheduledItems.ts";
 
 const SINGLE_WEEK = 1;
-const HALF_YEAR_MONTHS = 6;
+const SINGLE_MONTH = 1;
+
+const ORDINAL_RULES = new Intl.PluralRules("en", { type: "ordinal" });
+const ORDINAL_SUFFIX: Record<Intl.LDMLPluralRule, string> = {
+  few: "rd",
+  many: "th",
+  one: "st",
+  other: "th",
+  two: "nd",
+  zero: "th",
+};
 
 export type RecurrenceSummary = Pick<
   ScheduledItem,
@@ -30,6 +40,8 @@ const monthDayOf = (date: Date | null): string | null => {
   return date.toLocaleDateString(undefined, { day: "numeric", month: "long" });
 };
 
+const ordinal = (day: number): string => `${day}${ORDINAL_SUFFIX[ORDINAL_RULES.select(day)]}`;
+
 const cadenceLabel = (weeks: number): string => {
   if (weeks === SINGLE_WEEK) {
     return "Weekly";
@@ -46,6 +58,21 @@ const weeklyLabel = (date: Date | null, interval: number | null): string => {
   return cadence;
 };
 
+const monthlyCadence = (months: number): string => {
+  if (months === SINGLE_MONTH) {
+    return "Monthly";
+  }
+  return `Every ${months} months`;
+};
+
+const monthlyLabel = (date: Date | null, interval: number | null): string => {
+  const cadence = monthlyCadence(interval ?? SINGLE_MONTH);
+  if (!date) {
+    return cadence;
+  }
+  return `${cadence} on the ${ordinal(date.getDate())}`;
+};
+
 const yearlyLabel = (date: Date | null): string => {
   const monthDay = monthDayOf(date);
   if (monthDay) {
@@ -54,38 +81,16 @@ const yearlyLabel = (date: Date | null): string => {
   return "Yearly";
 };
 
-const shiftMonths = (date: Date, months: number): Date =>
-  new Date(date.getFullYear(), date.getMonth() + months, date.getDate());
-
-const halfYearlyLabel = (date: Date | null): string => {
-  const first = monthDayOf(date);
-  if (!date || !first) {
-    return "Twice a year";
-  }
-  const second = monthDayOf(shiftMonths(date, HALF_YEAR_MONTHS));
-  return `Twice a year on ${first} and ${second}`;
-};
-
-const seasonalLabel = (recurrence: "before-winter" | "before-summer"): string => {
-  if (recurrence === "before-winter") {
-    return "Before winter";
-  }
-  return "Before summer";
-};
-
 export const recurrenceLabel = (item: RecurrenceSummary): string | null => {
   const date = anchorDate(item.scheduledAt);
   if (item.recurrence === "weekly") {
     return weeklyLabel(date, item.recurrenceInterval);
   }
+  if (item.recurrence === "monthly") {
+    return monthlyLabel(date, item.recurrenceInterval);
+  }
   if (item.recurrence === "yearly") {
     return yearlyLabel(date);
-  }
-  if (item.recurrence === "half-yearly") {
-    return halfYearlyLabel(date);
-  }
-  if (item.recurrence === "before-winter" || item.recurrence === "before-summer") {
-    return seasonalLabel(item.recurrence);
   }
   return null;
 };
