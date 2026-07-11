@@ -1,5 +1,5 @@
-import { Plus, Settings } from "lucide-react";
-import { useNavigate } from "react-router";
+import { Lightbulb, Plus, Settings } from "lucide-react";
+import { Link, useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button.tsx";
 
@@ -32,6 +32,11 @@ const HomeHeader = ({ household, onAdd }: HomeHeaderProps) => {
           <Button size="sm" onClick={onAdd}>
             <Plus />
             Add item
+          </Button>
+          <Button asChild size="icon" variant="ghost" aria-label="Feature requests">
+            <Link to="/requests">
+              <Lightbulb />
+            </Link>
           </Button>
           <Button
             size="icon"

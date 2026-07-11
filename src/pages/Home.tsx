@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-=======
-import { Lightbulb, Plus } from "lucide-react";
->>>>>>> Stashed changes
 import { useState } from "react";
-import { Link } from "react-router";
 
 import { useAuth } from "../auth/useAuth.ts";
 import { useHousehold } from "../household/useHousehold.ts";
@@ -45,38 +40,7 @@ const Home = () => {
 
   return (
     <div className="flex h-full min-h-dvh flex-col bg-background">
-<<<<<<< Updated upstream
       <HomeHeader household={household} onAdd={openAdd} />
-=======
-      <header
-        className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
-      >
-        <div
-          className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 px-4 py-3"
-          style={{
-            paddingLeft: "max(1rem, env(safe-area-inset-left))",
-            paddingRight: "max(1rem, env(safe-area-inset-right))",
-          }}
-        >
-          <h1 className="truncate text-lg font-semibold text-foreground">
-            {household?.name ?? "collab-love"}
-          </h1>
-          <div className="flex items-center gap-1">
-            <Button asChild size="icon" variant="ghost" aria-label="Feature requests">
-              <Link to="/requests">
-                <Lightbulb />
-              </Link>
-            </Button>
-            <Button size="sm" onClick={openAdd}>
-              <Plus />
-              Add item
-            </Button>
-            <SignOutButton />
-          </div>
-        </div>
-      </header>
->>>>>>> Stashed changes
 
       <main className="flex-1 overflow-y-auto">
         <div
