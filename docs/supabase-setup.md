@@ -155,8 +155,19 @@ runs `scripts/apple-secret.mjs` to sign a fresh secret from the stored `.p8`, th
 the [Supabase Management API](https://supabase.com/docs/reference/api) auth config
 (`external_apple_secret`) on the linked project.
 
-Trigger it on demand from the **Actions** tab → **Rotate Apple client secret** → **Run
-workflow**. (A monthly `schedule` trigger is added in phase 2.)
+### Rotation cadence
+
+The workflow runs automatically on a monthly `schedule` (03:17 UTC on the 1st of each
+month), so the live secret is never more than a month old and there is a wide margin before
+Apple's ~6-month cap. Each run re-mints the secret with a fresh 6-month expiry and pushes it,
+so the schedule alone keeps web sign-in from ever breaking on an expired secret.
+
+### Rotating manually
+
+You rarely need to, but you can force a rotation at any time — for example after replacing the
+`.p8` key or the `SUPABASE_ACCESS_TOKEN`. Trigger it on demand from the **Actions** tab →
+**Rotate Apple client secret** → **Run workflow**. The manual run is identical to the scheduled
+one.
 
 ### Required repository secrets
 
