@@ -1,5 +1,7 @@
 import { supabase } from "../lib/supabaseClient.ts";
 
+export const scheduledItemsQueryKey = ["scheduledItems"] as const;
+
 export type Recurrence = "once" | "weekly" | "monthly" | "yearly";
 
 export type ScheduledItem = {

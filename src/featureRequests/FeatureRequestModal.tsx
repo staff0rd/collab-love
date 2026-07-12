@@ -19,12 +19,12 @@ type FeatureRequestModalProps = {
   isOpen: boolean;
   item: FeatureRequest | null;
   onClose: () => void;
-  onSaved: () => void;
+  onSaved?: () => void;
 };
 
 const FeatureRequestModal = ({ isOpen, item, onClose, onSaved }: FeatureRequestModalProps) => {
   const form = useFeatureRequestForm(() => {
-    onSaved();
+    onSaved?.();
     onClose();
   });
 

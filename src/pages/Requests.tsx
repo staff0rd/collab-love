@@ -4,16 +4,17 @@ import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button.tsx";
 
-import { deleteFeatureRequest } from "../featureRequests/deleteFeatureRequest.ts";
-import { NEXT_FEATURE_REQUEST_STATUS } from "../featureRequests/featureRequestStatus.ts";
 import FeatureRequestList from "../featureRequests/FeatureRequestList.tsx";
 import FeatureRequestModal from "../featureRequests/FeatureRequestModal.tsx";
 import type { FeatureRequest } from "../featureRequests/getFeatureRequests.ts";
-import { updateFeatureRequest } from "../featureRequests/updateFeatureRequest.ts";
+import { useAdvanceFeatureRequestStatus } from "../featureRequests/useAdvanceFeatureRequestStatus.ts";
+import { useDeleteFeatureRequest } from "../featureRequests/useDeleteFeatureRequest.ts";
 import { useFeatureRequests } from "../featureRequests/useFeatureRequests.ts";
 
 const Requests = () => {
-  const { items, loading, refresh } = useFeatureRequests();
+  const { items, loading } = useFeatureRequests();
+  const advanceStatusMutation = useAdvanceFeatureRequestStatus();
+  const deleteMutation = useDeleteFeatureRequest();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<FeatureRequest | null>(null);
@@ -26,20 +27,6 @@ const Requests = () => {
   const openEdit = (item: FeatureRequest) => {
     setEditingItem(item);
     setIsModalOpen(true);
-  };
-
-  const handleAdvanceStatus = async (item: FeatureRequest) => {
-    const next = NEXT_FEATURE_REQUEST_STATUS[item.status];
-    if (!next) {
-      return;
-    }
-    await updateFeatureRequest(item.id, { status: next });
-    await refresh();
-  };
-
-  const handleDelete = async (item: FeatureRequest) => {
-    await deleteFeatureRequest(item.id);
-    await refresh();
   };
 
   return (
@@ -86,8 +73,8 @@ const Requests = () => {
             items={items}
             loading={loading}
             onEdit={openEdit}
-            onAdvanceStatus={(item) => void handleAdvanceStatus(item)}
-            onDelete={(item) => void handleDelete(item)}
+            onAdvanceStatus={(item) => advanceStatusMutation.mutate(item)}
+            onDelete={(item) => deleteMutation.mutate(item.id)}
           />
         </div>
       </main>
@@ -96,7 +83,6 @@ const Requests = () => {
         isOpen={isModalOpen}
         item={editingItem}
         onClose={() => setIsModalOpen(false)}
-        onSaved={refresh}
       />
     </div>
   );

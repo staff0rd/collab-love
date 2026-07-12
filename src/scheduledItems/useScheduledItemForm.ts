@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import type { Recurrence, ScheduledItem } from "./getScheduledItems.ts";
@@ -7,46 +8,49 @@ import {
   persistScheduledItem,
   valuesFrom,
 } from "./scheduledItemFormValues.ts";
+import { scheduledItemsQueryKey } from "./useScheduledItems.ts";
 
 export type ScheduledItemFormState = ReturnType<typeof useScheduledItemForm>;
 
+const SAVE_ERROR = "Could not save the item. Please try again.";
+
 export const useScheduledItemForm = (onSuccess: () => void) => {
+  const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const setField = <Key extends keyof FormValues>(key: Key, value: FormValues[Key]) =>
     setValues((prev) => ({ ...prev, [key]: value }));
 
+  const mutation = useMutation({
+    mutationFn: () => persistScheduledItem(editingId, values),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: scheduledItemsQueryKey });
+      setEditingId(null);
+      setValues(EMPTY_VALUES);
+      onSuccess();
+    },
+  });
+
   const resetTo = (item: ScheduledItem | null) => {
+    mutation.reset();
     setEditingId(item?.id ?? null);
     if (item) {
       setValues(valuesFrom(item));
     } else {
       setValues(EMPTY_VALUES);
     }
-    setSaving(false);
-    setError(null);
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    setError(null);
-    try {
-      await persistScheduledItem(editingId, values);
-      resetTo(null);
-      onSuccess();
-    } catch {
-      setError("Could not save the item. Please try again.");
-      setSaving(false);
-    }
-  };
+  let error: string | null = null;
+  if (mutation.isError) {
+    error = SAVE_ERROR;
+  }
 
   return {
-    canSave: values.title.trim() !== "" && values.scheduledAt !== "" && !saving,
+    canSave: values.title.trim() !== "" && values.scheduledAt !== "" && !mutation.isPending,
     error,
-    handleSave,
+    handleSave: () => mutation.mutate(),
     interval: values.interval,
     isEditing: editingId !== null,
     load: (item: ScheduledItem) => resetTo(item),

@@ -1,32 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "../auth/useAuth.ts";
 
-import { type FeatureRequest, getFeatureRequests } from "./getFeatureRequests.ts";
+import { getFeatureRequests, featureRequestsQueryKey } from "./getFeatureRequests.ts";
+
+export { featureRequestsQueryKey };
 
 export const useFeatureRequests = () => {
   const { session } = useAuth();
-  const [items, setItems] = useState<FeatureRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isPending } = useQuery({
+    enabled: session !== null,
+    queryFn: getFeatureRequests,
+    queryKey: featureRequestsQueryKey,
+  });
 
-  const refresh = useCallback(async () => {
-    if (!session) {
-      setItems([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      setItems(await getFeatureRequests());
-    } finally {
-      setLoading(false);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
-
-  return { items, loading, refresh };
+  return { items: data ?? [], loading: isPending };
 };

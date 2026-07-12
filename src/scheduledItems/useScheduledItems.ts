@@ -1,32 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { useAuth } from "../auth/useAuth.ts";
 
-import { getScheduledItems, type ScheduledItem } from "./getScheduledItems.ts";
+import { getScheduledItems, scheduledItemsQueryKey } from "./getScheduledItems.ts";
+
+export { scheduledItemsQueryKey };
 
 export const useScheduledItems = () => {
   const { session } = useAuth();
-  const [items, setItems] = useState<ScheduledItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isPending } = useQuery({
+    enabled: session !== null,
+    queryFn: getScheduledItems,
+    queryKey: scheduledItemsQueryKey,
+  });
 
-  const refresh = useCallback(async () => {
-    if (!session) {
-      setItems([]);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      setItems(await getScheduledItems());
-    } finally {
-      setLoading(false);
-    }
-  }, [session]);
-
-  useEffect(() => {
-    void refresh();
-  }, [refresh]);
-
-  return { items, loading, refresh };
+  return { items: data ?? [], loading: isPending };
 };

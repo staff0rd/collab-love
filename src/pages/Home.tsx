@@ -2,12 +2,12 @@ import { useState } from "react";
 
 import { useAuth } from "../auth/useAuth.ts";
 import { useHousehold } from "../household/useHousehold.ts";
-import { deleteScheduledItem } from "../scheduledItems/deleteScheduledItem.ts";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { ALL_FILTER_KEY } from "../scheduledItems/ownerFilterOptions.ts";
 import OwnerFilterBar from "../scheduledItems/OwnerFilterBar.tsx";
 import ScheduledItemList from "../scheduledItems/ScheduledItemList.tsx";
 import ScheduledItemModal from "../scheduledItems/ScheduledItemModal.tsx";
+import { useDeleteScheduledItem } from "../scheduledItems/useDeleteScheduledItem.ts";
 import { useOwnerFilter } from "../scheduledItems/useOwnerFilter.ts";
 import { useScheduledItems } from "../scheduledItems/useScheduledItems.ts";
 
@@ -16,9 +16,10 @@ import HomeHeader from "./HomeHeader.tsx";
 const NO_ITEMS = 0;
 
 const Home = () => {
-  const { items, loading, refresh } = useScheduledItems();
+  const { items, loading } = useScheduledItems();
   const { household } = useHousehold();
   const { session } = useAuth();
+  const deleteMutation = useDeleteScheduledItem();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ScheduledItem | null>(null);
   const filter = useOwnerFilter(items, household?.members, session?.user.id ?? null);
@@ -31,11 +32,6 @@ const Home = () => {
   const openEdit = (item: ScheduledItem) => {
     setEditingItem(item);
     setIsModalOpen(true);
-  };
-
-  const handleDelete = async (item: ScheduledItem) => {
-    await deleteScheduledItem(item.id);
-    await refresh();
   };
 
   return (
@@ -69,7 +65,7 @@ const Home = () => {
             loading={loading}
             filtered={filter.active.key !== ALL_FILTER_KEY}
             onEdit={openEdit}
-            onDelete={(item) => void handleDelete(item)}
+            onDelete={(item) => deleteMutation.mutate(item.id)}
           />
         </div>
       </main>
@@ -78,7 +74,6 @@ const Home = () => {
         isOpen={isModalOpen}
         item={editingItem}
         onClose={() => setIsModalOpen(false)}
-        onSaved={refresh}
       />
     </div>
   );

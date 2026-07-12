@@ -1,5 +1,7 @@
 import { supabase } from "../lib/supabaseClient.ts";
 
+export const featureRequestsQueryKey = ["featureRequests"] as const;
+
 export type FeatureRequestStatus = "new" | "triaged" | "done";
 
 export type FeatureRequest = {

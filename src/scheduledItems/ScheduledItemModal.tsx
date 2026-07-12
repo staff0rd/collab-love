@@ -21,12 +21,12 @@ type ScheduledItemModalProps = {
   isOpen: boolean;
   item: ScheduledItem | null;
   onClose: () => void;
-  onSaved: () => void;
+  onSaved?: () => void;
 };
 
 const ScheduledItemModal = ({ isOpen, item, onClose, onSaved }: ScheduledItemModalProps) => {
   const form = useScheduledItemForm(() => {
-    onSaved();
+    onSaved?.();
     onClose();
   });
   const { household } = useHousehold();

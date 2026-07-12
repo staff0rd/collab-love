@@ -2,6 +2,8 @@ import { supabase } from "../lib/supabaseClient.ts";
 
 import { getMemberNames } from "./getMemberNames.ts";
 
+export const householdQueryKey = ["household"] as const;
+
 export type HouseholdMember = {
   userId: string;
   displayName: string | null;

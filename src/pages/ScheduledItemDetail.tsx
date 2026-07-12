@@ -1,47 +1,39 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@/components/ui/button.tsx";
 
 import { useHousehold } from "../household/useHousehold.ts";
-import { deleteScheduledItem } from "../scheduledItems/deleteScheduledItem.ts";
-import { getScheduledItem } from "../scheduledItems/getScheduledItem.ts";
-import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import ScheduledItemModal from "../scheduledItems/ScheduledItemModal.tsx";
+import { useDeleteScheduledItem } from "../scheduledItems/useDeleteScheduledItem.ts";
+import { scheduledItemQueryKey, useScheduledItem } from "../scheduledItems/useScheduledItem.ts";
+import { scheduledItemsQueryKey } from "../scheduledItems/useScheduledItems.ts";
 
 import ScheduledItemDetailContent from "./ScheduledItemDetailContent.tsx";
 
 const ScheduledItemDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { household } = useHousehold();
-  const [item, setItem] = useState<ScheduledItem | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { item, loading } = useScheduledItem(id);
+  const deleteMutation = useDeleteScheduledItem();
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const load = useCallback(async () => {
+  const handleDelete = () => {
     if (!id) {
       return;
     }
-    setLoading(true);
-    try {
-      setItem(await getScheduledItem(id));
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+    deleteMutation.mutate(id, { onSuccess: () => void navigate("/home") });
+  };
 
-  useEffect(() => {
-    void load();
-  }, [load]);
-
-  const handleDelete = async () => {
-    if (!id) {
-      return;
+  const handleSaved = () => {
+    if (id) {
+      void queryClient.invalidateQueries({ queryKey: scheduledItemQueryKey(id) });
     }
-    await deleteScheduledItem(id);
-    void navigate("/home");
+    void queryClient.invalidateQueries({ queryKey: scheduledItemsQueryKey });
   };
 
   return (
@@ -83,7 +75,7 @@ const ScheduledItemDetail = () => {
             members={household?.members ?? []}
             loading={loading}
             onEdit={() => setIsEditOpen(true)}
-            onDelete={() => void handleDelete()}
+            onDelete={handleDelete}
           />
         </div>
       </main>
@@ -93,7 +85,7 @@ const ScheduledItemDetail = () => {
           isOpen={isEditOpen}
           item={item}
           onClose={() => setIsEditOpen(false)}
-          onSaved={load}
+          onSaved={handleSaved}
         />
       )}
     </div>
