@@ -1,9 +1,11 @@
-import { Lightbulb, Plus, Settings } from "lucide-react";
+import { Lightbulb, LogOut, MoreVertical, Plus, Settings } from "lucide-react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button.tsx";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 
-import SignOutButton from "../auth/SignOutButton.tsx";
+import { signOut } from "../auth/signOut.ts";
 import type { Household } from "../household/getHousehold.ts";
 import HouseholdSummary from "../household/HouseholdSummary.tsx";
 
@@ -14,6 +16,7 @@ type HomeHeaderProps = {
 
 const HomeHeader = ({ household, onAdd }: HomeHeaderProps) => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <header
@@ -28,25 +31,54 @@ const HomeHeader = ({ household, onAdd }: HomeHeaderProps) => {
         }}
       >
         <HouseholdSummary household={household} />
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <Button size="sm" onClick={onAdd}>
             <Plus />
             Add item
           </Button>
-          <Button asChild size="icon" variant="ghost" aria-label="Feature requests">
-            <Link to="/requests">
-              <Lightbulb />
-            </Link>
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            aria-label="Settings"
-            onClick={() => void navigate("/settings")}
-          >
-            <Settings />
-          </Button>
-          <SignOutButton />
+          <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+            <PopoverTrigger asChild>
+              <Button size="icon" variant="ghost" aria-label="More options" className="-mr-2">
+                <MoreVertical />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-52 p-1">
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => setMenuOpen(false)}
+              >
+                <Link to="/requests">
+                  <Lightbulb />
+                  Feature requests
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => {
+                  setMenuOpen(false);
+                  void navigate("/settings");
+                }}
+              >
+                <Settings />
+                Settings
+              </Button>
+              <div className="my-1 border-t" />
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => {
+                  setMenuOpen(false);
+                  void signOut();
+                }}
+              >
+                <LogOut />
+                Sign out
+              </Button>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </header>
