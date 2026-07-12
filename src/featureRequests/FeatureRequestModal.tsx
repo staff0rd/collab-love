@@ -2,13 +2,14 @@ import { type FormEvent, useEffect } from "react";
 
 import { Button } from "@/components/ui/button.tsx";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog.tsx";
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet.tsx";
 
 import FeatureRequestFields from "./FeatureRequestFields.tsx";
 import type { FeatureRequest } from "./getFeatureRequests.ts";
@@ -48,7 +49,7 @@ const FeatureRequestModal = ({ isOpen, item, onClose, onSaved }: FeatureRequestM
   };
 
   return (
-    <Dialog
+    <Sheet
       open={isOpen}
       onOpenChange={(open) => {
         if (!open) {
@@ -56,34 +57,36 @@ const FeatureRequestModal = ({ isOpen, item, onClose, onSaved }: FeatureRequestM
         }
       }}
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{heading}</DialogTitle>
-          <DialogDescription>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>{heading}</SheetTitle>
+          <SheetDescription>
             Capture something your household should build so it doesn&apos;t get lost.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <FeatureRequestFields form={form} />
+        <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
+          <SheetBody className="flex flex-col gap-4">
+            <FeatureRequestFields form={form} />
 
-          {form.error && (
-            <p role="alert" className="text-sm text-destructive">
-              {form.error}
-            </p>
-          )}
+            {form.error && (
+              <p role="alert" className="text-sm text-destructive">
+                {form.error}
+              </p>
+            )}
+          </SheetBody>
 
-          <DialogFooter>
+          <SheetFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" disabled={!form.canSave}>
               Save
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 };
 

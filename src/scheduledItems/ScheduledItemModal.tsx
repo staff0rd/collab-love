@@ -2,13 +2,14 @@ import { type FormEvent, useEffect } from "react";
 
 import { Button } from "@/components/ui/button.tsx";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog.tsx";
+  Sheet,
+  SheetBody,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet.tsx";
 
 import { useHousehold } from "../household/useHousehold.ts";
 
@@ -51,7 +52,7 @@ const ScheduledItemModal = ({ isOpen, item, onClose, onSaved }: ScheduledItemMod
   };
 
   return (
-    <Dialog
+    <Sheet
       open={isOpen}
       onOpenChange={(open) => {
         if (!open) {
@@ -59,34 +60,36 @@ const ScheduledItemModal = ({ isOpen, item, onClose, onSaved }: ScheduledItemMod
         }
       }}
     >
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{heading}</DialogTitle>
-          <DialogDescription>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>{heading}</SheetTitle>
+          <SheetDescription>
             Schedule something for your household to see what&apos;s coming up.
-          </DialogDescription>
-        </DialogHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <ScheduledItemFields form={form} members={household?.members ?? []} />
+        <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
+          <SheetBody className="flex flex-col gap-4">
+            <ScheduledItemFields form={form} members={household?.members ?? []} />
 
-          {form.error && (
-            <p role="alert" className="text-sm text-destructive">
-              {form.error}
-            </p>
-          )}
+            {form.error && (
+              <p role="alert" className="text-sm text-destructive">
+                {form.error}
+              </p>
+            )}
+          </SheetBody>
 
-          <DialogFooter>
+          <SheetFooter>
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" disabled={!form.canSave}>
               Save
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 };
 
