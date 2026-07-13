@@ -27,5 +27,8 @@ dist-ssr
 # Capacitor native platforms
 /android
 
+# Xcode build output (nested ios/.gitignore isn't honored by all tooling, e.g. knip)
+/ios/DerivedData
+
 # Local Netlify folder
 .netlify

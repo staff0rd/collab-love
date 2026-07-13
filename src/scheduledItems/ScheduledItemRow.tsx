@@ -1,22 +1,12 @@
-import { Pencil, Repeat, Trash2 } from "lucide-react";
+import { Pencil, Repeat } from "lucide-react";
 import { Link } from "react-router";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { cn } from "@/lib/utils.ts";
 
 import type { HouseholdMember } from "../household/getHousehold.ts";
 
+import { DeleteItemButton } from "./DeleteItemButton.tsx";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { nextOccurrence } from "./nextOccurrence.ts";
 import { ownerLabel } from "./ownerLabel.ts";
@@ -25,6 +15,15 @@ import { scheduledItemStatus, type ScheduledItemStatus } from "./scheduledItemSt
 
 const formatOccurrence = (value: Date) =>
   value.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+
+const formatTime = (value: Date) => value.toLocaleTimeString(undefined, { timeStyle: "short" });
+
+const occurrenceLabel = (value: Date, status: ScheduledItemStatus) => {
+  if (status === "overdue") {
+    return formatOccurrence(value);
+  }
+  return formatTime(value);
+};
 
 const rowStyles: Record<ScheduledItemStatus, string> = {
   overdue: "border-destructive/40 bg-destructive/5",
@@ -45,36 +44,10 @@ type ScheduledItemRowProps = {
   onDelete: (item: ScheduledItem) => void;
 };
 
-const DeleteItemButton = ({ item, onDelete }: Pick<ScheduledItemRowProps, "item" | "onDelete">) => (
-  <AlertDialog>
-    <AlertDialogTrigger asChild>
-      <Button size="icon" variant="ghost" aria-label={`Delete ${item.title}`}>
-        <Trash2 className="text-destructive" />
-      </Button>
-    </AlertDialogTrigger>
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Delete item?</AlertDialogTitle>
-        <AlertDialogDescription>
-          &ldquo;{item.title}&rdquo; will be permanently removed.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction
-          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-          onClick={() => onDelete(item)}
-        >
-          Delete
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
-);
-
 const ScheduledItemRow = ({ item, members, onEdit, onDelete }: ScheduledItemRowProps) => {
-  const occurrence = nextOccurrence(item, new Date());
-  const status = scheduledItemStatus(occurrence, new Date());
+  const now = new Date();
+  const occurrence = nextOccurrence(item, now);
+  const status = scheduledItemStatus(occurrence, now);
   const repeat = recurrenceLabel(item);
   const owner = ownerLabel(item.ownerUserId, members);
 
@@ -95,7 +68,7 @@ const ScheduledItemRow = ({ item, members, onEdit, onDelete }: ScheduledItemRowP
             {owner}
           </span>
         </div>
-        <p className={cn("text-sm", timeStyles[status])}>{formatOccurrence(occurrence)}</p>
+        <p className={cn("text-sm", timeStyles[status])}>{occurrenceLabel(occurrence, status)}</p>
         {repeat && (
           <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
             <Repeat className="size-3" />

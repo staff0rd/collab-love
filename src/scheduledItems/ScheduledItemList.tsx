@@ -60,8 +60,11 @@ const ScheduledItemList = ({
     <div className="flex flex-col gap-6">
       {groups.map((group) => (
         <section key={group.key} className="flex flex-col gap-2">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {group.label}
+          <h3 className="flex items-baseline justify-between gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <span>{group.label}</span>
+            {group.relativeLabel && (
+              <span className="font-normal normal-case">{group.relativeLabel}</span>
+            )}
           </h3>
           <ul className="flex flex-col gap-2">
             {group.items.map((item) => (
