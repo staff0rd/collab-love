@@ -1,5 +1,5 @@
 ---
-description: Run run
+description: Run the iOS app
 ---
 
-Run `assist run run $ARGUMENTS 2>&1`.
+Run `assist run run-ios $ARGUMENTS 2>&1`.

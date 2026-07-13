@@ -1,13 +1,12 @@
-import { Pencil, Repeat } from "lucide-react";
+import { Repeat } from "lucide-react";
 import { Link } from "react-router";
 
-import { Button } from "@/components/ui/button.tsx";
 import { cn } from "@/lib/utils.ts";
 
 import type { HouseholdMember } from "../household/getHousehold.ts";
 
-import { DeleteItemButton } from "./DeleteItemButton.tsx";
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import { ScheduledItemActions } from "./ScheduledItemActions.tsx";
 import { nextOccurrence } from "./nextOccurrence.ts";
 import { ownerLabel } from "./ownerLabel.ts";
 import { recurrenceLabel } from "./recurrenceLabel.ts";
@@ -77,17 +76,7 @@ const ScheduledItemRow = ({ item, members, onEdit, onDelete }: ScheduledItemRowP
         )}
         {item.notes && <p className="text-sm">{item.notes}</p>}
       </Link>
-      <div className="flex shrink-0 items-center gap-1">
-        <Button
-          size="icon"
-          variant="ghost"
-          aria-label={`Edit ${item.title}`}
-          onClick={() => onEdit(item)}
-        >
-          <Pencil />
-        </Button>
-        <DeleteItemButton item={item} onDelete={onDelete} />
-      </div>
+      <ScheduledItemActions item={item} onEdit={onEdit} onDelete={onDelete} />
     </li>
   );
 };
