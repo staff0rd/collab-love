@@ -6,7 +6,7 @@ import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { useCalendarSyncSetting } from "./useCalendarSyncSetting.ts";
 
 const CalendarSyncField = ({ items, loading }: { items: ScheduledItem[]; loading: boolean }) => {
-  const { busy, enabled, permissionDenied, supported, toggle } = useCalendarSyncSetting(
+  const { busy, enabled, error, permissionDenied, supported, toggle } = useCalendarSyncSetting(
     items,
     loading,
   );
@@ -36,6 +36,7 @@ const CalendarSyncField = ({ items, loading }: { items: ScheduledItem[]; loading
           Calendar access was denied. Enable it for collab-love in the iOS Settings app to sync.
         </p>
       )}
+      {error && <p className="text-sm text-destructive">Couldn't sync to your calendar: {error}</p>}
     </div>
   );
 };

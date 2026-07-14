@@ -16,6 +16,8 @@ export const useCalendarSync = (items: ScheduledItem[], loading: boolean): void 
       if (await getCalendarSyncEnabled()) {
         await mirrorScheduledItems(items);
       }
-    })();
+    })().catch((cause) => {
+      console.error("Failed to mirror scheduled items to the calendar", cause);
+    });
   }, [items, loading]);
 };

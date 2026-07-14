@@ -8,11 +8,19 @@ import { getCalendarSyncEnabled, setCalendarSyncEnabled } from "./calendarSyncPr
 import { clearMirroredEvents, mirrorScheduledItems } from "./mirrorScheduledItems.ts";
 import { requestCalendarAccess } from "./requestCalendarAccess.ts";
 
+const messageOf = (caught: unknown): string => {
+  if (caught instanceof Error) {
+    return caught.message;
+  }
+  return String(caught);
+};
+
 export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean) => {
   const supported = Capacitor.isNativePlatform();
   const [enabled, setEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
   const [permissionDenied, setPermissionDenied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!supported) {
@@ -39,23 +47,22 @@ export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean)
     await clearMirroredEvents();
   };
 
-  const setEnabledAndSync = async (next: boolean) => {
-    if (next) {
-      await enableAndSync();
-      return;
-    }
-    await disableAndClear();
-  };
-
   const toggle = async (next: boolean) => {
     setBusy(true);
     setPermissionDenied(false);
+    setError(null);
     try {
-      await setEnabledAndSync(next);
+      if (next) {
+        await enableAndSync();
+      } else {
+        await disableAndClear();
+      }
+    } catch (caught) {
+      setError(messageOf(caught));
     } finally {
       setBusy(false);
     }
   };
 
-  return { busy: busy || loading, enabled, permissionDenied, supported, toggle };
+  return { busy: busy || loading, enabled, error, permissionDenied, supported, toggle };
 };
