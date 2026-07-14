@@ -10,7 +10,7 @@ approval**. Most pushes are left unapproved, so the run sitting at
 
 A run at `status: waiting` will never advance on its own. Do not run
 `gh run watch` on it or tell the user you're "waiting for it to finish" — it is
-waiting for *you*. Releasing to TestFlight is a deliberate manual step: run the
+waiting for _you_. Releasing to TestFlight is a deliberate manual step: run the
 `/deploy-ios` skill (approve the parked deployment), then watch. Only after
 approval does watching make sense.
 
