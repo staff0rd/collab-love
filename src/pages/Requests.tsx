@@ -12,7 +12,7 @@ import { useDeleteFeatureRequest } from "../featureRequests/useDeleteFeatureRequ
 import { useFeatureRequests } from "../featureRequests/useFeatureRequests.ts";
 
 const Requests = () => {
-  const { items, loading } = useFeatureRequests();
+  const { items, loading, error } = useFeatureRequests();
   const advanceStatusMutation = useAdvanceFeatureRequestStatus();
   const deleteMutation = useDeleteFeatureRequest();
   const navigate = useNavigate();
@@ -72,6 +72,7 @@ const Requests = () => {
           <FeatureRequestList
             items={items}
             loading={loading}
+            error={error}
             onEdit={openEdit}
             onAdvanceStatus={(item) => advanceStatusMutation.mutate(item)}
             onDelete={(item) => deleteMutation.mutate(item.id)}

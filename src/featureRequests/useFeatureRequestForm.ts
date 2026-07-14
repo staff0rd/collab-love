@@ -24,6 +24,9 @@ export const useFeatureRequestForm = (onSuccess: () => void) => {
       }
       return createFeatureRequest(values);
     },
+    onError: (cause) => {
+      console.error("Failed to save feature request", cause);
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: featureRequestsQueryKey });
       setEditingId(null);

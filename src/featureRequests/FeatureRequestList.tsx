@@ -8,6 +8,7 @@ const EMPTY_COUNT = 0;
 type FeatureRequestListProps = {
   items: FeatureRequest[];
   loading: boolean;
+  error: boolean;
   onEdit: (item: FeatureRequest) => void;
   onAdvanceStatus: (item: FeatureRequest) => void;
   onDelete: (item: FeatureRequest) => void;
@@ -16,6 +17,7 @@ type FeatureRequestListProps = {
 const FeatureRequestList = ({
   items,
   loading,
+  error,
   onEdit,
   onAdvanceStatus,
   onDelete,
@@ -24,6 +26,15 @@ const FeatureRequestList = ({
     return (
       <div className="flex justify-center py-16 text-muted-foreground">
         <Loader2 className="size-6 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed border-destructive/50 py-16 text-center">
+        <p className="font-medium text-destructive">Couldn't load requests</p>
+        <p className="text-sm text-muted-foreground">Something went wrong. Please try again.</p>
       </div>
     );
   }
