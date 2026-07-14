@@ -5,8 +5,20 @@ import { Capacitor } from "@capacitor/core";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 
 import { getCalendarSyncEnabled, setCalendarSyncEnabled } from "./calendarSyncPreference.ts";
-import { clearMirroredEvents, mirrorScheduledItems } from "./mirrorScheduledItems.ts";
+import {
+  clearMirroredEvents,
+  type MirrorSummary,
+  mirrorScheduledItems,
+} from "./mirrorScheduledItems.ts";
 import { requestCalendarAccess } from "./requestCalendarAccess.ts";
+
+type Feedback = {
+  error: string | null;
+  permissionDenied: boolean;
+  status: string | null;
+};
+
+const NO_FEEDBACK: Feedback = { error: null, permissionDenied: false, status: null };
 
 const messageOf = (caught: unknown): string => {
   if (caught instanceof Error) {
@@ -15,12 +27,19 @@ const messageOf = (caught: unknown): string => {
   return String(caught);
 };
 
+const describe = (summary: MirrorSummary): string => {
+  let target = summary.calendarTitle;
+  if (summary.calendarSource) {
+    target = `${summary.calendarTitle} (${summary.calendarSource})`;
+  }
+  return `Synced ${summary.createdCount} new of ${summary.itemCount} into ${target}`;
+};
+
 export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean) => {
   const supported = Capacitor.isNativePlatform();
   const [enabled, setEnabled] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [permissionDenied, setPermissionDenied] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<Feedback>(NO_FEEDBACK);
 
   useEffect(() => {
     if (!supported) {
@@ -31,13 +50,13 @@ export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean)
 
   const enableAndSync = async () => {
     if (!(await requestCalendarAccess())) {
-      setPermissionDenied(true);
+      setFeedback({ ...NO_FEEDBACK, permissionDenied: true });
       return;
     }
     await setCalendarSyncEnabled(true);
     setEnabled(true);
     if (!loading) {
-      await mirrorScheduledItems(items);
+      setFeedback({ ...NO_FEEDBACK, status: describe(await mirrorScheduledItems(items)) });
     }
   };
 
@@ -49,8 +68,7 @@ export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean)
 
   const toggle = async (next: boolean) => {
     setBusy(true);
-    setPermissionDenied(false);
-    setError(null);
+    setFeedback(NO_FEEDBACK);
     try {
       if (next) {
         await enableAndSync();
@@ -58,11 +76,19 @@ export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean)
         await disableAndClear();
       }
     } catch (caught) {
-      setError(messageOf(caught));
+      setFeedback({ ...NO_FEEDBACK, error: messageOf(caught) });
     } finally {
       setBusy(false);
     }
   };
 
-  return { busy: busy || loading, enabled, error, permissionDenied, supported, toggle };
+  return {
+    busy: busy || loading,
+    enabled,
+    error: feedback.error,
+    permissionDenied: feedback.permissionDenied,
+    status: feedback.status,
+    supported,
+    toggle,
+  };
 };

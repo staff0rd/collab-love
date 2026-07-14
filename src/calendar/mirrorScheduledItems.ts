@@ -9,9 +9,16 @@ import {
   setCalendarEventMap,
 } from "./calendarEventStore.ts";
 import { eventRecurrenceRule } from "./eventRecurrenceRule.ts";
-import { resolveCalendarId } from "./resolveCalendarId.ts";
+import { resolveCalendar } from "./resolveCalendar.ts";
 
 const EVENT_DURATION_MS = 3_600_000;
+
+export type MirrorSummary = {
+  calendarSource: string | null;
+  calendarTitle: string;
+  createdCount: number;
+  itemCount: number;
+};
 
 const desiredEventFor = (item: ScheduledItem, now: Date, calendarId: string) => {
   const startDate = nextOccurrence(item, now).getTime();
@@ -43,18 +50,18 @@ type ReconcileContext = {
 const upsertEvent = async (
   item: ScheduledItem,
   { calendarId, existing, now }: ReconcileContext,
-): Promise<CalendarEventMap[string]> => {
+): Promise<{ created: boolean; entry: CalendarEventMap[string] }> => {
   const event = desiredEventFor(item, now, calendarId);
   const fingerprint = fingerprintOf(event);
   const mirrored = existing[item.id];
   if (mirrored && mirrored.fingerprint === fingerprint) {
-    return mirrored;
+    return { created: false, entry: mirrored };
   }
   if (mirrored) {
     await deleteEvent(mirrored.eventId);
   }
   const { id } = await CapacitorCalendar.createEvent(event);
-  return { eventId: id, fingerprint };
+  return { created: true, entry: { eventId: id, fingerprint } };
 };
 
 const deleteRemovedEvents = async (
@@ -68,24 +75,43 @@ const deleteRemovedEvents = async (
   }
 };
 
-const reconcile = async (items: ScheduledItem[]): Promise<void> => {
-  const calendarId = await resolveCalendarId();
-  if (!calendarId) {
+const applyItems = async (
+  items: ScheduledItem[],
+  context: ReconcileContext,
+): Promise<{ createdIds: string[]; next: CalendarEventMap }> => {
+  const next: CalendarEventMap = {};
+  const createdIds: string[] = [];
+  for (const item of items) {
+    const { created, entry } = await upsertEvent(item, context);
+    next[item.id] = entry;
+    if (created) {
+      createdIds.push(item.id);
+    }
+  }
+  return { createdIds, next };
+};
+
+const reconcile = async (items: ScheduledItem[]): Promise<MirrorSummary> => {
+  const calendar = await resolveCalendar();
+  if (!calendar) {
     throw new Error("No writable calendar is available to sync into.");
   }
 
   const context: ReconcileContext = {
-    calendarId,
+    calendarId: calendar.id,
     existing: await getCalendarEventMap(),
     now: new Date(),
   };
-  const next: CalendarEventMap = {};
-
-  for (const item of items) {
-    next[item.id] = await upsertEvent(item, context);
-  }
+  const { createdIds, next } = await applyItems(items, context);
   await deleteRemovedEvents(context.existing, next);
   await setCalendarEventMap(next);
+
+  return {
+    calendarSource: calendar.source?.title ?? null,
+    calendarTitle: calendar.title,
+    createdCount: createdIds.length,
+    itemCount: items.length,
+  };
 };
 
 const clear = async (): Promise<void> => {
@@ -107,7 +133,7 @@ const enqueue = <Result>(task: () => Promise<Result>): Promise<Result> => {
   return run;
 };
 
-export const mirrorScheduledItems = (items: ScheduledItem[]): Promise<void> =>
+export const mirrorScheduledItems = (items: ScheduledItem[]): Promise<MirrorSummary> =>
   enqueue(() => reconcile(items));
 
 export const clearMirroredEvents = (): Promise<void> => enqueue(clear);

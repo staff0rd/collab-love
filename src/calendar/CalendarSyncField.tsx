@@ -6,10 +6,8 @@ import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { useCalendarSyncSetting } from "./useCalendarSyncSetting.ts";
 
 const CalendarSyncField = ({ items, loading }: { items: ScheduledItem[]; loading: boolean }) => {
-  const { busy, enabled, error, permissionDenied, supported, toggle } = useCalendarSyncSetting(
-    items,
-    loading,
-  );
+  const { busy, enabled, error, permissionDenied, status, supported, toggle } =
+    useCalendarSyncSetting(items, loading);
 
   if (!supported) {
     return null;
@@ -37,6 +35,7 @@ const CalendarSyncField = ({ items, loading }: { items: ScheduledItem[]; loading
         </p>
       )}
       {error && <p className="text-sm text-destructive">Couldn't sync to your calendar: {error}</p>}
+      {status && <p className="text-sm text-muted-foreground">{status}</p>}
     </div>
   );
 };
