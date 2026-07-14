@@ -7,6 +7,7 @@ import Login from "./pages/Login.tsx";
 import Requests from "./pages/Requests.tsx";
 import ScheduledItemDetail from "./pages/ScheduledItemDetail.tsx";
 import Settings from "./pages/Settings.tsx";
+import ScheduledItemsRealtime from "./scheduledItems/ScheduledItemsRealtime.tsx";
 
 const AuthenticatedApp = () => {
   const { session, loading } = useAuth();
@@ -25,6 +26,7 @@ const AuthenticatedApp = () => {
 
   return (
     <BrowserRouter>
+      <ScheduledItemsRealtime />
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/requests" element={<Requests />} />
