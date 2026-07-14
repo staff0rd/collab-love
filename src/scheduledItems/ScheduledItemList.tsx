@@ -32,6 +32,7 @@ type ScheduledItemListProps = {
   filtered?: boolean;
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
+  onComplete: (item: ScheduledItem) => void;
 };
 
 const ScheduledItemList = ({
@@ -41,6 +42,7 @@ const ScheduledItemList = ({
   filtered = false,
   onEdit,
   onDelete,
+  onComplete,
 }: ScheduledItemListProps) => {
   if (loading) {
     return (
@@ -74,6 +76,7 @@ const ScheduledItemList = ({
                 members={members}
                 onEdit={onEdit}
                 onDelete={onDelete}
+                onComplete={onComplete}
               />
             ))}
           </ul>

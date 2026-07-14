@@ -41,9 +41,16 @@ type ScheduledItemRowProps = {
   members: HouseholdMember[];
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
+  onComplete: (item: ScheduledItem) => void;
 };
 
-const ScheduledItemRow = ({ item, members, onEdit, onDelete }: ScheduledItemRowProps) => {
+const ScheduledItemRow = ({
+  item,
+  members,
+  onEdit,
+  onDelete,
+  onComplete,
+}: ScheduledItemRowProps) => {
   const now = new Date();
   const occurrence = nextOccurrence(item, now);
   const status = scheduledItemStatus(occurrence, now);
@@ -76,7 +83,12 @@ const ScheduledItemRow = ({ item, members, onEdit, onDelete }: ScheduledItemRowP
         )}
         {item.notes && <p className="text-sm">{item.notes}</p>}
       </Link>
-      <ScheduledItemActions item={item} onEdit={onEdit} onDelete={onDelete} />
+      <ScheduledItemActions
+        item={item}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onComplete={onComplete}
+      />
     </li>
   );
 };

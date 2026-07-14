@@ -34,6 +34,7 @@ type ScheduledItemDetailBodyProps = {
   members: HouseholdMember[];
   onEdit: () => void;
   onDelete: () => void;
+  onComplete: () => void;
 };
 
 const ScheduledItemDetailBody = ({
@@ -41,6 +42,7 @@ const ScheduledItemDetailBody = ({
   members,
   onEdit,
   onDelete,
+  onComplete,
 }: ScheduledItemDetailBodyProps) => {
   const occurrence = nextOccurrence(item, new Date());
   const status = scheduledItemStatus(occurrence, new Date());
@@ -73,7 +75,12 @@ const ScheduledItemDetailBody = ({
 
       {item.notes && <p className="whitespace-pre-wrap text-foreground">{item.notes}</p>}
 
-      <ScheduledItemDetailActions title={item.title} onEdit={onEdit} onDelete={onDelete} />
+      <ScheduledItemDetailActions
+        title={item.title}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onComplete={onComplete}
+      />
     </div>
   );
 };

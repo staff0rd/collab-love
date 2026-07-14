@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button.tsx";
 
 import { useHousehold } from "../household/useHousehold.ts";
 import ScheduledItemModal from "../scheduledItems/ScheduledItemModal.tsx";
-import { useDeleteScheduledItem } from "../scheduledItems/useDeleteScheduledItem.ts";
 import { scheduledItemQueryKey, useScheduledItem } from "../scheduledItems/useScheduledItem.ts";
+import { useScheduledItemDetailActions } from "../scheduledItems/useScheduledItemDetailActions.ts";
 import { scheduledItemsQueryKey } from "../scheduledItems/useScheduledItems.ts";
 
 import ScheduledItemDetailContent from "./ScheduledItemDetailContent.tsx";
@@ -19,15 +19,8 @@ const ScheduledItemDetail = () => {
   const queryClient = useQueryClient();
   const { household } = useHousehold();
   const { item, loading } = useScheduledItem(id);
-  const deleteMutation = useDeleteScheduledItem();
+  const { onDelete, onComplete } = useScheduledItemDetailActions(item);
   const [isEditOpen, setIsEditOpen] = useState(false);
-
-  const handleDelete = () => {
-    if (!id) {
-      return;
-    }
-    deleteMutation.mutate(id, { onSuccess: () => void navigate("/home") });
-  };
 
   const handleSaved = () => {
     if (id) {
@@ -75,7 +68,8 @@ const ScheduledItemDetail = () => {
             members={household?.members ?? []}
             loading={loading}
             onEdit={() => setIsEditOpen(true)}
-            onDelete={handleDelete}
+            onDelete={onDelete}
+            onComplete={onComplete}
           />
         </div>
       </main>

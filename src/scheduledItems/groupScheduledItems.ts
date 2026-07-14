@@ -65,9 +65,13 @@ const addItem = (
   });
 };
 
+const isResolved = (item: ScheduledItem): boolean =>
+  item.recurrence === "once" && item.lastCompletedOccurrence !== null;
+
 export const groupScheduledItems = (items: ScheduledItem[], now: Date): ScheduledItemGroup[] => {
   const context = dayContext(now);
   const scheduled = items
+    .filter((item) => !isResolved(item))
     .map((item) => ({ item, occurrence: nextOccurrence(item, now) }))
     .sort((left, right) => left.occurrence.getTime() - right.occurrence.getTime());
   const byKey = new Map<string, ScheduledItemGroup>();

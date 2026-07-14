@@ -11,6 +11,7 @@ type ScheduledItemDetailContentProps = {
   loading: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  onComplete: () => void;
 };
 
 const ScheduledItemDetailContent = ({
@@ -19,6 +20,7 @@ const ScheduledItemDetailContent = ({
   loading,
   onEdit,
   onDelete,
+  onComplete,
 }: ScheduledItemDetailContentProps) => {
   if (loading) {
     return (
@@ -38,7 +40,13 @@ const ScheduledItemDetailContent = ({
   }
 
   return (
-    <ScheduledItemDetailBody item={item} members={members} onEdit={onEdit} onDelete={onDelete} />
+    <ScheduledItemDetailBody
+      item={item}
+      members={members}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      onComplete={onComplete}
+    />
   );
 };
 

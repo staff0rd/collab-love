@@ -12,6 +12,7 @@ export type ScheduledItem = {
   ownerUserId: string | null;
   recurrence: Recurrence;
   recurrenceInterval: number | null;
+  lastCompletedOccurrence: string | null;
 };
 
 export type ScheduledItemRow = {
@@ -22,13 +23,15 @@ export type ScheduledItemRow = {
   owner_user_id: string | null;
   recurrence: Recurrence;
   recurrence_interval: number | null;
+  last_completed_occurrence: string | null;
 };
 
 export const SCHEDULED_ITEM_COLUMNS =
-  "id, title, scheduled_at, notes, owner_user_id, recurrence, recurrence_interval";
+  "id, title, scheduled_at, notes, owner_user_id, recurrence, recurrence_interval, last_completed_occurrence";
 
 export const mapScheduledItemRow = (row: ScheduledItemRow): ScheduledItem => ({
   id: row.id,
+  lastCompletedOccurrence: row.last_completed_occurrence,
   notes: row.notes,
   ownerUserId: row.owner_user_id,
   recurrence: row.recurrence,

@@ -4,11 +4,14 @@ const MS_PER_DAY = 86_400_000;
 const DAYS_PER_WEEK = 7;
 const MONTHS_PER_YEAR = 12;
 const MIN_INTERVAL = 1;
-const NEXT_YEAR = 1;
+const FIRST_STEP = 0;
 const NEXT_STEP = 1;
-const NO_STEPS = 0;
+const DATE_PART_BASE = 10;
+const DATE_PAD = 2;
+const MONTH_OFFSET = 1;
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
+const startOfDayMs = (date: Date) => startOfDay(date).getTime();
 
 const atTimeOf = (base: Date, source: Date) =>
   new Date(
@@ -26,61 +29,86 @@ const addDays = (date: Date, days: number) =>
 const shiftMonths = (date: Date, months: number) =>
   atTimeOf(new Date(date.getFullYear(), date.getMonth() + months, date.getDate()), date);
 
-const weeklyOccurrence = (anchor: Date, now: Date, interval: number): Date => {
+type Recurrer = {
+  occurrenceAt: (step: number) => Date;
+  estimateStep: (boundary: Date) => number;
+};
+
+const weeklyRecurrer = (anchor: Date, interval: number): Recurrer => {
   const stepDays = Math.max(MIN_INTERVAL, interval) * DAYS_PER_WEEK;
-  const anchorStart = startOfDay(anchor).getTime();
-  const todayStart = startOfDay(now).getTime();
-  if (anchorStart >= todayStart) {
-    return anchor;
-  }
-  const daysElapsed = Math.round((todayStart - anchorStart) / MS_PER_DAY);
-  const steps = Math.ceil(daysElapsed / stepDays);
-  return addDays(anchor, steps * stepDays);
+  return {
+    estimateStep: (boundary) =>
+      Math.floor((startOfDayMs(boundary) - startOfDayMs(anchor)) / MS_PER_DAY / stepDays),
+    occurrenceAt: (step) => addDays(anchor, step * stepDays),
+  };
 };
 
-const yearlyOccurrence = (anchor: Date, now: Date): Date => {
-  const anchorStart = startOfDay(anchor).getTime();
-  const todayStart = startOfDay(now).getTime();
-  if (anchorStart >= todayStart) {
-    return anchor;
-  }
-  const thisYear = atTimeOf(
-    new Date(now.getFullYear(), anchor.getMonth(), anchor.getDate()),
-    anchor,
-  );
-  if (startOfDay(thisYear).getTime() >= todayStart) {
-    return thisYear;
-  }
-  return atTimeOf(
-    new Date(now.getFullYear() + NEXT_YEAR, anchor.getMonth(), anchor.getDate()),
-    anchor,
-  );
+const monthlyRecurrer = (anchor: Date, interval: number): Recurrer => {
+  const stepMonths = Math.max(MIN_INTERVAL, interval);
+  return {
+    estimateStep: (boundary) =>
+      Math.floor(
+        ((boundary.getFullYear() - anchor.getFullYear()) * MONTHS_PER_YEAR +
+          (boundary.getMonth() - anchor.getMonth())) /
+          stepMonths,
+      ),
+    occurrenceAt: (step) => shiftMonths(anchor, step * stepMonths),
+  };
 };
 
-const monthlyOccurrence = (anchor: Date, now: Date, stepMonths: number): Date => {
-  const todayStart = startOfDay(now).getTime();
-  const monthsApart =
-    (now.getFullYear() - anchor.getFullYear()) * MONTHS_PER_YEAR +
-    (now.getMonth() - anchor.getMonth());
-  let steps = Math.max(NO_STEPS, Math.floor(monthsApart / stepMonths));
-  let candidate = shiftMonths(anchor, steps * stepMonths);
-  while (startOfDay(candidate).getTime() < todayStart) {
-    steps += NEXT_STEP;
-    candidate = shiftMonths(anchor, steps * stepMonths);
+const yearlyRecurrer = (anchor: Date): Recurrer => ({
+  estimateStep: (boundary) => boundary.getFullYear() - anchor.getFullYear(),
+  occurrenceAt: (step) => shiftMonths(anchor, step * MONTHS_PER_YEAR),
+});
+
+const recurrerFor = (item: ScheduledItem, anchor: Date): Recurrer | null => {
+  const interval = item.recurrenceInterval ?? MIN_INTERVAL;
+  if (item.recurrence === "weekly") {
+    return weeklyRecurrer(anchor, interval);
   }
-  return candidate;
+  if (item.recurrence === "monthly") {
+    return monthlyRecurrer(anchor, interval);
+  }
+  if (item.recurrence === "yearly") {
+    return yearlyRecurrer(anchor);
+  }
+  return null;
+};
+
+const latestStepOnOrBefore = (recurrer: Recurrer, boundary: Date): number => {
+  const boundaryDay = startOfDayMs(boundary);
+  let step = Math.max(FIRST_STEP, recurrer.estimateStep(boundary));
+  while (startOfDayMs(recurrer.occurrenceAt(step + NEXT_STEP)) <= boundaryDay) {
+    step += NEXT_STEP;
+  }
+  while (step > FIRST_STEP && startOfDayMs(recurrer.occurrenceAt(step)) > boundaryDay) {
+    step -= NEXT_STEP;
+  }
+  return step;
+};
+
+const parseCompletedDay = (value: string): Date => {
+  const [year, month, day] = value.split("-").map((part) => Number.parseInt(part, DATE_PART_BASE));
+  return new Date(year, month - MONTH_OFFSET, day);
 };
 
 export const nextOccurrence = (item: ScheduledItem, now: Date): Date => {
   const anchor = new Date(item.scheduledAt);
-  if (item.recurrence === "weekly") {
-    return weeklyOccurrence(anchor, now, item.recurrenceInterval ?? MIN_INTERVAL);
+  const recurrer = recurrerFor(item, anchor);
+  if (!recurrer) {
+    return anchor;
   }
-  if (item.recurrence === "monthly") {
-    return monthlyOccurrence(anchor, now, item.recurrenceInterval ?? MIN_INTERVAL);
+  const currentCycleStep = latestStepOnOrBefore(recurrer, now);
+  if (item.lastCompletedOccurrence === null) {
+    return recurrer.occurrenceAt(currentCycleStep);
   }
-  if (item.recurrence === "yearly") {
-    return yearlyOccurrence(anchor, now);
-  }
-  return anchor;
+  const stepAfterCompleted =
+    latestStepOnOrBefore(recurrer, parseCompletedDay(item.lastCompletedOccurrence)) + NEXT_STEP;
+  return recurrer.occurrenceAt(Math.max(currentCycleStep, stepAfterCompleted));
+};
+
+export const occurrenceDayValue = (occurrence: Date): string => {
+  const month = String(occurrence.getMonth() + MONTH_OFFSET).padStart(DATE_PAD, "0");
+  const day = String(occurrence.getDate()).padStart(DATE_PAD, "0");
+  return `${occurrence.getFullYear()}-${month}-${day}`;
 };

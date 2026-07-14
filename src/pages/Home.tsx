@@ -7,6 +7,7 @@ import { ALL_FILTER_KEY } from "../scheduledItems/ownerFilterOptions.ts";
 import OwnerFilterBar from "../scheduledItems/OwnerFilterBar.tsx";
 import ScheduledItemList from "../scheduledItems/ScheduledItemList.tsx";
 import ScheduledItemModal from "../scheduledItems/ScheduledItemModal.tsx";
+import { useCompleteScheduledItem } from "../scheduledItems/useCompleteScheduledItem.ts";
 import { useDeleteScheduledItem } from "../scheduledItems/useDeleteScheduledItem.ts";
 import { useOwnerFilter } from "../scheduledItems/useOwnerFilter.ts";
 import { useScheduledItems } from "../scheduledItems/useScheduledItems.ts";
@@ -20,23 +21,19 @@ const Home = () => {
   const { household } = useHousehold();
   const { session } = useAuth();
   const deleteMutation = useDeleteScheduledItem();
+  const completeMutation = useCompleteScheduledItem();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ScheduledItem | null>(null);
   const filter = useOwnerFilter(items, household?.members, session?.user.id ?? null);
 
-  const openAdd = () => {
-    setEditingItem(null);
-    setIsModalOpen(true);
-  };
-
-  const openEdit = (item: ScheduledItem) => {
+  const openEditor = (item: ScheduledItem | null) => {
     setEditingItem(item);
     setIsModalOpen(true);
   };
 
   return (
     <div className="flex h-full min-h-dvh flex-col bg-background">
-      <HomeHeader household={household} onAdd={openAdd} />
+      <HomeHeader household={household} onAdd={() => openEditor(null)} />
 
       <main className="flex-1 overflow-y-auto">
         <div
@@ -64,8 +61,9 @@ const Home = () => {
             members={household?.members ?? []}
             loading={loading}
             filtered={filter.active.key !== ALL_FILTER_KEY}
-            onEdit={openEdit}
+            onEdit={openEditor}
             onDelete={(item) => deleteMutation.mutate(item.id)}
+            onComplete={(item) => completeMutation.mutate(item)}
           />
         </div>
       </main>

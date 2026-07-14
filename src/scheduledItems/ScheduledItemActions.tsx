@@ -1,4 +1,4 @@
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { Check, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 import {
@@ -20,9 +20,15 @@ type ScheduledItemActionsProps = {
   item: ScheduledItem;
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
+  onComplete: (item: ScheduledItem) => void;
 };
 
-export const ScheduledItemActions = ({ item, onEdit, onDelete }: ScheduledItemActionsProps) => {
+export const ScheduledItemActions = ({
+  item,
+  onEdit,
+  onDelete,
+  onComplete,
+}: ScheduledItemActionsProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -40,6 +46,17 @@ export const ScheduledItemActions = ({ item, onEdit, onDelete }: ScheduledItemAc
           </Button>
         </PopoverTrigger>
         <PopoverContent align="end" className="w-40 p-1">
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => {
+              setMenuOpen(false);
+              onComplete(item);
+            }}
+          >
+            <Check />
+            Mark done
+          </Button>
           <Button
             variant="ghost"
             className="w-full justify-start"

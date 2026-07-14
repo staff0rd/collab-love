@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Check, Pencil, Trash2 } from "lucide-react";
 
 import {
   AlertDialog,
@@ -17,14 +17,20 @@ type ScheduledItemDetailActionsProps = {
   title: string;
   onEdit: () => void;
   onDelete: () => void;
+  onComplete: () => void;
 };
 
 const ScheduledItemDetailActions = ({
   title,
   onEdit,
   onDelete,
+  onComplete,
 }: ScheduledItemDetailActionsProps) => (
   <div className="flex items-center gap-2 pt-2">
+    <Button variant="outline" onClick={onComplete}>
+      <Check />
+      Mark done
+    </Button>
     <Button variant="outline" onClick={onEdit}>
       <Pencil />
       Edit
