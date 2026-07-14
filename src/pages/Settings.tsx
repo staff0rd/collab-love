@@ -4,13 +4,16 @@ import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button.tsx";
 
+import CalendarSyncField from "../calendar/CalendarSyncField.tsx";
 import MemberNameField from "../profile/MemberNameField.tsx";
 import { useMemberNamesForm } from "../profile/useMemberNamesForm.ts";
+import { useScheduledItems } from "../scheduledItems/useScheduledItems.ts";
 
 const Settings = () => {
   const navigate = useNavigate();
   const { loading, members, names, save, saved, saving, setName, viewerUserId } =
     useMemberNamesForm();
+  const { items, loading: itemsLoading } = useScheduledItems();
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -84,6 +87,8 @@ const Settings = () => {
                 </Button>
                 {saved && <span className="text-sm text-muted-foreground">Saved</span>}
               </div>
+
+              <CalendarSyncField items={items} loading={itemsLoading} />
             </form>
           )}
         </div>

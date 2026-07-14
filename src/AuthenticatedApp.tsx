@@ -2,6 +2,7 @@ import { LoaderCircle } from "lucide-react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 import { useAuth } from "./auth/useAuth.ts";
+import CalendarSyncManager from "./calendar/CalendarSyncManager.tsx";
 import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
 import Requests from "./pages/Requests.tsx";
@@ -27,6 +28,7 @@ const AuthenticatedApp = () => {
   return (
     <BrowserRouter>
       <ConnectionStatusProvider>
+        <CalendarSyncManager />
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/requests" element={<Requests />} />
