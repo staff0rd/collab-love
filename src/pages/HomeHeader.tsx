@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { signOut } from "../auth/signOut.ts";
 import type { Household } from "../household/getHousehold.ts";
 import HouseholdSummary from "../household/HouseholdSummary.tsx";
+import ConnectionStatusIndicator from "../realtime/ConnectionStatusIndicator.tsx";
 
 type HomeHeaderProps = {
   household: Household | null;
@@ -31,7 +32,8 @@ const HomeHeader = ({ household, onAdd }: HomeHeaderProps) => {
         }}
       >
         <HouseholdSummary household={household} />
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex shrink-0 items-center gap-2">
+          <ConnectionStatusIndicator />
           <Button size="sm" onClick={onAdd}>
             <Plus />
             Add item
