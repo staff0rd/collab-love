@@ -1,92 +1,87 @@
 import { useEffect, useState } from "react";
 
 import { Capacitor } from "@capacitor/core";
+import type { Calendar } from "@ebarooni/capacitor-calendar";
 
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 
-import { getCalendarSyncEnabled, setCalendarSyncEnabled } from "./calendarSyncPreference.ts";
 import {
-  clearMirroredEvents,
-  type MirrorSummary,
-  mirrorScheduledItems,
-} from "./mirrorScheduledItems.ts";
-import { requestCalendarAccess } from "./requestCalendarAccess.ts";
+  describeMirror,
+  disableCalendarSync,
+  enableCalendarSync,
+  loadEnabledSelection,
+  mirrorInto,
+  selectCalendarTarget,
+} from "./calendarSyncOperations.ts";
+import { NO_FEEDBACK, useGuardedAction } from "./useGuardedAction.ts";
 
-type Feedback = {
-  error: string | null;
-  permissionDenied: boolean;
-  status: string | null;
+type SyncState = {
+  calendars: Calendar[];
+  enabled: boolean;
+  selectedId: string | null;
 };
 
-const NO_FEEDBACK: Feedback = { error: null, permissionDenied: false, status: null };
-
-const messageOf = (caught: unknown): string => {
-  if (caught instanceof Error) {
-    return caught.message;
-  }
-  return String(caught);
-};
-
-const describe = (summary: MirrorSummary): string => {
-  let target = summary.calendarTitle;
-  if (summary.calendarSource) {
-    target = `${summary.calendarTitle} (${summary.calendarSource})`;
-  }
-  return `Synced ${summary.createdCount} new of ${summary.itemCount} into ${target}`;
-};
+const INITIAL: SyncState = { calendars: [], enabled: false, selectedId: null };
 
 export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean) => {
   const supported = Capacitor.isNativePlatform();
-  const [enabled, setEnabled] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [feedback, setFeedback] = useState<Feedback>(NO_FEEDBACK);
+  const [state, setState] = useState<SyncState>(INITIAL);
+  const { busy, feedback, run, setFeedback } = useGuardedAction();
 
   useEffect(() => {
     if (!supported) {
       return;
     }
-    void getCalendarSyncEnabled().then(setEnabled);
+    void loadEnabledSelection().then((loaded) => {
+      if (loaded) {
+        setState({ ...loaded, enabled: true });
+      }
+    });
   }, [supported]);
 
-  const enableAndSync = async () => {
-    if (!(await requestCalendarAccess())) {
-      setFeedback({ ...NO_FEEDBACK, permissionDenied: true });
+  const mirrorAndReport = async () => {
+    if (loading) {
       return;
     }
-    await setCalendarSyncEnabled(true);
-    setEnabled(true);
-    if (!loading) {
-      setFeedback({ ...NO_FEEDBACK, status: describe(await mirrorScheduledItems(items)) });
-    }
+    const summary = await mirrorInto(items);
+    setState((current) => ({ ...current, selectedId: summary.calendarId }));
+    setFeedback({ ...NO_FEEDBACK, status: describeMirror(summary) });
   };
 
-  const disableAndClear = async () => {
-    await setCalendarSyncEnabled(false);
-    setEnabled(false);
-    await clearMirroredEvents();
-  };
-
-  const toggle = async (next: boolean) => {
-    setBusy(true);
-    setFeedback(NO_FEEDBACK);
-    try {
-      if (next) {
-        await enableAndSync();
-      } else {
-        await disableAndClear();
+  const toggle = (next: boolean) =>
+    run(async () => {
+      if (!next) {
+        await disableCalendarSync();
+        setState((current) => ({ ...current, enabled: false }));
+        return;
       }
-    } catch (caught) {
-      setFeedback({ ...NO_FEEDBACK, error: messageOf(caught) });
-    } finally {
-      setBusy(false);
+      const loaded = await enableCalendarSync();
+      if (!loaded) {
+        setFeedback({ ...NO_FEEDBACK, permissionDenied: true });
+        return;
+      }
+      setState({ ...loaded, enabled: true });
+      await mirrorAndReport();
+    });
+
+  const chooseCalendar = (id: string) => {
+    if (id === state.selectedId) {
+      return Promise.resolve();
     }
+    return run(async () => {
+      await selectCalendarTarget(id);
+      await mirrorAndReport();
+    });
   };
 
   return {
     busy: busy || loading,
-    enabled,
+    calendars: state.calendars,
+    chooseCalendar,
+    enabled: state.enabled,
     error: feedback.error,
     permissionDenied: feedback.permissionDenied,
+    selectedId: state.selectedId,
     status: feedback.status,
     supported,
     toggle,

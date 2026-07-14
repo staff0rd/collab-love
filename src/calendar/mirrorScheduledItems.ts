@@ -14,6 +14,7 @@ import { resolveCalendar } from "./resolveCalendar.ts";
 const EVENT_DURATION_MS = 3_600_000;
 
 export type MirrorSummary = {
+  calendarId: string;
   calendarSource: string | null;
   calendarTitle: string;
   createdCount: number;
@@ -35,7 +36,13 @@ const desiredEventFor = (item: ScheduledItem, now: Date, calendarId: string) => 
 type DesiredEvent = ReturnType<typeof desiredEventFor>;
 
 const fingerprintOf = (event: DesiredEvent): string =>
-  JSON.stringify([event.title, event.description ?? "", event.startDate, event.recurrence ?? null]);
+  JSON.stringify([
+    event.calendarId,
+    event.title,
+    event.description ?? "",
+    event.startDate,
+    event.recurrence ?? null,
+  ]);
 
 const deleteEvent = async (eventId: string): Promise<void> => {
   await CapacitorCalendar.deleteEvent({ id: eventId, span: EventSpan.THIS_AND_FUTURE_EVENTS });
@@ -107,6 +114,7 @@ const reconcile = async (items: ScheduledItem[]): Promise<MirrorSummary> => {
   await setCalendarEventMap(next);
 
   return {
+    calendarId: calendar.id,
     calendarSource: calendar.source?.title ?? null,
     calendarTitle: calendar.title,
     createdCount: createdIds.length,
