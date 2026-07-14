@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCalendarsFullAccessUsageDescription</key>
 	<string>collab-love mirrors your scheduled items into your calendar and keeps them up to date as items change.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>collab-love mirrors your scheduled items into your calendar and keeps them up to date as items change.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
