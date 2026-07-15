@@ -8,6 +8,9 @@ type EventRecurrence = CreateEventOptions["recurrence"];
 
 export const eventRecurrenceRule = (item: ScheduledItem): EventRecurrence => {
   const interval = Math.max(DEFAULT_INTERVAL, item.recurrenceInterval ?? DEFAULT_INTERVAL);
+  if (item.recurrence === "daily") {
+    return { frequency: "daily", interval };
+  }
   if (item.recurrence === "weekly") {
     return { frequency: "weekly", interval };
   }

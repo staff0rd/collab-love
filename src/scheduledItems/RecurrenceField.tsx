@@ -10,12 +10,14 @@ import type { ScheduledItemFormState } from "./useScheduledItemForm.ts";
 
 const OPTIONS: { value: Recurrence; label: string }[] = [
   { label: "Once", value: "once" },
+  { label: "Daily", value: "daily" },
   { label: "Weekly", value: "weekly" },
   { label: "Monthly", value: "monthly" },
   { label: "Yearly", value: "yearly" },
 ];
 
 const STEPPER_UNIT: Partial<Record<Recurrence, string>> = {
+  daily: "day",
   monthly: "month",
   weekly: "week",
 };

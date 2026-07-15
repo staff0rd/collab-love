@@ -1,5 +1,6 @@
 import type { ScheduledItem } from "./getScheduledItems.ts";
 
+const SINGLE_DAY = 1;
 const SINGLE_WEEK = 1;
 const SINGLE_MONTH = 1;
 
@@ -49,6 +50,14 @@ const cadenceLabel = (weeks: number): string => {
   return `Every ${weeks} weeks`;
 };
 
+const dailyLabel = (interval: number | null): string => {
+  const days = interval ?? SINGLE_DAY;
+  if (days === SINGLE_DAY) {
+    return "Daily";
+  }
+  return `Every ${days} days`;
+};
+
 const weeklyLabel = (date: Date | null, interval: number | null): string => {
   const cadence = cadenceLabel(interval ?? SINGLE_WEEK);
   const weekday = weekdayOf(date);
@@ -83,6 +92,9 @@ const yearlyLabel = (date: Date | null): string => {
 
 export const recurrenceLabel = (item: RecurrenceSummary): string | null => {
   const date = anchorDate(item.scheduledAt);
+  if (item.recurrence === "daily") {
+    return dailyLabel(item.recurrenceInterval);
+  }
   if (item.recurrence === "weekly") {
     return weeklyLabel(date, item.recurrenceInterval);
   }

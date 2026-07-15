@@ -34,6 +34,15 @@ type Recurrer = {
   estimateStep: (boundary: Date) => number;
 };
 
+const dailyRecurrer = (anchor: Date, interval: number): Recurrer => {
+  const stepDays = Math.max(MIN_INTERVAL, interval);
+  return {
+    estimateStep: (boundary) =>
+      Math.floor((startOfDayMs(boundary) - startOfDayMs(anchor)) / MS_PER_DAY / stepDays),
+    occurrenceAt: (step) => addDays(anchor, step * stepDays),
+  };
+};
+
 const weeklyRecurrer = (anchor: Date, interval: number): Recurrer => {
   const stepDays = Math.max(MIN_INTERVAL, interval) * DAYS_PER_WEEK;
   return {
@@ -63,6 +72,9 @@ const yearlyRecurrer = (anchor: Date): Recurrer => ({
 
 const recurrerFor = (item: ScheduledItem, anchor: Date): Recurrer | null => {
   const interval = item.recurrenceInterval ?? MIN_INTERVAL;
+  if (item.recurrence === "daily") {
+    return dailyRecurrer(anchor, interval);
+  }
   if (item.recurrence === "weekly") {
     return weeklyRecurrer(anchor, interval);
   }
