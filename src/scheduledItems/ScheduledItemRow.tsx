@@ -1,4 +1,4 @@
-import { Repeat } from "lucide-react";
+import { Bell, Repeat } from "lucide-react";
 import { Link } from "react-router";
 
 import { cn } from "@/lib/utils.ts";
@@ -7,7 +7,7 @@ import type { HouseholdMember } from "../household/getHousehold.ts";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { ScheduledItemActions } from "./ScheduledItemActions.tsx";
-import { nextOccurrence } from "./nextOccurrence.ts";
+import type { ScheduledItemEntry } from "./scheduledItemEntries.ts";
 import { ownerLabel } from "./ownerLabel.ts";
 import { recurrenceLabel } from "./recurrenceLabel.ts";
 import { scheduledItemStatus, type ScheduledItemStatus } from "./scheduledItemStatus.ts";
@@ -37,7 +37,7 @@ const timeStyles: Record<ScheduledItemStatus, string> = {
 };
 
 type ScheduledItemRowProps = {
-  item: ScheduledItem;
+  entry: ScheduledItemEntry;
   members: HouseholdMember[];
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
@@ -45,14 +45,14 @@ type ScheduledItemRowProps = {
 };
 
 const ScheduledItemRow = ({
-  item,
+  entry,
   members,
   onEdit,
   onDelete,
   onComplete,
 }: ScheduledItemRowProps) => {
+  const { item, occurrence, isReminder } = entry;
   const now = new Date();
-  const occurrence = nextOccurrence(item, now);
   const status = scheduledItemStatus(occurrence, now);
   const repeat = recurrenceLabel(item);
   const owner = ownerLabel(item.ownerUserId, members);
@@ -69,7 +69,8 @@ const ScheduledItemRow = ({
         className="flex min-w-0 flex-1 flex-col gap-1 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="font-medium">{item.title}</h3>
+          {isReminder && <Bell className="size-4 shrink-0 text-muted-foreground" />}
+          <h3 className="font-medium">{entry.title}</h3>
           <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
             {owner}
           </span>
@@ -81,13 +82,14 @@ const ScheduledItemRow = ({
             {repeat}
           </span>
         )}
-        {item.notes && <p className="text-sm">{item.notes}</p>}
+        {!isReminder && item.notes && <p className="text-sm">{item.notes}</p>}
       </Link>
       <ScheduledItemActions
         item={item}
         onEdit={onEdit}
         onDelete={onDelete}
         onComplete={onComplete}
+        showComplete={!isReminder}
       />
     </li>
   );

@@ -1,78 +1,28 @@
-import { useEffect, useState } from "react";
-
 import { Capacitor } from "@capacitor/core";
-import type { Calendar } from "@ebarooni/capacitor-calendar";
 
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 
-import {
-  describeMirror,
-  disableCalendarSync,
-  enableCalendarSync,
-  loadEnabledSelection,
-  mirrorInto,
-  selectCalendarTarget,
-} from "./calendarSyncOperations.ts";
-import { NO_FEEDBACK, useGuardedAction } from "./useGuardedAction.ts";
+import { useCalendarSyncActions } from "./useCalendarSyncActions.ts";
+import { useCalendarSyncState } from "./useCalendarSyncState.ts";
+import { useCooldown } from "./useCooldown.ts";
+import { useGuardedAction } from "./useGuardedAction.ts";
 
-type SyncState = {
-  calendars: Calendar[];
-  enabled: boolean;
-  selectedId: string | null;
-};
-
-const INITIAL: SyncState = { calendars: [], enabled: false, selectedId: null };
+const RESYNC_COOLDOWN_SECONDS = 60;
 
 export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean) => {
   const supported = Capacitor.isNativePlatform();
-  const [state, setState] = useState<SyncState>(INITIAL);
+  const { setState, state } = useCalendarSyncState(supported);
   const { busy, feedback, run, setFeedback } = useGuardedAction();
-
-  useEffect(() => {
-    if (!supported) {
-      return;
-    }
-    void loadEnabledSelection().then((loaded) => {
-      if (loaded) {
-        setState({ ...loaded, enabled: true });
-      }
-    });
-  }, [supported]);
-
-  const mirrorAndReport = async () => {
-    if (loading) {
-      return;
-    }
-    const summary = await mirrorInto(items);
-    setState((current) => ({ ...current, selectedId: summary.calendarId }));
-    setFeedback({ ...NO_FEEDBACK, status: describeMirror(summary) });
-  };
-
-  const toggle = (next: boolean) =>
-    run(async () => {
-      if (!next) {
-        await disableCalendarSync();
-        setState((current) => ({ ...current, enabled: false }));
-        return;
-      }
-      const loaded = await enableCalendarSync();
-      if (!loaded) {
-        setFeedback({ ...NO_FEEDBACK, permissionDenied: true });
-        return;
-      }
-      setState({ ...loaded, enabled: true });
-      await mirrorAndReport();
-    });
-
-  const chooseCalendar = (id: string) => {
-    if (id === state.selectedId) {
-      return Promise.resolve();
-    }
-    return run(async () => {
-      await selectCalendarTarget(id);
-      await mirrorAndReport();
-    });
-  };
+  const cooldown = useCooldown(RESYNC_COOLDOWN_SECONDS);
+  const { chooseCalendar, resync, toggle } = useCalendarSyncActions({
+    cooldownStart: cooldown.start,
+    items,
+    loading,
+    run,
+    selectedId: state.selectedId,
+    setFeedback,
+    setState,
+  });
 
   return {
     busy: busy || loading,
@@ -81,6 +31,8 @@ export const useCalendarSyncSetting = (items: ScheduledItem[], loading: boolean)
     enabled: state.enabled,
     error: feedback.error,
     permissionDenied: feedback.permissionDenied,
+    resync,
+    resyncCooldown: cooldown.remaining,
     selectedId: state.selectedId,
     status: feedback.status,
     supported,

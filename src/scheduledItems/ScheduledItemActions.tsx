@@ -21,6 +21,7 @@ type ScheduledItemActionsProps = {
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
   onComplete: (item: ScheduledItem) => void;
+  showComplete?: boolean;
 };
 
 export const ScheduledItemActions = ({
@@ -28,6 +29,7 @@ export const ScheduledItemActions = ({
   onEdit,
   onDelete,
   onComplete,
+  showComplete = true,
 }: ScheduledItemActionsProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -46,17 +48,19 @@ export const ScheduledItemActions = ({
           </Button>
         </PopoverTrigger>
         <PopoverContent align="end" className="w-40 p-1">
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => {
-              setMenuOpen(false);
-              onComplete(item);
-            }}
-          >
-            <Check />
-            Mark done
-          </Button>
+          {showComplete && (
+            <Button
+              variant="ghost"
+              className="w-full justify-start"
+              onClick={() => {
+                setMenuOpen(false);
+                onComplete(item);
+              }}
+            >
+              <Check />
+              Mark done
+            </Button>
+          )}
           <Button
             variant="ghost"
             className="w-full justify-start"

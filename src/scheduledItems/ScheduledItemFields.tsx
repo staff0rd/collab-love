@@ -7,6 +7,7 @@ import type { HouseholdMember } from "../household/getHousehold.ts";
 import DateTimePicker from "./DateTimePicker.tsx";
 import OwnerField from "./OwnerField.tsx";
 import RecurrenceField from "./RecurrenceField.tsx";
+import ReminderField from "./ReminderField.tsx";
 import type { ScheduledItemFormState } from "./useScheduledItemForm.ts";
 
 type ScheduledItemFieldsProps = {
@@ -36,6 +37,8 @@ const ScheduledItemFields = ({ form, members }: ScheduledItemFieldsProps) => (
     </div>
 
     <RecurrenceField form={form} />
+
+    <ReminderField form={form} />
 
     <OwnerField form={form} members={members} />
 

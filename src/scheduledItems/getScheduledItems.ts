@@ -13,6 +13,7 @@ export type ScheduledItem = {
   recurrence: Recurrence;
   recurrenceInterval: number | null;
   lastCompletedOccurrence: string | null;
+  reminderDaysBefore: number | null;
 };
 
 export type ScheduledItemRow = {
@@ -24,10 +25,11 @@ export type ScheduledItemRow = {
   recurrence: Recurrence;
   recurrence_interval: number | null;
   last_completed_occurrence: string | null;
+  reminder_days_before: number | null;
 };
 
 export const SCHEDULED_ITEM_COLUMNS =
-  "id, title, scheduled_at, notes, owner_user_id, recurrence, recurrence_interval, last_completed_occurrence";
+  "id, title, scheduled_at, notes, owner_user_id, recurrence, recurrence_interval, last_completed_occurrence, reminder_days_before";
 
 export const mapScheduledItemRow = (row: ScheduledItemRow): ScheduledItem => ({
   id: row.id,
@@ -36,6 +38,7 @@ export const mapScheduledItemRow = (row: ScheduledItemRow): ScheduledItem => ({
   ownerUserId: row.owner_user_id,
   recurrence: row.recurrence,
   recurrenceInterval: row.recurrence_interval,
+  reminderDaysBefore: row.reminder_days_before,
   scheduledAt: row.scheduled_at,
   title: row.title,
 });

@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 import type { HouseholdMember } from "../household/getHousehold.ts";
 
@@ -7,6 +7,24 @@ import { groupScheduledItems } from "./groupScheduledItems.ts";
 import ScheduledItemRow from "./ScheduledItemRow.tsx";
 
 const EMPTY_COUNT = 0;
+
+const errorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === "object" && error !== null && "message" in error) {
+    return String((error as { message: unknown }).message);
+  }
+  return "Something went wrong.";
+};
+
+const ErrorState = ({ error }: { error: unknown }) => (
+  <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed border-destructive/40 bg-destructive/5 py-16 text-center">
+    <AlertTriangle className="mb-1 size-6 text-destructive" />
+    <p className="font-medium">Couldn&apos;t load scheduled items</p>
+    <p className="max-w-xs text-sm text-muted-foreground">{errorMessage(error)}</p>
+  </div>
+);
 
 const EmptyState = ({ filtered }: { filtered: boolean }) => {
   if (filtered) {
@@ -29,6 +47,7 @@ type ScheduledItemListProps = {
   items: ScheduledItem[];
   members: HouseholdMember[];
   loading: boolean;
+  error?: unknown;
   filtered?: boolean;
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
@@ -39,6 +58,7 @@ const ScheduledItemList = ({
   items,
   members,
   loading,
+  error,
   filtered = false,
   onEdit,
   onDelete,
@@ -50,6 +70,10 @@ const ScheduledItemList = ({
         <Loader2 className="size-6 animate-spin" />
       </div>
     );
+  }
+
+  if (error) {
+    return <ErrorState error={error} />;
   }
 
   if (items.length === EMPTY_COUNT) {
@@ -69,10 +93,10 @@ const ScheduledItemList = ({
             )}
           </h3>
           <ul className="flex flex-col gap-2">
-            {group.items.map((item) => (
+            {group.entries.map((entry) => (
               <ScheduledItemRow
-                key={item.id}
-                item={item}
+                key={entry.key}
+                entry={entry}
                 members={members}
                 onEdit={onEdit}
                 onDelete={onDelete}

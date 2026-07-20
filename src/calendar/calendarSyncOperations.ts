@@ -2,12 +2,13 @@ import type { Calendar } from "@ebarooni/capacitor-calendar";
 
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 
+import type { MirrorProgress, MirrorSummary, ProgressReporter } from "./calendarEventOps.ts";
 import { getCalendarSyncEnabled, setCalendarSyncEnabled } from "./calendarSyncPreference.ts";
 import { listWritableCalendars } from "./listWritableCalendars.ts";
 import {
   clearMirroredEvents,
-  type MirrorSummary,
   mirrorScheduledItems,
+  resyncMirroredEvents,
 } from "./mirrorScheduledItems.ts";
 import { requestCalendarAccess } from "./requestCalendarAccess.ts";
 import { getSelectedCalendarId, setSelectedCalendarId } from "./selectedCalendar.ts";
@@ -37,9 +38,12 @@ export const enableCalendarSync = async (): Promise<CalendarSelection | null> =>
   return currentSelection();
 };
 
-export const disableCalendarSync = async (): Promise<void> => {
+export const disableCalendarSync = async (
+  items: ScheduledItem[],
+  report: ProgressReporter,
+): Promise<void> => {
   await setCalendarSyncEnabled(false);
-  await clearMirroredEvents();
+  await clearMirroredEvents(items, report);
 };
 
 export const selectCalendarTarget = (id: string): Promise<void> => setSelectedCalendarId(id);
@@ -47,12 +51,32 @@ export const selectCalendarTarget = (id: string): Promise<void> => setSelectedCa
 export const mirrorInto = (items: ScheduledItem[]): Promise<MirrorSummary> =>
   mirrorScheduledItems(items);
 
-export const describeMirror = (summary: MirrorSummary): string => {
-  let target = summary.calendarTitle;
+export const resyncInto = (
+  items: ScheduledItem[],
+  report: ProgressReporter,
+): Promise<MirrorSummary> => resyncMirroredEvents(items, report);
+
+const mirrorTarget = (summary: MirrorSummary): string => {
   if (summary.calendarSource) {
-    target = `${summary.calendarTitle} (${summary.calendarSource})`;
+    return `${summary.calendarTitle} (${summary.calendarSource})`;
   }
-  return `Synced ${summary.createdCount} new of ${summary.itemCount} into ${target}`;
+  return summary.calendarTitle;
+};
+
+export const describeMirror = (summary: MirrorSummary): string =>
+  `Synced ${summary.createdCount} new of ${summary.itemCount} into ${mirrorTarget(summary)}`;
+
+export const describeResync = (summary: MirrorSummary): string =>
+  `Cleared duplicates and synced ${summary.createdCount} events into ${mirrorTarget(summary)}`;
+
+export const describeProgress = (progress: MirrorProgress): string => {
+  if (progress.phase === "scanning") {
+    return "Scanning calendar…";
+  }
+  if (progress.phase === "removing") {
+    return `Removing events… ${progress.done} / ${progress.total}`;
+  }
+  return `Adding events… ${progress.done} / ${progress.total}`;
 };
 
 export const errorMessage = (caught: unknown): string => {

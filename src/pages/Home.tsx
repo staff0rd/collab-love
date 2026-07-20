@@ -17,7 +17,7 @@ import HomeHeader from "./HomeHeader.tsx";
 const NO_ITEMS = 0;
 
 const Home = () => {
-  const { items, loading } = useScheduledItems();
+  const { items, loading, error } = useScheduledItems();
   const { household } = useHousehold();
   const { session } = useAuth();
   const deleteMutation = useDeleteScheduledItem();
@@ -60,6 +60,7 @@ const Home = () => {
             items={filter.visibleItems}
             members={household?.members ?? []}
             loading={loading}
+            error={error}
             filtered={filter.active.key !== ALL_FILTER_KEY}
             onEdit={openEditor}
             onDelete={(item) => deleteMutation.mutate(item.id)}

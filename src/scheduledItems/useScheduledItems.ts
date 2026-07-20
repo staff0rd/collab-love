@@ -8,11 +8,11 @@ export { scheduledItemsQueryKey };
 
 export const useScheduledItems = () => {
   const { session } = useAuth();
-  const { data, isPending } = useQuery({
+  const { data, error, isPending } = useQuery({
     enabled: session !== null,
     queryFn: getScheduledItems,
     queryKey: scheduledItemsQueryKey,
   });
 
-  return { items: data ?? [], loading: isPending };
+  return { error, items: data ?? [], loading: isPending };
 };

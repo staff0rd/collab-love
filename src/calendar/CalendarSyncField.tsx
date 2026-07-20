@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch.tsx";
 
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 
+import CalendarResyncButton from "./CalendarResyncButton.tsx";
 import { calendarOptionLabel, selectedOptionValue } from "./calendarOption.ts";
 import { useCalendarSyncSetting } from "./useCalendarSyncSetting.ts";
 
@@ -16,6 +17,8 @@ const CalendarSyncField = ({ items, loading }: { items: ScheduledItem[]; loading
     enabled,
     error,
     permissionDenied,
+    resync,
+    resyncCooldown,
     selectedId,
     status,
     supported,
@@ -62,6 +65,13 @@ const CalendarSyncField = ({ items, loading }: { items: ScheduledItem[]; loading
             Events are added to this calendar. Pick one that's visible in the Calendar app.
           </p>
         </div>
+      )}
+      {enabled && (
+        <CalendarResyncButton
+          busy={busy}
+          cooldown={resyncCooldown}
+          onResync={() => void resync()}
+        />
       )}
       {permissionDenied && (
         <p className="text-sm text-destructive">

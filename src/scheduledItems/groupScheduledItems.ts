@@ -1,12 +1,12 @@
 import type { ScheduledItem } from "./getScheduledItems.ts";
-import { nextOccurrence } from "./nextOccurrence.ts";
 import { relativeDayLabel } from "./relativeDayLabel.ts";
+import { scheduledItemEntries, type ScheduledItemEntry } from "./scheduledItemEntries.ts";
 
 export type ScheduledItemGroup = {
   key: string;
   label: string;
   relativeLabel: string | null;
-  items: ScheduledItem[];
+  entries: ScheduledItemEntry[];
 };
 
 type DayContext = { todayKey: number; tomorrowKey: number };
@@ -47,18 +47,18 @@ const describeDay = (day: Date, context: DayContext, now: Date): DayDescriptor =
   return { key: String(dayKey), label, relativeLabel: relativeDayLabel(day, now) };
 };
 
-const addItem = (
+const addEntry = (
   byKey: Map<string, ScheduledItemGroup>,
-  item: ScheduledItem,
+  entry: ScheduledItemEntry,
   descriptor: DayDescriptor,
 ): void => {
   const existing = byKey.get(descriptor.key);
   if (existing) {
-    existing.items.push(item);
+    existing.entries.push(entry);
     return;
   }
   byKey.set(descriptor.key, {
-    items: [item],
+    entries: [entry],
     key: descriptor.key,
     label: descriptor.label,
     relativeLabel: descriptor.relativeLabel,
@@ -70,13 +70,13 @@ const isResolved = (item: ScheduledItem): boolean =>
 
 export const groupScheduledItems = (items: ScheduledItem[], now: Date): ScheduledItemGroup[] => {
   const context = dayContext(now);
-  const scheduled = items
+  const entries = items
     .filter((item) => !isResolved(item))
-    .map((item) => ({ item, occurrence: nextOccurrence(item, now) }))
+    .flatMap((item) => scheduledItemEntries(item, now))
     .sort((left, right) => left.occurrence.getTime() - right.occurrence.getTime());
   const byKey = new Map<string, ScheduledItemGroup>();
-  for (const { item, occurrence } of scheduled) {
-    addItem(byKey, item, describeDay(startOfDay(occurrence), context, now));
+  for (const entry of entries) {
+    addEntry(byKey, entry, describeDay(startOfDay(entry.occurrence), context, now));
   }
   return [...byKey.values()];
 };
