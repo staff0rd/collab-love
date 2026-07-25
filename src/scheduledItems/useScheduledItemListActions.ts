@@ -1,21 +1,17 @@
-import { useNavigate } from "react-router";
-
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import type { SnoozeTarget } from "./snoozeTarget.ts";
 import { useBumpScheduledItem } from "./useBumpScheduledItem.ts";
 import { useCompleteScheduledItem } from "./useCompleteScheduledItem.ts";
 import { useDeleteScheduledItem } from "./useDeleteScheduledItem.ts";
 
-export const useScheduledItemDetailActions = (item: ScheduledItem | null) => {
-  const navigate = useNavigate();
+export const useScheduledItemListActions = () => {
   const deleteMutation = useDeleteScheduledItem();
   const completeMutation = useCompleteScheduledItem();
   const bumpMutation = useBumpScheduledItem();
-  const goHome = { onSuccess: () => void navigate("/home") };
 
   return {
-    onBump: (target: SnoozeTarget) => item && bumpMutation.mutate({ item, target }),
-    onComplete: () => item && completeMutation.mutate(item, goHome),
-    onDelete: () => item && deleteMutation.mutate(item.id, goHome),
+    onBump: (item: ScheduledItem, target: SnoozeTarget) => bumpMutation.mutate({ item, target }),
+    onComplete: (item: ScheduledItem) => completeMutation.mutate(item),
+    onDelete: (item: ScheduledItem) => deleteMutation.mutate(item.id),
   };
 };

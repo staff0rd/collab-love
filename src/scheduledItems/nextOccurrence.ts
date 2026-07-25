@@ -1,3 +1,4 @@
+import { addDays, shiftMonths } from "./dateMath.ts";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 
 const MS_PER_DAY = 86_400_000;
@@ -12,22 +13,6 @@ const MONTH_OFFSET = 1;
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
 const startOfDayMs = (date: Date) => startOfDay(date).getTime();
-
-const atTimeOf = (base: Date, source: Date) =>
-  new Date(
-    base.getFullYear(),
-    base.getMonth(),
-    base.getDate(),
-    source.getHours(),
-    source.getMinutes(),
-    source.getSeconds(),
-  );
-
-const addDays = (date: Date, days: number) =>
-  atTimeOf(new Date(date.getFullYear(), date.getMonth(), date.getDate() + days), date);
-
-const shiftMonths = (date: Date, months: number) =>
-  atTimeOf(new Date(date.getFullYear(), date.getMonth() + months, date.getDate()), date);
 
 type Recurrer = {
   occurrenceAt: (step: number) => Date;
@@ -104,12 +89,7 @@ const parseCompletedDay = (value: string): Date => {
   return new Date(year, month - MONTH_OFFSET, day);
 };
 
-export const nextOccurrence = (item: ScheduledItem, now: Date): Date => {
-  const anchor = new Date(item.scheduledAt);
-  const recurrer = recurrerFor(item, anchor);
-  if (!recurrer) {
-    return anchor;
-  }
+const recurringOccurrence = (item: ScheduledItem, recurrer: Recurrer, now: Date): Date => {
   const currentCycleStep = latestStepOnOrBefore(recurrer, now);
   if (item.lastCompletedOccurrence === null) {
     return recurrer.occurrenceAt(currentCycleStep);
@@ -117,6 +97,18 @@ export const nextOccurrence = (item: ScheduledItem, now: Date): Date => {
   const stepAfterCompleted =
     latestStepOnOrBefore(recurrer, parseCompletedDay(item.lastCompletedOccurrence)) + NEXT_STEP;
   return recurrer.occurrenceAt(Math.max(currentCycleStep, stepAfterCompleted));
+};
+
+export const nextOccurrence = (item: ScheduledItem, now: Date): Date => {
+  if (item.bumpedTo !== null) {
+    return new Date(item.bumpedTo);
+  }
+  const anchor = new Date(item.scheduledAt);
+  const recurrer = recurrerFor(item, anchor);
+  if (!recurrer) {
+    return anchor;
+  }
+  return recurringOccurrence(item, recurrer, now);
 };
 
 export const occurrenceDayValue = (occurrence: Date): string => {

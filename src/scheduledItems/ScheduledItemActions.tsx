@@ -1,27 +1,22 @@
 import { Check, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 
+import DeleteItemDialog from "./DeleteItemDialog.tsx";
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import ScheduledItemBumpMenu from "./ScheduledItemBumpMenu.tsx";
+import type { SnoozeTarget } from "./snoozeTarget.ts";
 
 type ScheduledItemActionsProps = {
   item: ScheduledItem;
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
   onComplete: (item: ScheduledItem) => void;
+  onBump: (item: ScheduledItem, target: SnoozeTarget) => void;
   showComplete?: boolean;
+  showBump?: boolean;
 };
 
 export const ScheduledItemActions = ({
@@ -29,10 +24,14 @@ export const ScheduledItemActions = ({
   onEdit,
   onDelete,
   onComplete,
+  onBump,
   showComplete = true,
+  showBump = false,
 }: ScheduledItemActionsProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
@@ -53,7 +52,7 @@ export const ScheduledItemActions = ({
               variant="ghost"
               className="w-full justify-start"
               onClick={() => {
-                setMenuOpen(false);
+                closeMenu();
                 onComplete(item);
               }}
             >
@@ -61,11 +60,12 @@ export const ScheduledItemActions = ({
               Mark done
             </Button>
           )}
+          {showBump && <ScheduledItemBumpMenu item={item} onBump={onBump} onSelected={closeMenu} />}
           <Button
             variant="ghost"
             className="w-full justify-start"
             onClick={() => {
-              setMenuOpen(false);
+              closeMenu();
               onEdit(item);
             }}
           >
@@ -76,7 +76,7 @@ export const ScheduledItemActions = ({
             variant="ghost"
             className="w-full justify-start text-destructive hover:text-destructive"
             onClick={() => {
-              setMenuOpen(false);
+              closeMenu();
               setConfirmOpen(true);
             }}
           >
@@ -85,25 +85,12 @@ export const ScheduledItemActions = ({
           </Button>
         </PopoverContent>
       </Popover>
-      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete item?</AlertDialogTitle>
-            <AlertDialogDescription>
-              &ldquo;{item.title}&rdquo; will be permanently removed.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={() => onDelete(item)}
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteItemDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={item.title}
+        onConfirm={() => onDelete(item)}
+      />
     </>
   );
 };

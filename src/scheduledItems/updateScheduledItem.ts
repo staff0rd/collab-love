@@ -5,7 +5,7 @@ import { type NewScheduledItem, scheduledItemToRow } from "./createScheduledItem
 export const updateScheduledItem = async (id: string, item: NewScheduledItem): Promise<void> => {
   const { error } = await supabase
     .from("scheduled_items")
-    .update(scheduledItemToRow(item))
+    .update({ ...scheduledItemToRow(item), bumped_to: null })
     .eq("id", id);
   if (error) {
     throw error;

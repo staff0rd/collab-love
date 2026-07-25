@@ -8,6 +8,7 @@ import type { HouseholdMember } from "../household/getHousehold.ts";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { ScheduledItemActions } from "./ScheduledItemActions.tsx";
 import type { ScheduledItemEntry } from "./scheduledItemEntries.ts";
+import type { SnoozeTarget } from "./snoozeTarget.ts";
 import { ownerLabel } from "./ownerLabel.ts";
 import { recurrenceLabel } from "./recurrenceLabel.ts";
 import { scheduledItemStatus, type ScheduledItemStatus } from "./scheduledItemStatus.ts";
@@ -42,6 +43,7 @@ type ScheduledItemRowProps = {
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
   onComplete: (item: ScheduledItem) => void;
+  onBump: (item: ScheduledItem, target: SnoozeTarget) => void;
 };
 
 const ScheduledItemRow = ({
@@ -50,6 +52,7 @@ const ScheduledItemRow = ({
   onEdit,
   onDelete,
   onComplete,
+  onBump,
 }: ScheduledItemRowProps) => {
   const { item, occurrence, isReminder } = entry;
   const now = new Date();
@@ -89,7 +92,9 @@ const ScheduledItemRow = ({
         onEdit={onEdit}
         onDelete={onDelete}
         onComplete={onComplete}
+        onBump={onBump}
         showComplete={!isReminder}
+        showBump={!isReminder}
       />
     </li>
   );

@@ -19,7 +19,7 @@ const ScheduledItemDetail = () => {
   const queryClient = useQueryClient();
   const { household } = useHousehold();
   const { item, loading } = useScheduledItem(id);
-  const { onDelete, onComplete } = useScheduledItemDetailActions(item);
+  const { onDelete, onComplete, onBump } = useScheduledItemDetailActions(item);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleSaved = () => {
@@ -70,6 +70,7 @@ const ScheduledItemDetail = () => {
             onEdit={() => setIsEditOpen(true)}
             onDelete={onDelete}
             onComplete={onComplete}
+            onBump={onBump}
           />
         </div>
       </main>

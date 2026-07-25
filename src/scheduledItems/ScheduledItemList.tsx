@@ -5,6 +5,7 @@ import type { HouseholdMember } from "../household/getHousehold.ts";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { groupScheduledItems } from "./groupScheduledItems.ts";
 import ScheduledItemRow from "./ScheduledItemRow.tsx";
+import type { SnoozeTarget } from "./snoozeTarget.ts";
 
 const EMPTY_COUNT = 0;
 
@@ -52,6 +53,7 @@ type ScheduledItemListProps = {
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
   onComplete: (item: ScheduledItem) => void;
+  onBump: (item: ScheduledItem, target: SnoozeTarget) => void;
 };
 
 const ScheduledItemList = ({
@@ -63,6 +65,7 @@ const ScheduledItemList = ({
   onEdit,
   onDelete,
   onComplete,
+  onBump,
 }: ScheduledItemListProps) => {
   if (loading) {
     return (
@@ -101,6 +104,7 @@ const ScheduledItemList = ({
                 onEdit={onEdit}
                 onDelete={onDelete}
                 onComplete={onComplete}
+                onBump={onBump}
               />
             ))}
           </ul>

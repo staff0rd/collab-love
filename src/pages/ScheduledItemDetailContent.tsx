@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react";
 
 import type { HouseholdMember } from "../household/getHousehold.ts";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
+import type { SnoozeTarget } from "../scheduledItems/snoozeTarget.ts";
 
 import ScheduledItemDetailBody from "./ScheduledItemDetailBody.tsx";
 
@@ -12,6 +13,7 @@ type ScheduledItemDetailContentProps = {
   onEdit: () => void;
   onDelete: () => void;
   onComplete: () => void;
+  onBump: (target: SnoozeTarget) => void;
 };
 
 const ScheduledItemDetailContent = ({
@@ -21,6 +23,7 @@ const ScheduledItemDetailContent = ({
   onEdit,
   onDelete,
   onComplete,
+  onBump,
 }: ScheduledItemDetailContentProps) => {
   if (loading) {
     return (
@@ -46,6 +49,7 @@ const ScheduledItemDetailContent = ({
       onEdit={onEdit}
       onDelete={onDelete}
       onComplete={onComplete}
+      onBump={onBump}
     />
   );
 };

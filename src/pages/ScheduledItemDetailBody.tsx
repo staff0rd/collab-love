@@ -6,6 +6,7 @@ import type { HouseholdMember } from "../household/getHousehold.ts";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { nextOccurrence } from "../scheduledItems/nextOccurrence.ts";
 import { ownerLabel } from "../scheduledItems/ownerLabel.ts";
+import type { SnoozeTarget } from "../scheduledItems/snoozeTarget.ts";
 import { recurrenceLabel } from "../scheduledItems/recurrenceLabel.ts";
 import {
   scheduledItemStatus,
@@ -35,6 +36,7 @@ type ScheduledItemDetailBodyProps = {
   onEdit: () => void;
   onDelete: () => void;
   onComplete: () => void;
+  onBump: (target: SnoozeTarget) => void;
 };
 
 const ScheduledItemDetailBody = ({
@@ -43,6 +45,7 @@ const ScheduledItemDetailBody = ({
   onEdit,
   onDelete,
   onComplete,
+  onBump,
 }: ScheduledItemDetailBodyProps) => {
   const occurrence = nextOccurrence(item, new Date());
   const status = scheduledItemStatus(occurrence, new Date());
@@ -80,6 +83,7 @@ const ScheduledItemDetailBody = ({
         onEdit={onEdit}
         onDelete={onDelete}
         onComplete={onComplete}
+        onBump={onBump}
       />
     </div>
   );
