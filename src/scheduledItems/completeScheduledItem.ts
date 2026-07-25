@@ -9,6 +9,7 @@ export const completeScheduledItem = async (item: ScheduledItem, now: Date): Pro
     .from("scheduled_items")
     .update({
       bumped_to: null,
+      last_action: null,
       last_completed_occurrence: occurrenceDayValue(nextOccurrence(naturalItem, now)),
     })
     .eq("id", item.id);

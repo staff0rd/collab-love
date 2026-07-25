@@ -9,7 +9,7 @@ export const bumpScheduledItem = async (
   now: Date,
 ): Promise<void> => {
   const bumped = snoozeTargetDate(target, new Date(item.scheduledAt), now).toISOString();
-  const patch: Record<string, string> = {};
+  const patch: Record<string, string> = { last_action: "bumped" };
   if (item.recurrence === "once") {
     patch.scheduled_at = bumped;
   } else {

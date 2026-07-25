@@ -1,22 +1,24 @@
-import { Pencil, Plus } from "lucide-react";
+import { CalendarClock, Pencil, Plus } from "lucide-react";
 import { Link } from "react-router";
 
 import { relativeDayLabel } from "../scheduledItems/relativeDayLabel.ts";
 
 import type { ActivityEntry } from "./partnerActivity.ts";
 
-const kindLabel: Record<ActivityEntry["kind"], string> = {
-  added: "Added",
-  changed: "Changed",
+const kindVerb: Record<ActivityEntry["kind"], string> = {
+  added: "added",
+  bumped: "bumped",
+  changed: "changed",
 };
 
 const sourceLabel: Record<ActivityEntry["source"], string> = {
-  featureRequest: "Feature request",
-  scheduledItem: "Scheduled item",
+  featureRequest: "feature request",
+  scheduledItem: "scheduled item",
 };
 
 const kindIcon: Record<ActivityEntry["kind"], typeof Plus> = {
   added: Plus,
+  bumped: CalendarClock,
   changed: Pencil,
 };
 
@@ -27,6 +29,16 @@ const entryLink = (entry: ActivityEntry): string => {
   return "/requests";
 };
 
+const bumpSuffix = (entry: ActivityEntry, now: Date): string => {
+  if (entry.kind !== "bumped" || entry.occurrenceAt === null) {
+    return "";
+  }
+  return `, now due ${relativeDayLabel(new Date(entry.occurrenceAt), now).toLowerCase()}`;
+};
+
+const entryDescription = (entry: ActivityEntry, partnerName: string, now: Date): string =>
+  `${partnerName} ${kindVerb[entry.kind]} this ${sourceLabel[entry.source]}${bumpSuffix(entry, now)}`;
+
 type ActivityFeedRowProps = {
   entry: ActivityEntry;
   partnerName: string;
@@ -34,6 +46,7 @@ type ActivityFeedRowProps = {
 
 const ActivityFeedRow = ({ entry, partnerName }: ActivityFeedRowProps) => {
   const Icon = kindIcon[entry.kind];
+  const now = new Date();
 
   return (
     <li>
@@ -47,12 +60,11 @@ const ActivityFeedRow = ({ entry, partnerName }: ActivityFeedRowProps) => {
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <h3 className="truncate font-medium">{entry.title}</h3>
           <p className="text-sm text-muted-foreground">
-            {partnerName} {kindLabel[entry.kind].toLowerCase()} this{" "}
-            {sourceLabel[entry.source].toLowerCase()}
+            {entryDescription(entry, partnerName, now)}
           </p>
         </div>
         <span className="shrink-0 text-xs text-muted-foreground">
-          {relativeDayLabel(new Date(entry.at), new Date())}
+          {relativeDayLabel(new Date(entry.at), now)}
         </span>
       </Link>
     </li>

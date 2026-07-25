@@ -4,6 +4,8 @@ export const scheduledItemsQueryKey = ["scheduledItems"] as const;
 
 export type Recurrence = "once" | "daily" | "weekly" | "monthly" | "yearly";
 
+export type LastAction = "bumped";
+
 export type ScheduledItem = {
   id: string;
   title: string;
@@ -14,6 +16,7 @@ export type ScheduledItem = {
   recurrenceInterval: number | null;
   lastCompletedOccurrence: string | null;
   bumpedTo: string | null;
+  lastAction: LastAction | null;
   reminderDaysBefore: number | null;
   createdBy: string;
   createdAt: string;
@@ -31,6 +34,7 @@ export type ScheduledItemRow = {
   recurrence_interval: number | null;
   last_completed_occurrence: string | null;
   bumped_to: string | null;
+  last_action: LastAction | null;
   reminder_days_before: number | null;
   created_by: string;
   created_at: string;
@@ -39,13 +43,14 @@ export type ScheduledItemRow = {
 };
 
 export const SCHEDULED_ITEM_COLUMNS =
-  "id, title, scheduled_at, notes, owner_user_id, recurrence, recurrence_interval, last_completed_occurrence, bumped_to, reminder_days_before, created_by, created_at, updated_by, updated_at";
+  "id, title, scheduled_at, notes, owner_user_id, recurrence, recurrence_interval, last_completed_occurrence, bumped_to, last_action, reminder_days_before, created_by, created_at, updated_by, updated_at";
 
 export const mapScheduledItemRow = (row: ScheduledItemRow): ScheduledItem => ({
   bumpedTo: row.bumped_to,
   createdAt: row.created_at,
   createdBy: row.created_by,
   id: row.id,
+  lastAction: row.last_action,
   lastCompletedOccurrence: row.last_completed_occurrence,
   notes: row.notes,
   ownerUserId: row.owner_user_id,

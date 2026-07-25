@@ -28,7 +28,12 @@ export const usePartnerActivity = (): PartnerActivity => {
     if (!partner) {
       return [];
     }
-    return partnerActivity(scheduled.items, requests.items, partner.userId);
+    return partnerActivity({
+      featureRequests: requests.items,
+      now: new Date(),
+      partnerUserId: partner.userId,
+      scheduledItems: scheduled.items,
+    });
   }, [partner, scheduled.items, requests.items]);
 
   return {
