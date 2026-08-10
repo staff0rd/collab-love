@@ -1,6 +1,7 @@
 import { AlertTriangle, Loader2 } from "lucide-react";
 
 import type { HouseholdMember } from "../household/getHousehold.ts";
+import { errorMessage } from "../lib/errorMessage.ts";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { groupScheduledItems } from "./groupScheduledItems.ts";
@@ -8,16 +9,6 @@ import ScheduledItemRow from "./ScheduledItemRow.tsx";
 import type { SnoozeTarget } from "./snoozeTarget.ts";
 
 const EMPTY_COUNT = 0;
-
-const errorMessage = (error: unknown): string => {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  if (typeof error === "object" && error !== null && "message" in error) {
-    return String((error as { message: unknown }).message);
-  }
-  return "Something went wrong.";
-};
 
 const ErrorState = ({ error }: { error: unknown }) => (
   <div className="flex flex-col items-center gap-1 rounded-lg border border-dashed border-destructive/40 bg-destructive/5 py-16 text-center">

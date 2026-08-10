@@ -1,4 +1,4 @@
-import { addDays, atTimeOf, shiftMonths } from "./dateMath.ts";
+import { addDays, atTimeOf, shiftMonths } from "../lib/dateMath";
 
 export type SnoozeTarget = "tomorrow" | "nextWeek" | "nextMonth";
 

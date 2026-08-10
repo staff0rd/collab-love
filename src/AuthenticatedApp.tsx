@@ -6,6 +6,7 @@ import CalendarSyncManager from "./calendar/CalendarSyncManager.tsx";
 import Feed from "./pages/Feed.tsx";
 import Home from "./pages/Home.tsx";
 import Login from "./pages/Login.tsx";
+import Pain from "./pages/Pain.tsx";
 import Requests from "./pages/Requests.tsx";
 import ScheduledItemDetail from "./pages/ScheduledItemDetail.tsx";
 import Settings from "./pages/Settings.tsx";
@@ -33,6 +34,7 @@ const AuthenticatedApp = () => {
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/feed" element={<Feed />} />
+          <Route path="/pain" element={<Pain />} />
           <Route path="/requests" element={<Requests />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/items/:id" element={<ScheduledItemDetail />} />

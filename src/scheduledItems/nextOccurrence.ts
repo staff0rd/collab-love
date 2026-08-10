@@ -1,4 +1,4 @@
-import { addDays, shiftMonths } from "./dateMath.ts";
+import { addDays, shiftMonths } from "../lib/dateMath";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 
 const MS_PER_DAY = 86_400_000;

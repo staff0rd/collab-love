@@ -13,7 +13,7 @@ export type PainReading = {
 
 export type PainReadings = Record<PainSlotKey, PainReading | null>;
 
-type PainLogRow = {
+export type PainLogRow = {
   log_date: string;
   morning_level: number | null;
   morning_extra_med: boolean | null;
@@ -23,7 +23,7 @@ type PainLogRow = {
   evening_extra_med: boolean | null;
 };
 
-const PAIN_LOG_COLUMNS =
+export const PAIN_LOG_COLUMNS =
   "log_date, morning_level, morning_extra_med, midday_level, midday_extra_med, evening_level, evening_extra_med";
 
 export const NO_PAIN_READINGS: PainReadings = { evening: null, midday: null, morning: null };
@@ -38,7 +38,7 @@ const readingWithoutLevelIsUnrecorded = (
   return { extraMedication: extraMedication ?? false, level };
 };
 
-const mapPainLogRow = (row: PainLogRow): PainReadings => ({
+export const mapPainLogRow = (row: PainLogRow): PainReadings => ({
   evening: readingWithoutLevelIsUnrecorded(row.evening_level, row.evening_extra_med),
   midday: readingWithoutLevelIsUnrecorded(row.midday_level, row.midday_extra_med),
   morning: readingWithoutLevelIsUnrecorded(row.morning_level, row.morning_extra_med),
