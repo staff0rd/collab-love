@@ -8,7 +8,6 @@ const MIN_INTERVAL = 1;
 const FIRST_STEP = 0;
 const NEXT_STEP = 1;
 const DATE_PART_BASE = 10;
-const DATE_PAD = 2;
 const MONTH_OFFSET = 1;
 
 const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -109,10 +108,4 @@ export const nextOccurrence = (item: ScheduledItem, now: Date): Date => {
     return anchor;
   }
   return recurringOccurrence(item, recurrer, now);
-};
-
-export const occurrenceDayValue = (occurrence: Date): string => {
-  const month = String(occurrence.getMonth() + MONTH_OFFSET).padStart(DATE_PAD, "0");
-  const day = String(occurrence.getDate()).padStart(DATE_PAD, "0");
-  return `${occurrence.getFullYear()}-${month}-${day}`;
 };

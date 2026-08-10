@@ -1,6 +1,6 @@
 import { createContext, useState, type ReactNode } from "react";
 
-import { useScheduledItemsRealtime } from "../scheduledItems/useScheduledItemsRealtime.ts";
+import { useHouseholdRealtime } from "./useHouseholdRealtime";
 
 import { pendingConnectionStatus, type ConnectionStatus } from "./connectionStatus.ts";
 
@@ -9,7 +9,7 @@ export const ConnectionStatusContext = createContext<ConnectionStatus | undefine
 export const ConnectionStatusProvider = ({ children }: { children: ReactNode }) => {
   const [status, setStatus] = useState<ConnectionStatus>(pendingConnectionStatus);
 
-  useScheduledItemsRealtime(setStatus);
+  useHouseholdRealtime(setStatus);
 
   return (
     <ConnectionStatusContext.Provider value={status}>{children}</ConnectionStatusContext.Provider>

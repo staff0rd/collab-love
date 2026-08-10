@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../auth/useAuth.ts";
 import { useHousehold } from "../household/useHousehold.ts";
 import { useScrollRestoration } from "../lib/useScrollRestoration.ts";
+import TodayPainLog from "../painLog/TodayPainLog.tsx";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { ALL_FILTER_KEY } from "../scheduledItems/ownerFilterOptions.ts";
 import OwnerFilterBar from "../scheduledItems/OwnerFilterBar.tsx";
@@ -44,6 +45,10 @@ const Home = () => {
             paddingRight: "max(1rem, env(safe-area-inset-right))",
           }}
         >
+          <div className="mb-6">
+            <TodayPainLog />
+          </div>
+
           <h2 className="mb-4 text-2xl font-semibold tracking-tight text-foreground">
             What&apos;s coming up
           </h2>

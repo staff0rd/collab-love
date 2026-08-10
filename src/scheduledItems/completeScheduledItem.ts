@@ -1,7 +1,8 @@
 import { supabase } from "../lib/supabaseClient.ts";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
-import { nextOccurrence, occurrenceDayValue } from "./nextOccurrence.ts";
+import { nextOccurrence } from "./nextOccurrence.ts";
+import { localDayValue } from "../lib/localDayValue.ts";
 
 export const completeScheduledItem = async (item: ScheduledItem, now: Date): Promise<void> => {
   const naturalItem = { ...item, bumpedTo: null };
@@ -10,7 +11,7 @@ export const completeScheduledItem = async (item: ScheduledItem, now: Date): Pro
     .update({
       bumped_to: null,
       last_action: null,
-      last_completed_occurrence: occurrenceDayValue(nextOccurrence(naturalItem, now)),
+      last_completed_occurrence: localDayValue(nextOccurrence(naturalItem, now)),
     })
     .eq("id", item.id);
   if (error) {

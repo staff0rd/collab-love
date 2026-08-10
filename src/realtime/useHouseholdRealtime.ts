@@ -4,18 +4,31 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 
 import { supabase } from "../lib/supabaseClient.ts";
-import { pendingConnectionStatus, type ConnectionStatus } from "../realtime/connectionStatus.ts";
+import { PAIN_LOG_QUERY_PREFIX } from "../painLog/getPainLog.ts";
+import { scheduledItemsQueryKey } from "../scheduledItems/getScheduledItems.ts";
 
-import { scheduledItemsQueryKey } from "./getScheduledItems.ts";
+import { pendingConnectionStatus, type ConnectionStatus } from "./connectionStatus.ts";
 
-const CHANNEL_NAME = "scheduled_items-changes";
+const CHANNEL_NAME = "household-changes";
+
+type WatchedTable = {
+  table: string;
+  queryKey: readonly unknown[];
+};
+
+const WATCHED_TABLES: WatchedTable[] = [
+  { queryKey: scheduledItemsQueryKey, table: "scheduled_items" },
+  { queryKey: PAIN_LOG_QUERY_PREFIX, table: "pain_logs" },
+];
 
 type SubscriptionState = { channel: RealtimeChannel | null };
 
 type StatusListener = (status: ConnectionStatus) => void;
 
 const invalidate = (queryClient: QueryClient) => {
-  void queryClient.invalidateQueries({ queryKey: scheduledItemsQueryKey });
+  for (const watched of WATCHED_TABLES) {
+    void queryClient.invalidateQueries({ queryKey: watched.queryKey });
+  }
 };
 
 const subscribe = (
@@ -27,11 +40,17 @@ const subscribe = (
     void supabase.removeChannel(state.channel);
   }
   onStatusChange("connecting");
-  const channel = supabase
-    .channel(CHANNEL_NAME)
-    .on("postgres_changes", { event: "*", schema: "public", table: "scheduled_items" }, () =>
-      invalidate(queryClient),
-    );
+  const channel = WATCHED_TABLES.reduce(
+    (subscription, watched) =>
+      subscription.on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: watched.table },
+        () => {
+          void queryClient.invalidateQueries({ queryKey: watched.queryKey });
+        },
+      ),
+    supabase.channel(CHANNEL_NAME),
+  );
   state.channel = channel;
   channel.subscribe((status) => {
     const isStaleChannel = state.channel !== channel;
@@ -86,7 +105,7 @@ const startRealtime = (queryClient: QueryClient, onStatusChange: StatusListener)
   };
 };
 
-export const useScheduledItemsRealtime = (onStatusChange: StatusListener) => {
+export const useHouseholdRealtime = (onStatusChange: StatusListener) => {
   const queryClient = useQueryClient();
 
   useEffect(() => startRealtime(queryClient, onStatusChange), [queryClient, onStatusChange]);

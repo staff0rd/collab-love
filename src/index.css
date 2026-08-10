@@ -49,6 +49,26 @@
   --border: #e5e7eb;
   --input: #e5e7eb;
   --ring: #6a5acd;
+
+  /*
+   * Pain level ramp, 0-10: neutral grey-violet, through muted amber, to the
+   * app's own destructive red. No green at any step, so it never lands on the
+   * red/green pair; lightness is held constant so --level-fg clears 4.5:1
+   * across the whole ramp. The ramp is a second cue only — the number is
+   * always rendered alongside it.
+   */
+  --level-fg: #ffffff;
+  --level-0: oklch(48% 0.02 285);
+  --level-1: oklch(48% 0.07 102);
+  --level-2: oklch(48% 0.09 96);
+  --level-3: oklch(48% 0.11 90);
+  --level-4: oklch(48% 0.12 80);
+  --level-5: oklch(48% 0.13 70);
+  --level-6: oklch(48% 0.14 60);
+  --level-7: oklch(48% 0.15 50);
+  --level-8: oklch(48% 0.16 40);
+  --level-9: oklch(48% 0.17 30);
+  --level-10: oklch(48% 0.18 20);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -72,6 +92,19 @@
     --border: #2f2f36;
     --input: #2f2f36;
     --ring: #796bd2;
+
+    --level-fg: #16151b;
+    --level-0: oklch(64% 0.02 285);
+    --level-1: oklch(70% 0.09 102);
+    --level-2: oklch(70% 0.11 96);
+    --level-3: oklch(70% 0.13 90);
+    --level-4: oklch(70% 0.14 80);
+    --level-5: oklch(69% 0.15 70);
+    --level-6: oklch(68% 0.16 60);
+    --level-7: oklch(67% 0.17 40);
+    --level-8: oklch(66% 0.18 32);
+    --level-9: oklch(65% 0.19 26);
+    --level-10: oklch(64% 0.2 22);
   }
 }
 
