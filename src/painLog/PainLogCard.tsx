@@ -1,6 +1,5 @@
 import { Check, Loader2 } from "lucide-react";
 
-import type { PainSlot } from "./painSlots.ts";
 import type { PainSlotState } from "./painSlotStates.ts";
 import PainSlotRow from "./PainSlotRow.tsx";
 
@@ -32,12 +31,21 @@ const CardStatePill = ({ states }: { states: PainSlotState[] }) => {
 
 type PainLogCardProps = {
   states: PainSlotState[];
+  missed: PainSlotState[];
   loading: boolean;
   failed: boolean;
-  onRecord: (slot: PainSlot) => void;
+  onRecord: (state: PainSlotState) => void;
+  onRecordMissed: (state: PainSlotState) => void;
 };
 
-const PainLogCard = ({ states, loading, failed, onRecord }: PainLogCardProps) => (
+const PainLogCard = ({
+  states,
+  missed,
+  loading,
+  failed,
+  onRecord,
+  onRecordMissed,
+}: PainLogCardProps) => (
   <section className="overflow-hidden rounded-lg border bg-card text-card-foreground">
     <div className="flex items-center justify-between gap-3 px-4 py-3.5">
       <h2 className="text-base font-semibold">Pain log</h2>
@@ -60,10 +68,25 @@ const PainLogCard = ({ states, loading, failed, onRecord }: PainLogCardProps) =>
       <ul>
         {states.map((state) => (
           <li key={state.slot.key} className="border-t first:border-t-0">
-            <PainSlotRow state={state} onRecord={() => onRecord(state.slot)} />
+            <PainSlotRow state={state} onRecord={() => onRecord(state)} />
           </li>
         ))}
       </ul>
+    )}
+
+    {!loading && !failed && missed.length > NONE && (
+      <section className="border-t">
+        <h3 className="bg-secondary/60 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Missed yesterday
+        </h3>
+        <ul>
+          {missed.map((state) => (
+            <li key={state.slot.key} className="border-t">
+              <PainSlotRow state={state} onRecord={() => onRecordMissed(state)} />
+            </li>
+          ))}
+        </ul>
+      </section>
     )}
   </section>
 );

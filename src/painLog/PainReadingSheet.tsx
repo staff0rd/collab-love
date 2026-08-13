@@ -12,16 +12,10 @@ import {
 } from "@/components/ui/sheet.tsx";
 
 import type { PainReading } from "./getPainLog.ts";
+import { painReadingDescription, type PainLogDay } from "./painReadingDescription.ts";
 import PainReadingFields from "./PainReadingFields.tsx";
 import type { PainSlot } from "./painSlots.ts";
 import { useSavePainReading } from "./useSavePainReading.ts";
-
-const description = (reading: PainReading | null) => {
-  if (reading) {
-    return "Recorded earlier today";
-  }
-  return "Today's check-in";
-};
 
 const saveLabel = (saving: boolean) => {
   if (saving) {
@@ -32,12 +26,13 @@ const saveLabel = (saving: boolean) => {
 
 type PainReadingSheetProps = {
   logDate: string;
+  day: PainLogDay;
   slot: PainSlot;
   reading: PainReading | null;
   onClose: () => void;
 };
 
-const PainReadingSheet = ({ logDate, slot, reading, onClose }: PainReadingSheetProps) => {
+const PainReadingSheet = ({ logDate, day, slot, reading, onClose }: PainReadingSheetProps) => {
   const [level, setLevel] = useState<number | null>(reading?.level ?? null);
   const [extraMedication, setExtraMedication] = useState(reading?.extraMedication ?? false);
   const save = useSavePainReading(logDate, onClose);
@@ -60,7 +55,7 @@ const PainReadingSheet = ({ logDate, slot, reading, onClose }: PainReadingSheetP
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{slot.label}</SheetTitle>
-          <SheetDescription>{description(reading)}</SheetDescription>
+          <SheetDescription>{painReadingDescription(reading, day)}</SheetDescription>
         </SheetHeader>
 
         <SheetBody className="flex flex-col gap-5">
