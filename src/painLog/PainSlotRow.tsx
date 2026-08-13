@@ -4,17 +4,26 @@ import { Button } from "@/components/ui/button.tsx";
 import { cn } from "@/lib/utils.ts";
 
 import { PAIN_LEVEL_FOREGROUND, painLevelColor } from "./painLevelColor.ts";
+import type { PainLogDay } from "./painReadingDescription.ts";
 import type { PainSlotState } from "./painSlotStates.ts";
 
 const ROW_CLASSES = "flex min-h-15 w-full items-center gap-3 px-4 py-2.5 text-left text-[15px]";
 const TIME_CLASSES = "w-21 shrink-0 tabular-nums";
 
+const slotName = (label: string, day: PainLogDay) => {
+  if (day === "yesterday") {
+    return `yesterday's ${label}`;
+  }
+  return `the ${label}`;
+};
+
 type PainSlotRowProps = {
   state: PainSlotState;
+  day: PainLogDay;
   onRecord: () => void;
 };
 
-const PainSlotRow = ({ state, onRecord }: PainSlotRowProps) => {
+const PainSlotRow = ({ state, day, onRecord }: PainSlotRowProps) => {
   const { slot, reading } = state;
 
   if (reading) {
@@ -22,7 +31,7 @@ const PainSlotRow = ({ state, onRecord }: PainSlotRowProps) => {
       <button
         type="button"
         onClick={onRecord}
-        aria-label={`Edit the ${slot.label} reading, level ${reading.level}`}
+        aria-label={`Edit ${slotName(slot.label, day)} reading, level ${reading.level}`}
         className={cn(
           ROW_CLASSES,
           "transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
@@ -54,7 +63,7 @@ const PainSlotRow = ({ state, onRecord }: PainSlotRowProps) => {
           size="sm"
           className="ml-auto"
           onClick={onRecord}
-          aria-label={`Record the ${slot.label} reading`}
+          aria-label={`Record ${slotName(slot.label, day)} reading`}
         >
           Record
         </Button>

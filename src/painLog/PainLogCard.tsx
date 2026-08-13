@@ -73,7 +73,7 @@ const PainLogCard = ({
       <ul>
         {states.map((state) => (
           <li key={state.slot.key} className="border-t first:border-t-0">
-            <PainSlotRow state={state} onRecord={() => onRecord(state)} />
+            <PainSlotRow state={state} day="today" onRecord={() => onRecord(state)} />
           </li>
         ))}
       </ul>
@@ -87,7 +87,7 @@ const PainLogCard = ({
         <ul>
           {missed.map((state) => (
             <li key={state.slot.key} className="border-t">
-              <PainSlotRow state={state} onRecord={() => onRecordMissed(state)} />
+              <PainSlotRow state={state} day="yesterday" onRecord={() => onRecordMissed(state)} />
             </li>
           ))}
         </ul>
