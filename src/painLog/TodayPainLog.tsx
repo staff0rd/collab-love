@@ -35,8 +35,8 @@ const TodayPainLog = () => {
       <PainLogCard
         states={painSlotStates(painSlots(now), today.readings, now)}
         missed={painSlotStates(painSlots(yesterday), previous.readings, now).filter(isUnrecorded)}
-        loading={today.loading}
-        failed={today.error !== null}
+        loading={today.loading || previous.loading}
+        failed={today.error !== null || previous.error !== null}
         onRecord={(state) => setOpenSlot({ day: "today", logDate: todayDate, state })}
         onRecordMissed={(state) => setOpenSlot({ day: "yesterday", logDate: yesterdayDate, state })}
       />

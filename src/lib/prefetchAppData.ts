@@ -8,10 +8,15 @@ import { getHousehold, householdQueryKey } from "../household/getHousehold.ts";
 import { getPainLog, painLogQueryKey } from "../painLog/getPainLog.ts";
 import { getScheduledItems, scheduledItemsQueryKey } from "../scheduledItems/getScheduledItems.ts";
 
+import { addDays } from "./dateMath.ts";
 import { localDayValue } from "./localDayValue.ts";
 
+const PREVIOUS_DAY = -1;
+
 export const prefetchAppData = (queryClient: QueryClient) => {
-  const today = localDayValue(new Date());
+  const now = new Date();
+  const today = localDayValue(now);
+  const yesterday = localDayValue(addDays(now, PREVIOUS_DAY));
 
   void queryClient.prefetchQuery({ queryFn: getScheduledItems, queryKey: scheduledItemsQueryKey });
   void queryClient.prefetchQuery({ queryFn: getHousehold, queryKey: householdQueryKey });
@@ -22,5 +27,9 @@ export const prefetchAppData = (queryClient: QueryClient) => {
   void queryClient.prefetchQuery({
     queryFn: () => getPainLog(today),
     queryKey: painLogQueryKey(today),
+  });
+  void queryClient.prefetchQuery({
+    queryFn: () => getPainLog(yesterday),
+    queryKey: painLogQueryKey(yesterday),
   });
 };

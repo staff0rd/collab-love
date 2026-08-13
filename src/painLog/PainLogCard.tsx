@@ -11,11 +11,18 @@ const PILL_CLASSES =
 const countOf = (states: PainSlotState[], status: PainSlotState["status"]) =>
   states.filter((state) => state.status === status).length;
 
-const CardStatePill = ({ states }: { states: PainSlotState[] }) => {
-  const pending = countOf(states, "pending");
-  if (pending > NONE) {
+type CardStatePillProps = {
+  states: PainSlotState[];
+  missed: PainSlotState[];
+};
+
+const CardStatePill = ({ states, missed }: CardStatePillProps) => {
+  const outstanding = countOf(states, "pending") + missed.length;
+  if (outstanding > NONE) {
     return (
-      <span className={`${PILL_CLASSES} bg-primary/[0.12] text-primary`}>{pending} to record</span>
+      <span className={`${PILL_CLASSES} bg-primary/[0.12] text-primary`}>
+        {outstanding} to record
+      </span>
     );
   }
   if (countOf(states, "entered") === states.length) {
@@ -49,7 +56,7 @@ const PainLogCard = ({
   <section className="overflow-hidden rounded-lg border bg-card text-card-foreground">
     <div className="flex items-center justify-between gap-3 px-4 py-3.5">
       <h2 className="text-base font-semibold">Pain log</h2>
-      {!loading && !failed && <CardStatePill states={states} />}
+      {!loading && !failed && <CardStatePill missed={missed} states={states} />}
     </div>
 
     {loading && (
@@ -59,9 +66,7 @@ const PainLogCard = ({
     )}
 
     {!loading && failed && (
-      <p className="px-4 pb-4 text-sm text-muted-foreground">
-        Couldn&apos;t load today&apos;s pain log.
-      </p>
+      <p className="px-4 pb-4 text-sm text-muted-foreground">Couldn&apos;t load the pain log.</p>
     )}
 
     {!loading && !failed && (
