@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils.ts";
 
 import type { HouseholdMember } from "../household/getHousehold.ts";
 
+import type { BumpScope } from "./bumpScheduledItem.ts";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { ScheduledItemActions } from "./ScheduledItemActions.tsx";
 import type { ScheduledItemEntry } from "./scheduledItemEntries.ts";
@@ -43,7 +44,7 @@ type ScheduledItemRowProps = {
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
   onComplete: (item: ScheduledItem) => void;
-  onBump: (item: ScheduledItem, target: SnoozeTarget) => void;
+  onBump: (item: ScheduledItem, target: SnoozeTarget, scope: BumpScope) => void;
 };
 
 const ScheduledItemRow = ({

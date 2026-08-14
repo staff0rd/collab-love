@@ -3,6 +3,7 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import type { HouseholdMember } from "../household/getHousehold.ts";
 import { errorMessage } from "../lib/errorMessage.ts";
 
+import type { BumpScope } from "./bumpScheduledItem.ts";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import { groupScheduledItems } from "./groupScheduledItems.ts";
 import ScheduledItemRow from "./ScheduledItemRow.tsx";
@@ -44,7 +45,7 @@ type ScheduledItemListProps = {
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
   onComplete: (item: ScheduledItem) => void;
-  onBump: (item: ScheduledItem, target: SnoozeTarget) => void;
+  onBump: (item: ScheduledItem, target: SnoozeTarget, scope: BumpScope) => void;
 };
 
 const ScheduledItemList = ({

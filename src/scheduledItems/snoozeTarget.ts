@@ -2,11 +2,20 @@ import { addDays, atTimeOf, shiftMonths } from "../lib/dateMath";
 
 export type SnoozeTarget = "tomorrow" | "nextWeek" | "nextMonth";
 
-export const snoozeOptions: { label: string; target: SnoozeTarget }[] = [
-  { label: "Tomorrow", target: "tomorrow" },
-  { label: "Next week", target: "nextWeek" },
-  { label: "Next month", target: "nextMonth" },
-];
+const snoozeLabels: Record<SnoozeTarget, string> = {
+  nextMonth: "Next month",
+  nextWeek: "Next week",
+  tomorrow: "Tomorrow",
+};
+
+const snoozeOrder: SnoozeTarget[] = ["tomorrow", "nextWeek", "nextMonth"];
+
+export const snoozeLabel = (target: SnoozeTarget): string => snoozeLabels[target];
+
+export const snoozeOptions = snoozeOrder.map((target) => ({
+  label: snoozeLabels[target],
+  target,
+}));
 
 const ONE_DAY = 1;
 const ONE_WEEK = 7;

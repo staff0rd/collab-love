@@ -1,12 +1,13 @@
-import { Check, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 
+import type { BumpScope } from "./bumpScheduledItem.ts";
 import DeleteItemDialog from "./DeleteItemDialog.tsx";
 import type { ScheduledItem } from "./getScheduledItems.ts";
-import ScheduledItemBumpMenu from "./ScheduledItemBumpMenu.tsx";
+import ScheduledItemActionsMenu from "./ScheduledItemActionsMenu.tsx";
 import type { SnoozeTarget } from "./snoozeTarget.ts";
 
 type ScheduledItemActionsProps = {
@@ -14,7 +15,7 @@ type ScheduledItemActionsProps = {
   onEdit: (item: ScheduledItem) => void;
   onDelete: (item: ScheduledItem) => void;
   onComplete: (item: ScheduledItem) => void;
-  onBump: (item: ScheduledItem, target: SnoozeTarget) => void;
+  onBump: (item: ScheduledItem, target: SnoozeTarget, scope: BumpScope) => void;
   showComplete?: boolean;
   showBump?: boolean;
 };
@@ -31,8 +32,6 @@ export const ScheduledItemActions = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const closeMenu = () => setMenuOpen(false);
-
   return (
     <>
       <Popover open={menuOpen} onOpenChange={setMenuOpen}>
@@ -46,43 +45,17 @@ export const ScheduledItemActions = ({
             <MoreVertical />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-40 p-1">
-          {showComplete && (
-            <Button
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={() => {
-                closeMenu();
-                onComplete(item);
-              }}
-            >
-              <Check />
-              Mark done
-            </Button>
-          )}
-          {showBump && <ScheduledItemBumpMenu item={item} onBump={onBump} onSelected={closeMenu} />}
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => {
-              closeMenu();
-              onEdit(item);
-            }}
-          >
-            <Pencil />
-            Edit
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start text-destructive hover:text-destructive"
-            onClick={() => {
-              closeMenu();
-              setConfirmOpen(true);
-            }}
-          >
-            <Trash2 />
-            Delete
-          </Button>
+        <PopoverContent align="end" className="w-48 p-1">
+          <ScheduledItemActionsMenu
+            item={item}
+            showComplete={showComplete}
+            showBump={showBump}
+            onEdit={onEdit}
+            onComplete={onComplete}
+            onBump={onBump}
+            onDeleteRequest={() => setConfirmOpen(true)}
+            onClose={() => setMenuOpen(false)}
+          />
         </PopoverContent>
       </Popover>
       <DeleteItemDialog

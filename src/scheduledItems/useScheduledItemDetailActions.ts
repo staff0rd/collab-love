@@ -14,7 +14,8 @@ export const useScheduledItemDetailActions = (item: ScheduledItem | null) => {
   const goHome = { onSuccess: () => void navigate("/home") };
 
   return {
-    onBump: (target: SnoozeTarget) => item && bumpMutation.mutate({ item, target }),
+    onBump: (target: SnoozeTarget) =>
+      item && bumpMutation.mutate({ item, scope: "occurrence", target }),
     onComplete: () => item && completeMutation.mutate(item, goHome),
     onDelete: () => item && deleteMutation.mutate(item.id, goHome),
   };
