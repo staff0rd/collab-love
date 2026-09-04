@@ -84,10 +84,17 @@ The provider is configured in `supabase/config.toml`, not the dashboard:
 - The secret is never committed — it is resolved at push time from the
   `SUPABASE_AUTH_EXTERNAL_APPLE_SECRET` environment variable
   (`secret = "env(SUPABASE_AUTH_EXTERNAL_APPLE_SECRET)"`).
-- `[auth]` `site_url` / `additional_redirect_urls` allow-list the web origin
-  (`http://localhost:5173` for local dev; add deployed origins here too). The app calls
-  `signInWithOAuth` with `redirectTo` set to `window.location.origin`, so every origin
-  must be listed.
+- `[auth]` `site_url` / `additional_redirect_urls` allow-list the web origins. The app calls
+  `signInWithOAuth` with `redirectTo` set to `window.location.origin`, so **every** origin the
+  app is served from must be listed — a `redirectTo` that matches nothing on the list is
+  silently ignored and Supabase falls back to `site_url`. The current origins are:
+  - `https://dashing-cajeta-61d2c9.netlify.app` — the deployed web app, and `site_url`, so
+    it is also the fallback for any unmatched redirect.
+  - `http://localhost:5173` — local dev (`npm run dev`).
+
+  `additional_redirect_urls` entries are _exact_ URLs (no trailing slash, no implicit
+  subdomains). Netlify deploy previews are not listed because `web-deploy.yml` only ever runs
+  `netlify deploy --prod`, so no preview origins are produced; add them if that changes.
 
 The Apple **client secret** is an ES256 JWT signed from the `.p8` key; it expires after
 ~6 months. `scripts/apple-secret.mjs` mints it, and `scripts/push-supabase-config.sh`
