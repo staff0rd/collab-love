@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 
+import type { BumpScope } from "./bumpScheduledItem.ts";
 import type { ScheduledItem } from "./getScheduledItems.ts";
 import type { SnoozeTarget } from "./snoozeTarget.ts";
 import { useBumpScheduledItem } from "./useBumpScheduledItem.ts";
@@ -14,8 +15,8 @@ export const useScheduledItemDetailActions = (item: ScheduledItem | null) => {
   const goHome = { onSuccess: () => void navigate("/home") };
 
   return {
-    onBump: (target: SnoozeTarget) =>
-      item && bumpMutation.mutate({ item, scope: "occurrence", target }),
+    onBump: (target: SnoozeTarget, scope: BumpScope) =>
+      item && bumpMutation.mutate({ item, scope, target }),
     onComplete: () => item && completeMutation.mutate(item, goHome),
     onDelete: () => item && deleteMutation.mutate(item.id, goHome),
   };

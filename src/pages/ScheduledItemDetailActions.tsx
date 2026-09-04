@@ -15,24 +15,42 @@ import {
 import { Button } from "@/components/ui/button.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 
-import { snoozeOptions, type SnoozeTarget } from "../scheduledItems/snoozeTarget.ts";
+import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
+import ScheduledItemBumpChoices, {
+  type BumpHandler,
+} from "../scheduledItems/ScheduledItemBumpChoices.tsx";
+import type { SnoozeTarget } from "../scheduledItems/snoozeTarget.ts";
 
 type ScheduledItemDetailActionsProps = {
-  title: string;
+  item: ScheduledItem;
   onEdit: () => void;
   onDelete: () => void;
   onComplete: () => void;
-  onBump: (target: SnoozeTarget) => void;
+  onBump: BumpHandler;
 };
 
 const ScheduledItemDetailActions = ({
-  title,
+  item,
   onEdit,
   onDelete,
   onComplete,
   onBump,
 }: ScheduledItemDetailActionsProps) => {
   const [bumpOpen, setBumpOpen] = useState(false);
+  const [bumpTarget, setBumpTarget] = useState<SnoozeTarget | null>(null);
+
+  const closeBump = () => {
+    setBumpOpen(false);
+    setBumpTarget(null);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setBumpOpen(true);
+      return;
+    }
+    closeBump();
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-2 pt-2">
@@ -40,27 +58,23 @@ const ScheduledItemDetailActions = ({
         <Check />
         Mark done
       </Button>
-      <Popover open={bumpOpen} onOpenChange={setBumpOpen}>
+      <Popover open={bumpOpen} onOpenChange={handleOpenChange}>
         <PopoverTrigger asChild>
           <Button variant="outline">
             <CalendarClock />
             Bump
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-44 p-1">
-          {snoozeOptions.map(({ label, target }) => (
-            <Button
-              key={target}
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={() => {
-                setBumpOpen(false);
-                onBump(target);
-              }}
-            >
-              {label}
-            </Button>
-          ))}
+        <PopoverContent align="start" className="w-48 p-1">
+          <ScheduledItemBumpChoices
+            recurrence={item.recurrence}
+            target={bumpTarget}
+            onTargetChange={setBumpTarget}
+            onBump={(target, scope) => {
+              closeBump();
+              onBump(target, scope);
+            }}
+          />
         </PopoverContent>
       </Popover>
       <Button variant="outline" onClick={onEdit}>
@@ -78,7 +92,7 @@ const ScheduledItemDetailActions = ({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete item?</AlertDialogTitle>
             <AlertDialogDescription>
-              &ldquo;{title}&rdquo; will be permanently removed.
+              &ldquo;{item.title}&rdquo; will be permanently removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

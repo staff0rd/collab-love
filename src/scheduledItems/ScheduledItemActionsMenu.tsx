@@ -36,8 +36,10 @@ const ScheduledItemActionsMenu = ({
       item={item}
       target={bumpTarget}
       onTargetChange={setBumpTarget}
-      onBump={onBump}
-      onSelected={onClose}
+      onBump={(target, scope) => {
+        onClose();
+        onBump(item, target, scope);
+      }}
     />
   );
 
