@@ -4,6 +4,8 @@ import { useNavigate } from "react-router";
 
 import { Button } from "@/components/ui/button.tsx";
 
+import { useScrollRestoration } from "../lib/useScrollRestoration.ts";
+
 const EDGE_PADDING = {
   paddingLeft: "max(1rem, env(safe-area-inset-left))",
   paddingRight: "max(1rem, env(safe-area-inset-right))",
@@ -17,6 +19,7 @@ type SubPageProps = {
 
 const SubPage = ({ title, actions, children }: SubPageProps) => {
   const navigate = useNavigate();
+  const scrollRef = useScrollRestoration<HTMLElement>();
 
   return (
     <div className="flex h-full min-h-dvh flex-col bg-background">
@@ -43,7 +46,7 @@ const SubPage = ({ title, actions, children }: SubPageProps) => {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto">
+      <main ref={scrollRef} className="flex-1 overflow-y-auto">
         <div
           className="mx-auto w-full max-w-2xl px-4 py-6"
           style={{ ...EDGE_PADDING, paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
