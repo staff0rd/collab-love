@@ -5,6 +5,7 @@ import {
   getFeatureRequests,
 } from "../featureRequests/getFeatureRequests.ts";
 import { getHousehold, householdQueryKey } from "../household/getHousehold.ts";
+import { getMigraineLog, migraineLogQueryKey } from "../migraineLog/getMigraineLog.ts";
 import { getPainLog, painLogQueryKey } from "../painLog/getPainLog.ts";
 import { getScheduledItems, scheduledItemsQueryKey } from "../scheduledItems/getScheduledItems.ts";
 
@@ -31,5 +32,9 @@ export const prefetchAppData = (queryClient: QueryClient) => {
   void queryClient.prefetchQuery({
     queryFn: () => getPainLog(yesterday),
     queryKey: painLogQueryKey(yesterday),
+  });
+  void queryClient.prefetchQuery({
+    queryFn: () => getMigraineLog(today),
+    queryKey: migraineLogQueryKey(today),
   });
 };

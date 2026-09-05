@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { Capacitor } from "@capacitor/core";
 
 import { localDayValue } from "../lib/localDayValue.ts";
+import { useCurrentMinute } from "../lib/useCurrentMinute.ts";
 import type { PainReadings } from "../painLog/getPainLog.ts";
-import { useCurrentMinute } from "../painLog/useCurrentMinute.ts";
 import { usePainLog } from "../painLog/usePainLog.ts";
 
 import {

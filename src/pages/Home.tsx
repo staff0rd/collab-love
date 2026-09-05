@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../auth/useAuth.ts";
 import { useHousehold } from "../household/useHousehold.ts";
 import { useScrollRestoration } from "../lib/useScrollRestoration.ts";
+import TodayMigraineLog from "../migraineLog/TodayMigraineLog.tsx";
 import TodayPainLog from "../painLog/TodayPainLog.tsx";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { ALL_FILTER_KEY } from "../scheduledItems/ownerFilterOptions.ts";
@@ -45,7 +46,8 @@ const Home = () => {
             paddingRight: "max(1rem, env(safe-area-inset-right))",
           }}
         >
-          <div className="mb-6">
+          <div className="mb-6 flex flex-col gap-5">
+            <TodayMigraineLog />
             <TodayPainLog />
           </div>
 

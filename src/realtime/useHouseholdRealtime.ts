@@ -4,6 +4,7 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useQueryClient, type QueryClient } from "@tanstack/react-query";
 
 import { supabase } from "../lib/supabaseClient.ts";
+import { MIGRAINE_LOG_QUERY_PREFIX } from "../migraineLog/getMigraineLog.ts";
 import { PAIN_LOG_QUERY_PREFIX } from "../painLog/getPainLog.ts";
 import { scheduledItemsQueryKey } from "../scheduledItems/getScheduledItems.ts";
 
@@ -19,6 +20,7 @@ type WatchedTable = {
 const WATCHED_TABLES: WatchedTable[] = [
   { queryKey: scheduledItemsQueryKey, table: "scheduled_items" },
   { queryKey: PAIN_LOG_QUERY_PREFIX, table: "pain_logs" },
+  { queryKey: MIGRAINE_LOG_QUERY_PREFIX, table: "migraine_logs" },
 ];
 
 type SubscriptionState = { channel: RealtimeChannel | null };

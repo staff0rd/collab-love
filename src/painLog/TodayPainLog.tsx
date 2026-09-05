@@ -2,13 +2,13 @@ import { useState } from "react";
 
 import { addDays } from "../lib/dateMath.ts";
 import { localDayValue } from "../lib/localDayValue.ts";
+import { useCurrentMinute } from "../lib/useCurrentMinute.ts";
 
 import PainLogCard from "./PainLogCard.tsx";
 import type { PainLogDay } from "./painReadingDescription.ts";
 import PainReadingSheet from "./PainReadingSheet.tsx";
 import { painSlots } from "./painSlots.ts";
 import { painSlotStates, type PainSlotState } from "./painSlotStates.ts";
-import { useCurrentMinute } from "./useCurrentMinute.ts";
 import { usePainLog } from "./usePainLog.ts";
 
 const PREVIOUS_DAY = -1;
