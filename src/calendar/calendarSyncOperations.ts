@@ -78,10 +78,3 @@ export const describeProgress = (progress: MirrorProgress): string => {
   }
   return `Adding events… ${progress.done} / ${progress.total}`;
 };
-
-export const errorMessage = (caught: unknown): string => {
-  if (caught instanceof Error) {
-    return caught.message;
-  }
-  return String(caught);
-};

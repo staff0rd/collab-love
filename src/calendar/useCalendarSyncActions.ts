@@ -14,7 +14,7 @@ import {
   selectCalendarTarget,
 } from "./calendarSyncOperations.ts";
 import type { SyncState } from "./useCalendarSyncState.ts";
-import { type Feedback, NO_FEEDBACK } from "./useGuardedAction.ts";
+import { type Feedback, NO_FEEDBACK } from "../lib/useGuardedAction";
 
 type Deps = {
   cooldownStart: () => void;

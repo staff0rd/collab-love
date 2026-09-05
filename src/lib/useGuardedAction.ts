@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { errorMessage } from "./calendarSyncOperations.ts";
+import { errorMessage } from "./errorMessage.ts";
 
 export type Feedback = {
   error: string | null;

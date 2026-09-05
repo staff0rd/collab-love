@@ -10,6 +10,7 @@ import Pain from "./pages/Pain.tsx";
 import Requests from "./pages/Requests.tsx";
 import ScheduledItemDetail from "./pages/ScheduledItemDetail.tsx";
 import Settings from "./pages/Settings.tsx";
+import PainReminderManager from "./painReminders/PainReminderManager.tsx";
 import { ConnectionStatusProvider } from "./realtime/ConnectionStatusProvider.tsx";
 
 const AuthenticatedApp = () => {
@@ -31,6 +32,7 @@ const AuthenticatedApp = () => {
     <BrowserRouter>
       <ConnectionStatusProvider>
         <CalendarSyncManager />
+        <PainReminderManager />
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/feed" element={<Feed />} />

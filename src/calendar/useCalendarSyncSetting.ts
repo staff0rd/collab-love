@@ -5,7 +5,7 @@ import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { useCalendarSyncActions } from "./useCalendarSyncActions.ts";
 import { useCalendarSyncState } from "./useCalendarSyncState.ts";
 import { useCooldown } from "./useCooldown.ts";
-import { useGuardedAction } from "./useGuardedAction.ts";
+import { useGuardedAction } from "../lib/useGuardedAction";
 
 const RESYNC_COOLDOWN_SECONDS = 60;
 

@@ -1,17 +1,8 @@
-import { Preferences } from "@capacitor/preferences";
+import { getBooleanPreference, setBooleanPreference } from "../lib/booleanPreference.ts";
 
 const ENABLED_KEY = "calendar-sync-enabled";
-const ENABLED_VALUE = "true";
 
-export const getCalendarSyncEnabled = async (): Promise<boolean> => {
-  const { value } = await Preferences.get({ key: ENABLED_KEY });
-  return value === ENABLED_VALUE;
-};
+export const getCalendarSyncEnabled = (): Promise<boolean> => getBooleanPreference(ENABLED_KEY);
 
-export const setCalendarSyncEnabled = async (enabled: boolean): Promise<void> => {
-  if (enabled) {
-    await Preferences.set({ key: ENABLED_KEY, value: ENABLED_VALUE });
-    return;
-  }
-  await Preferences.remove({ key: ENABLED_KEY });
-};
+export const setCalendarSyncEnabled = (enabled: boolean): Promise<void> =>
+  setBooleanPreference(ENABLED_KEY, enabled);
