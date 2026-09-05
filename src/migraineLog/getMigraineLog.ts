@@ -14,7 +14,7 @@ export type MigraineEntry = {
   tookCodeine: boolean;
 };
 
-type MigraineLogRow = {
+export type MigraineLogRow = {
   log_date: string;
   exercised: boolean | null;
   migraine: boolean | null;
@@ -22,7 +22,7 @@ type MigraineLogRow = {
   took_codeine: boolean | null;
 };
 
-const MIGRAINE_LOG_COLUMNS = "log_date, exercised, migraine, took_aspirin, took_codeine";
+export const MIGRAINE_LOG_COLUMNS = "log_date, exercised, migraine, took_aspirin, took_codeine";
 
 export const NO_MIGRAINE_ENTRY: MigraineEntry = {
   exercised: null,
@@ -31,7 +31,7 @@ export const NO_MIGRAINE_ENTRY: MigraineEntry = {
   tookCodeine: false,
 };
 
-const mapMigraineLogRow = (row: MigraineLogRow): MigraineEntry => ({
+export const mapMigraineLogRow = (row: MigraineLogRow): MigraineEntry => ({
   exercised: row.exercised,
   migraine: row.migraine,
   tookAspirin: row.took_aspirin ?? false,

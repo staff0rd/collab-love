@@ -1,4 +1,4 @@
-import { Activity, ChartLine, Lightbulb, LogOut, MoreVertical, Settings } from "lucide-react";
+import { Activity, ChartLine, Lightbulb, LogOut, MoreVertical, Settings, Zap } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -50,6 +50,17 @@ const HomeMenu = () => {
             <Activity />
             Recent activity
             <ActivityBadge count={unseenCount} className="ml-auto" />
+          </Link>
+        </Button>
+        <Button
+          asChild
+          variant="ghost"
+          className="w-full justify-start"
+          onClick={() => setMenuOpen(false)}
+        >
+          <Link to="/migraine">
+            <Zap />
+            Migraine overview
           </Link>
         </Button>
         <Button

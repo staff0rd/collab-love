@@ -1,7 +1,7 @@
 import { addDays } from "../lib/dateMath.ts";
 import { localDayValue } from "../lib/localDayValue.ts";
 
-export type PainRangeKey = "week" | "month" | "quarter";
+type PainRangeKey = "week" | "month" | "quarter";
 
 type PainGranularity = "reading" | "day";
 

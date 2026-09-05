@@ -1,23 +1,16 @@
 import { useState } from "react";
 
+import OverviewStates from "../components/OverviewStates.tsx";
+import RangeToggle from "../components/RangeToggle.tsx";
+
 import PainChartCard from "./PainChartCard.tsx";
-import PainOverviewStates from "./PainOverviewStates.tsx";
 import PainRangeSummary from "./PainRangeSummary.tsx";
-import PainRangeToggle from "./PainRangeToggle.tsx";
 import { PAIN_RANGES } from "./painRanges.ts";
 import { painSeries } from "./painSeries.ts";
 import { usePainLogRange } from "./usePainLogRange.ts";
 
 const DEFAULT_RANGE = 0;
-const REFRESHING_OPACITY = 0.6;
-const SETTLED_OPACITY = 1;
-
-const bodyOpacity = (refreshing: boolean) => {
-  if (refreshing) {
-    return REFRESHING_OPACITY;
-  }
-  return SETTLED_OPACITY;
-};
+const NO_READINGS = 0;
 
 const PainOverview = () => {
   const [range, setRange] = useState(PAIN_RANGES[DEFAULT_RANGE]);
@@ -27,17 +20,25 @@ const PainOverview = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <PainRangeToggle value={range.key} onChange={setRange} />
+      <RangeToggle
+        ariaLabel="Chart range"
+        options={PAIN_RANGES}
+        value={range.key}
+        onChange={setRange}
+      />
 
-      <PainOverviewStates series={series} rangeLabel={range.label} loading={loading} error={error}>
-        <div
-          className="flex flex-col gap-3 transition-opacity"
-          style={{ opacity: bodyOpacity(refreshing) }}
-        >
-          <PainRangeSummary series={series} />
-          <PainChartCard series={series} />
-        </div>
-      </PainOverviewStates>
+      <OverviewStates
+        loading={loading}
+        error={error}
+        empty={series.readingCount === NO_READINGS}
+        refreshing={refreshing}
+        errorTitle="Couldn't load pain readings"
+        emptyTitle="No readings yet"
+        emptyDescription={`Nothing was recorded in the last ${range.label.toLowerCase()}. Check-ins recorded on Home show up here.`}
+      >
+        <PainRangeSummary series={series} />
+        <PainChartCard series={series} />
+      </OverviewStates>
     </div>
   );
 };
