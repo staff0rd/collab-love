@@ -14,3 +14,23 @@ export const setBooleanPreference = async (key: string, enabled: boolean): Promi
   }
   await Preferences.remove({ key });
 };
+
+export const createObservableBooleanPreference = (key: string) => {
+  const listeners = new Set<() => void>();
+
+  return {
+    get: (): Promise<boolean> => getBooleanPreference(key),
+    set: async (enabled: boolean): Promise<void> => {
+      await setBooleanPreference(key, enabled);
+      for (const listener of listeners) {
+        listener();
+      }
+    },
+    subscribe: (listener: () => void): (() => void) => {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+  };
+};

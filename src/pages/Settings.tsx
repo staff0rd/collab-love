@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button.tsx";
 
 import CalendarSyncField from "../calendar/CalendarSyncField.tsx";
+import MigraineCardField from "../migraineLog/MigraineCardField.tsx";
 import PainReminderField from "../painReminders/PainReminderField.tsx";
 import MemberNameField from "../profile/MemberNameField.tsx";
 import { useMemberNamesForm } from "../profile/useMemberNamesForm.ts";
@@ -90,6 +91,8 @@ const Settings = () => {
               </div>
 
               <CalendarSyncField items={items} loading={itemsLoading} />
+
+              <MigraineCardField />
 
               <PainReminderField />
             </form>

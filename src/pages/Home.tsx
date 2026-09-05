@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../auth/useAuth.ts";
 import { useHousehold } from "../household/useHousehold.ts";
 import { useScrollRestoration } from "../lib/useScrollRestoration.ts";
-import TodayMigraineLog from "../migraineLog/TodayMigraineLog.tsx";
+import OptedInMigraineLog from "../migraineLog/OptedInMigraineLog.tsx";
 import TodayPainLog from "../painLog/TodayPainLog.tsx";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { ALL_FILTER_KEY } from "../scheduledItems/ownerFilterOptions.ts";
@@ -47,7 +47,7 @@ const Home = () => {
           }}
         >
           <div className="mb-6 flex flex-col gap-5">
-            <TodayMigraineLog />
+            <OptedInMigraineLog />
             <TodayPainLog />
           </div>
 
