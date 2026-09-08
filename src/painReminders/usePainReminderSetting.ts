@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 
 import { NO_FEEDBACK, useGuardedAction } from "../lib/useGuardedAction.ts";
 
+import { cancelPainReminders } from "./cancelPainReminders.ts";
 import { getPainRemindersEnabled, setPainRemindersEnabled } from "./painReminderPreference.ts";
 import { requestNotificationAccess } from "./requestNotificationAccess.ts";
 
@@ -23,6 +24,7 @@ export const usePainReminderSetting = () => {
     run(async () => {
       if (!next) {
         await setPainRemindersEnabled(false);
+        await cancelPainReminders();
         setEnabled(false);
         return;
       }

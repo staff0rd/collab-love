@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Capacitor } from "@capacitor/core";
 
-import { localDayValue } from "../lib/localDayValue.ts";
-import { useCurrentMinute } from "../lib/useCurrentMinute.ts";
+import { useLocalDay } from "../lib/useLocalDay.ts";
 import type { PainReadings } from "../painLog/getPainLog.ts";
 import { usePainLog } from "../painLog/usePainLog.ts";
 
@@ -25,19 +24,35 @@ const desiredReminders = async (readings: PainReadings): Promise<PainReminder[]>
   return NO_REMINDERS;
 };
 
-export const usePainReminders = (): void => {
-  const now = useCurrentMinute();
-  const logDate = localDayValue(now);
-  const { loading, readings } = usePainLog(logDate);
-  const [preferencePass, setPreferencePass] = useState(FIRST_PASS);
-
-  useEffect(
-    () => subscribeToPainReminderPreference(() => setPreferencePass((pass) => pass + NEXT_PASS)),
-    [],
-  );
+const useReconcilePass = (): number => {
+  const [pass, setPass] = useState(FIRST_PASS);
 
   useEffect(() => {
-    if (!Capacitor.isNativePlatform() || loading) {
+    const nextPass = () => setPass((current) => current + NEXT_PASS);
+    const passOnResume = () => {
+      if (document.visibilityState === "visible") {
+        nextPass();
+      }
+    };
+    document.addEventListener("visibilitychange", passOnResume);
+    const unsubscribe = subscribeToPainReminderPreference(nextPass);
+    return () => {
+      document.removeEventListener("visibilitychange", passOnResume);
+      unsubscribe();
+    };
+  }, []);
+
+  return pass;
+};
+
+export const usePainReminders = (): void => {
+  const logDate = useLocalDay();
+  const { error, loading, readings } = usePainLog(logDate);
+  const pass = useReconcilePass();
+
+  useEffect(() => {
+    const unreadableReadings = loading || error !== null;
+    if (!Capacitor.isNativePlatform() || unreadableReadings) {
       return;
     }
     void (async () => {
@@ -45,5 +60,5 @@ export const usePainReminders = (): void => {
     })().catch((cause) => {
       console.error("Failed to reconcile pain log reminders", cause);
     });
-  }, [loading, logDate, preferencePass, readings]);
+  }, [error, loading, logDate, pass, readings]);
 };
