@@ -1,6 +1,6 @@
 # Madeira vine campaign
 
-[*Anredera cordifolia*](https://weeds.dpi.nsw.gov.au/Weed/Madeiravine) — Weed of National Significance, illegal to sell in NSW, general biosecurity duty applies.
+[_Anredera cordifolia_](https://weeds.dpi.nsw.gov.au/Weed/Madeiravine) — Weed of National Significance, illegal to sell in NSW, general biosecurity duty applies.
 
 Reproduces entirely from tubers, not seed. A mature plant makes thousands: warty aerial ones at every stem node, plus underground ones up to 20cm across. Dense infestations leave up to 1,500 fallen aerial tubers per square metre, and they stay viable in soil for 5–10 years.
 
@@ -20,7 +20,7 @@ Reproduces entirely from tubers, not seed. A mature plant makes thousands: warty
 
 ## Biological control
 
-A leaf-feeding beetle, *Plectonycha correntina*, is approved for release in Australia. It depletes tuber reserves over time and suits frost- and flood-free sites. It works best **without** concurrent herbicide or physical removal, so it's an alternative to the above rather than an addition.
+A leaf-feeding beetle, _Plectonycha correntina_, is approved for release in Australia. It depletes tuber reserves over time and suits frost- and flood-free sites. It works best **without** concurrent herbicide or physical removal, so it's an alternative to the above rather than an addition.
 
 ## Keep it off the bed
 

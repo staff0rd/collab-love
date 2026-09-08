@@ -6,14 +6,14 @@ Two packets from The Seed Collection. Both full sun.
 
 _Xerochrysum bracteatum_. Perennial, Australian native. Dries and keeps indefinitely.
 
-| Sow | **1mm — needs light, so surface sow** |
-| --- | --- |
-| Soil temp | 18–21°C |
-| Germinates | 7–14 days |
-| Spacing | 55cm |
-| Height | 90cm |
-| Flowers | 80 days from sowing |
-| Sydney sowing | Sep–Dec, also Jan–Apr |
+| Sow           | **1mm — needs light, so surface sow** |
+| ------------- | ------------------------------------- |
+| Soil temp     | 18–21°C                               |
+| Germinates    | 7–14 days                             |
+| Spacing       | 55cm                                  |
+| Height        | 90cm                                  |
+| Flowers       | 80 days from sowing                   |
+| Sydney sowing | Sep–Dec, also Jan–Apr                 |
 
 Tolerates poor soil and drought. Attracts native bees and hoverflies.
 
@@ -21,13 +21,13 @@ Tolerates poor soil and drought. Attracts native bees and hoverflies.
 
 _Ismelia carinata_. Half-hardy annual. Fresh cut flower.
 
-| Sow | 4mm |
-| --- | --- |
-| Soil temp | 20–25°C |
-| Germinates | 10–21 days |
-| Spacing | 35cm |
-| Height | 60cm |
-| Flowers | 120 days from sowing |
+| Sow           | 4mm                   |
+| ------------- | --------------------- |
+| Soil temp     | 20–25°C               |
+| Germinates    | 10–21 days            |
+| Spacing       | 35cm                  |
+| Height        | 60cm                  |
+| Flowers       | 120 days from sowing  |
 | Sydney sowing | Sep–Dec, also Jan–Feb |
 
 Wants moist, well-drained soil — don't overwater. Deadhead to keep it flowering. Attracts butterflies.

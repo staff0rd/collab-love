@@ -32,12 +32,12 @@ Water every 2–3 days in summer heat, easing off for the daisies. Monthly liqui
 
 ## Later in the season
 
-| When | What |
-| --- | --- |
-| Late Nov | Daisies flower |
-| Jan | Chrysanthemums flower |
-| Apr–May | Dry the daisy heads. Pull the chrysanthemum, save seed |
-| Next Sep | Re-sow chrysanthemum. Daisies last a couple of years |
+| When     | What                                                   |
+| -------- | ------------------------------------------------------ |
+| Late Nov | Daisies flower                                         |
+| Jan      | Chrysanthemums flower                                  |
+| Apr–May  | Dry the daisy heads. Pull the chrysanthemum, save seed |
+| Next Sep | Re-sow chrysanthemum. Daisies last a couple of years   |
 
 ## Tracking
 
