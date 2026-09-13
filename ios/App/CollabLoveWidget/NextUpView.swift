@@ -1,7 +1,7 @@
 import SwiftUI
 import WidgetKit
 
-private let visibleRows = 3
+private let visibleRows = 4
 
 struct NextUpView: View {
     let entry: NextUpEntry
@@ -21,9 +21,6 @@ struct NextUpView: View {
             } else {
                 ForEach(snapshot.entries.prefix(visibleRows)) { row in
                     NextUpRow(entry: row, now: entry.date)
-                }
-                if snapshot.entries.count > visibleRows {
-                    NextUpOverflow(count: snapshot.entries.count - visibleRows)
                 }
             }
         } else {
@@ -47,17 +44,6 @@ private struct NextUpRow: View {
                 .foregroundStyle(.secondary)
         }
         .font(.caption2)
-    }
-}
-
-private struct NextUpOverflow: View {
-    let count: Int
-
-    var body: some View {
-        Text("+\(count) more")
-            .font(.caption2)
-            .lineLimit(1)
-            .foregroundStyle(.secondary)
     }
 }
 

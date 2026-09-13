@@ -8,7 +8,7 @@ struct NextUpWidget: Widget {
                 .containerBackground(.clear, for: .widget)
         }
         .configurationDisplayName("Next up")
-        .description("The next three scheduled items.")
+        .description("The next four scheduled items.")
         .supportedFamilies([.accessoryRectangular])
     }
 }

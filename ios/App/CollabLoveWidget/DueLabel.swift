@@ -19,8 +19,21 @@ enum DueLabel {
         if days < daysInWeek {
             return occurrence.formatted(.dateTime.weekday(.abbreviated))
         }
-        return occurrence.formatted(.dateTime.day().month(.abbreviated))
+        return dayOfMonth(occurrence, calendar: calendar)
     }
+
+    // The month is dropped because the snapshot only reaches 14 days out, so no day number
+    // can repeat within the window an entry can sit in. Widen the horizon and this lies.
+    private static func dayOfMonth(_ occurrence: Date, calendar: Calendar) -> String {
+        let day = calendar.component(.day, from: occurrence)
+        return ordinal.string(from: NSNumber(value: day)) ?? "\(day)"
+    }
+
+    private static let ordinal: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .ordinal
+        return formatter
+    }()
 
     private static func time(_ occurrence: Date, calendar: Calendar) -> String {
         let hour = Date.FormatStyle.dateTime.hour(.defaultDigits(amPM: .abbreviated))
