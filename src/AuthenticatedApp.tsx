@@ -13,6 +13,7 @@ import ScheduledItemDetail from "./pages/ScheduledItemDetail.tsx";
 import Settings from "./pages/Settings.tsx";
 import PainReminderManager from "./painReminders/PainReminderManager.tsx";
 import { ConnectionStatusProvider } from "./realtime/ConnectionStatusProvider.tsx";
+import WidgetSnapshotManager from "./widget/WidgetSnapshotManager.tsx";
 
 const AuthenticatedApp = () => {
   const { session, loading } = useAuth();
@@ -34,6 +35,7 @@ const AuthenticatedApp = () => {
       <ConnectionStatusProvider>
         <CalendarSyncManager />
         <PainReminderManager />
+        <WidgetSnapshotManager />
         <Routes>
           <Route path="/home" element={<Home />} />
           <Route path="/feed" element={<Feed />} />

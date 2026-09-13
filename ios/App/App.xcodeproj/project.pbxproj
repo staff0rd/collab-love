@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		207BA4463234A4097BDE8BA1 /* NextUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E02D5449E8D62C3F890DB6 /* NextUpView.swift */; };
+		233D39509B99C2324C4AF0E1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C156CEDFC4D8CDACB4191A05 /* SwiftUI.framework */; };
+		28135697883CC205E1F9E979 /* ScheduledItemSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F170A690F177A6DFA1A62B /* ScheduledItemSnapshot.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
+		4A02E80E07087EA8167BB670 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21F653C723CB5872FD99CF54 /* WidgetKit.framework */; };
 		4D22ABE92AF431CB00220026 /* CapApp-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 4D22ABE82AF431CB00220026 /* CapApp-SPM */; };
 		50379B232058CBB4000EE86E /* capacitor.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 50379B222058CBB4000EE86E /* capacitor.config.json */; };
 		504EC3081FED79650016851F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504EC3071FED79650016851F /* AppDelegate.swift */; };
@@ -15,9 +19,48 @@
 		504EC30F1FED79650016851F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 504EC30E1FED79650016851F /* Assets.xcassets */; };
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
+		5D95125D6DB7C12CEAE1D672 /* CollabLoveWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EB7B2ADB96E243C504A71865 /* CollabLoveWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7C06733006BA78ABC2590505 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B446DD168E14D7AAEAE0EE21 /* MainViewController.swift */; };
+		858D5834992625C01D6C97C9 /* ScheduledItemSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F170A690F177A6DFA1A62B /* ScheduledItemSnapshot.swift */; };
+		9D2367A6A7AE8E802D893078 /* WidgetBridgePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA535376D5A5A7FED7D9B885 /* WidgetBridgePlugin.swift */; };
+		B31754927EB7D58EBD4DA1A2 /* NextUpWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64718B88C45C64B0C2096439 /* NextUpWidget.swift */; };
+		C24D5255B4E58F43C80F9CDD /* CollabLoveWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBD28AB48B0A5DAC5CC659 /* CollabLoveWidgetBundle.swift */; };
+		DFD87C7088D90DD432783EF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A71BB8AE0E180AF8B68478C /* Foundation.framework */; };
+		E02226E816CE7D34E9A9C93F /* DueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAE044BF96CC8896398257DB /* DueLabel.swift */; };
+		F4665689F22CB9713B5FB836 /* NextUpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2983ACDC9369D432D4ED79DF /* NextUpProvider.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		C415F488E2989CE8B5081B81 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 504EC2FC1FED79650016851F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0D7B33CBEFE94572442E908E;
+			remoteInfo = CollabLoveWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		7F3BA82E4EF25A7A900696EE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5D95125D6DB7C12CEAE1D672 /* CollabLoveWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		15EBD28AB48B0A5DAC5CC659 /* CollabLoveWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CollabLoveWidgetBundle.swift; sourceTree = "<group>"; };
+		20E02D5449E8D62C3F890DB6 /* NextUpView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NextUpView.swift; sourceTree = "<group>"; };
+		21F653C723CB5872FD99CF54 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
+		23F170A690F177A6DFA1A62B /* ScheduledItemSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScheduledItemSnapshot.swift; sourceTree = "<group>"; };
+		2983ACDC9369D432D4ED79DF /* NextUpProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NextUpProvider.swift; sourceTree = "<group>"; };
+		2A71BB8AE0E180AF8B68478C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
 		504EC3041FED79650016851F /* App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = App.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -26,9 +69,17 @@
 		504EC30E1FED79650016851F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		504EC3111FED79650016851F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		504EC3131FED79650016851F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1B2C3D4E5F600000000EN01 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		50B271D01FEDC1A000F3C39B /* public */ = {isa = PBXFileReference; lastKnownFileType = folder; path = public; sourceTree = "<group>"; };
+		64718B88C45C64B0C2096439 /* NextUpWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NextUpWidget.swift; sourceTree = "<group>"; };
 		958DCC722DB07C7200EA8C5F /* debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = debug.xcconfig; path = ../debug.xcconfig; sourceTree = SOURCE_ROOT; };
+		A1B2C3D4E5F600000000EN01 /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		B446DD168E14D7AAEAE0EE21 /* MainViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		C156CEDFC4D8CDACB4191A05 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
+		C92D44CB79C45B16D320643B /* CollabLoveWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CollabLoveWidget.entitlements; sourceTree = "<group>"; };
+		CA535376D5A5A7FED7D9B885 /* WidgetBridgePlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetBridgePlugin.swift; sourceTree = "<group>"; };
+		EB7B2ADB96E243C504A71865 /* CollabLoveWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CollabLoveWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED609E25C213CAF9E655B9E7 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FAE044BF96CC8896398257DB /* DueLabel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DueLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,15 +91,43 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5CE5E5FC21A5C0DAA292F492 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFD87C7088D90DD432783EF8 /* Foundation.framework in Frameworks */,
+				4A02E80E07087EA8167BB670 /* WidgetKit.framework in Frameworks */,
+				233D39509B99C2324C4AF0E1 /* SwiftUI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		22437139CEE8115A86347410 /* CollabLoveWidget */ = {
+			isa = PBXGroup;
+			children = (
+				15EBD28AB48B0A5DAC5CC659 /* CollabLoveWidgetBundle.swift */,
+				64718B88C45C64B0C2096439 /* NextUpWidget.swift */,
+				2983ACDC9369D432D4ED79DF /* NextUpProvider.swift */,
+				20E02D5449E8D62C3F890DB6 /* NextUpView.swift */,
+				FAE044BF96CC8896398257DB /* DueLabel.swift */,
+				ED609E25C213CAF9E655B9E7 /* Info.plist */,
+				C92D44CB79C45B16D320643B /* CollabLoveWidget.entitlements */,
+			);
+			name = CollabLoveWidget;
+			path = CollabLoveWidget;
+			sourceTree = "<group>";
+		};
 		504EC2FB1FED79650016851F = {
 			isa = PBXGroup;
 			children = (
 				958DCC722DB07C7200EA8C5F /* debug.xcconfig */,
 				504EC3061FED79650016851F /* App */,
 				504EC3051FED79650016851F /* Products */,
+				7C9EB4D13E2979775509CAE9 /* Frameworks */,
+				22437139CEE8115A86347410 /* CollabLoveWidget */,
+				B1C4D6C6C83AC5C5300E6212 /* Shared */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				504EC3041FED79650016851F /* App.app */,
+				EB7B2ADB96E243C504A71865 /* CollabLoveWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,13 +152,59 @@
 				A1B2C3D4E5F600000000EN01 /* App.entitlements */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
+				CA535376D5A5A7FED7D9B885 /* WidgetBridgePlugin.swift */,
+				B446DD168E14D7AAEAE0EE21 /* MainViewController.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		7C9EB4D13E2979775509CAE9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DB27C6519737115620FA1D9D /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B1C4D6C6C83AC5C5300E6212 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				23F170A690F177A6DFA1A62B /* ScheduledItemSnapshot.swift */,
+			);
+			name = Shared;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		DB27C6519737115620FA1D9D /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2A71BB8AE0E180AF8B68478C /* Foundation.framework */,
+				21F653C723CB5872FD99CF54 /* WidgetKit.framework */,
+				C156CEDFC4D8CDACB4191A05 /* SwiftUI.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0D7B33CBEFE94572442E908E /* CollabLoveWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AAEE9A209EB562BE08030718 /* Build configuration list for PBXNativeTarget "CollabLoveWidget" */;
+			buildPhases = (
+				B67947686F14116357BD9C92 /* Sources */,
+				5CE5E5FC21A5C0DAA292F492 /* Frameworks */,
+				ECC51481F96A9EAC315C1954 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CollabLoveWidget;
+			productName = CollabLoveWidget;
+			productReference = EB7B2ADB96E243C504A71865 /* CollabLoveWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		504EC3031FED79650016851F /* App */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 504EC3161FED79650016851F /* Build configuration list for PBXNativeTarget "App" */;
@@ -86,10 +212,12 @@
 				504EC3001FED79650016851F /* Sources */,
 				504EC3011FED79650016851F /* Frameworks */,
 				504EC3021FED79650016851F /* Resources */,
+				7F3BA82E4EF25A7A900696EE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6597776DC3A1B829F33FD1E9 /* PBXTargetDependency */,
 			);
 			name = App;
 			packageProductDependencies = (
@@ -132,6 +260,7 @@
 			projectRoot = "";
 			targets = (
 				504EC3031FED79650016851F /* App */,
+				0D7B33CBEFE94572442E908E /* CollabLoveWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -150,6 +279,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ECC51481F96A9EAC315C1954 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -158,10 +294,35 @@
 			buildActionMask = 2147483647;
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				858D5834992625C01D6C97C9 /* ScheduledItemSnapshot.swift in Sources */,
+				9D2367A6A7AE8E802D893078 /* WidgetBridgePlugin.swift in Sources */,
+				7C06733006BA78ABC2590505 /* MainViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B67947686F14116357BD9C92 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C24D5255B4E58F43C80F9CDD /* CollabLoveWidgetBundle.swift in Sources */,
+				B31754927EB7D58EBD4DA1A2 /* NextUpWidget.swift in Sources */,
+				F4665689F22CB9713B5FB836 /* NextUpProvider.swift in Sources */,
+				207BA4463234A4097BDE8BA1 /* NextUpView.swift in Sources */,
+				E02226E816CE7D34E9A9C93F /* DueLabel.swift in Sources */,
+				28135697883CC205E1F9E979 /* ScheduledItemSnapshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6597776DC3A1B829F33FD1E9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CollabLoveWidget;
+			target = 0D7B33CBEFE94572442E908E /* CollabLoveWidget */;
+			targetProxy = C415F488E2989CE8B5081B81 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		504EC30B1FED79650016851F /* Main.storyboard */ = {
@@ -338,6 +499,57 @@
 			};
 			name = Release;
 		};
+		58F4D1ED67A76953206BDCFE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CollabLoveWidget/CollabLoveWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CollabLoveWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = love.collab.app.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		AA1CBF6B120DC358D8DCB8DD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_ENTITLEMENTS = CollabLoveWidget/CollabLoveWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CollabLoveWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = love.collab.app.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -355,6 +567,15 @@
 			buildConfigurations = (
 				504EC3171FED79650016851F /* Debug */,
 				504EC3181FED79650016851F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AAEE9A209EB562BE08030718 /* Build configuration list for PBXNativeTarget "CollabLoveWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58F4D1ED67A76953206BDCFE /* Release */,
+				AA1CBF6B120DC358D8DCB8DD /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

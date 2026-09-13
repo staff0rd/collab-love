@@ -3,6 +3,9 @@ default_platform(:ios)
 XCODEPROJ = "App/App.xcodeproj"
 SCHEME = "App"
 APP_IDENTIFIER = "love.collab.app"
+APP_TARGET = "App"
+WIDGET_IDENTIFIER = "love.collab.app.widget"
+WIDGET_TARGET = "CollabLoveWidget"
 
 platform :ios do
   desc "Build, sign and upload a new build to TestFlight"
@@ -31,14 +34,27 @@ platform :ios do
       build_number: ENV.fetch("BUILD_NUMBER")
     )
 
-    profile_name = "match AppStore #{APP_IDENTIFIER}"
+    app_profile_name = "match AppStore #{APP_IDENTIFIER}"
+    widget_profile_name = "match AppStore #{WIDGET_IDENTIFIER}"
+
     update_code_signing_settings(
       path: XCODEPROJ,
       use_automatic_signing: false,
       team_id: team_id,
       code_sign_identity: "Apple Distribution",
-      profile_name: profile_name,
-      bundle_identifier: APP_IDENTIFIER
+      profile_name: app_profile_name,
+      bundle_identifier: APP_IDENTIFIER,
+      targets: [APP_TARGET]
+    )
+
+    update_code_signing_settings(
+      path: XCODEPROJ,
+      use_automatic_signing: false,
+      team_id: team_id,
+      code_sign_identity: "Apple Distribution",
+      profile_name: widget_profile_name,
+      bundle_identifier: WIDGET_IDENTIFIER,
+      targets: [WIDGET_TARGET]
     )
 
     build_app(
@@ -48,7 +64,8 @@ platform :ios do
       export_options: {
         signingStyle: "manual",
         provisioningProfiles: {
-          APP_IDENTIFIER => profile_name
+          APP_IDENTIFIER => app_profile_name,
+          WIDGET_IDENTIFIER => widget_profile_name
         }
       }
     )

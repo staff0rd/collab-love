@@ -1,4 +1,5 @@
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import { isResolved } from "./isResolved.ts";
 import { relativeDayLabel } from "./relativeDayLabel.ts";
 import { scheduledItemEntries, type ScheduledItemEntry } from "./scheduledItemEntries.ts";
 
@@ -64,9 +65,6 @@ const addEntry = (
     relativeLabel: descriptor.relativeLabel,
   });
 };
-
-const isResolved = (item: ScheduledItem): boolean =>
-  item.recurrence === "once" && item.lastCompletedOccurrence !== null;
 
 export const groupScheduledItems = (items: ScheduledItem[], now: Date): ScheduledItemGroup[] => {
   const context = dayContext(now);
