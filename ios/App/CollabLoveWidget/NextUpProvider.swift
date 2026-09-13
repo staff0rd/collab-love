@@ -15,7 +15,14 @@ struct NextUpProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NextUpEntry>) -> Void) {
-        completion(Timeline(entries: [currentEntry()], policy: .atEnd))
+        let entry = currentEntry()
+        completion(Timeline(entries: [entry], policy: .after(nextMidnight(after: entry.date))))
+    }
+
+    private func nextMidnight(after date: Date) -> Date {
+        let calendar = Calendar.current
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) ?? date
+        return calendar.startOfDay(for: tomorrow)
     }
 
     private func currentEntry() -> NextUpEntry {
