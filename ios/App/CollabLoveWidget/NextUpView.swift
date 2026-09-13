@@ -2,6 +2,7 @@ import SwiftUI
 import WidgetKit
 
 private let visibleRows = 4
+private let homeDeepLink = URL(string: "collab-love://home")
 
 struct NextUpView: View {
     let entry: NextUpEntry
@@ -11,7 +12,7 @@ struct NextUpView: View {
             content
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .widgetURL(DeepLink.home)
+        .widgetURL(homeDeepLink)
     }
 
     @ViewBuilder
@@ -21,9 +22,7 @@ struct NextUpView: View {
                 NextUpMessage(headline: "Nothing scheduled", detail: "for the next two weeks")
             } else {
                 ForEach(snapshot.entries.prefix(visibleRows)) { row in
-                    Link(destination: DeepLink.item(row.itemId)) {
-                        NextUpRow(entry: row, now: entry.date)
-                    }
+                    NextUpRow(entry: row, now: entry.date)
                 }
             }
         } else {
