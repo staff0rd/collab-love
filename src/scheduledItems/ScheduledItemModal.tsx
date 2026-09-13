@@ -1,16 +1,6 @@
-import { type FormEvent, useEffect } from "react";
+import { useEffect } from "react";
 
-import { Button } from "@/components/ui/button.tsx";
-import {
-  Sheet,
-  SheetBody,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet.tsx";
-
+import FormSheet from "../components/FormSheet.tsx";
 import { useHousehold } from "../household/useHousehold.ts";
 
 import type { ScheduledItem } from "./getScheduledItems.ts";
@@ -46,50 +36,18 @@ const ScheduledItemModal = ({ isOpen, item, onClose, onSaved }: ScheduledItemMod
     heading = "Edit item";
   }
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    void form.handleSave();
-  };
-
   return (
-    <Sheet
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose();
-        }
-      }}
+    <FormSheet
+      isOpen={isOpen}
+      title={heading}
+      description="Schedule something for your household to see what's coming up."
+      error={form.error}
+      canSave={form.canSave}
+      onSave={form.handleSave}
+      onClose={onClose}
     >
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>{heading}</SheetTitle>
-          <SheetDescription>
-            Schedule something for your household to see what&apos;s coming up.
-          </SheetDescription>
-        </SheetHeader>
-
-        <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-          <SheetBody className="flex flex-col gap-4">
-            <ScheduledItemFields form={form} members={household?.members ?? []} />
-
-            {form.error && (
-              <p role="alert" className="text-sm text-destructive">
-                {form.error}
-              </p>
-            )}
-          </SheetBody>
-
-          <SheetFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!form.canSave}>
-              Save
-            </Button>
-          </SheetFooter>
-        </form>
-      </SheetContent>
-    </Sheet>
+      <ScheduledItemFields form={form} members={household?.members ?? []} />
+    </FormSheet>
   );
 };
 

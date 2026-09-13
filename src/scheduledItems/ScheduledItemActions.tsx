@@ -4,18 +4,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 
-import type { BumpScope } from "./bumpScheduledItem.ts";
 import DeleteItemDialog from "./DeleteItemDialog.tsx";
 import type { ScheduledItem } from "./getScheduledItems.ts";
+import type { ScheduledItemActionHandlers } from "./scheduledItemActionHandlers.ts";
 import ScheduledItemActionsMenu from "./ScheduledItemActionsMenu.tsx";
-import type { SnoozeTarget } from "./snoozeTarget.ts";
 
-type ScheduledItemActionsProps = {
+type ScheduledItemActionsProps = ScheduledItemActionHandlers & {
   item: ScheduledItem;
-  onEdit: (item: ScheduledItem) => void;
-  onDelete: (item: ScheduledItem) => void;
-  onComplete: (item: ScheduledItem) => void;
-  onBump: (item: ScheduledItem, target: SnoozeTarget, scope: BumpScope) => void;
   showComplete?: boolean;
   showBump?: boolean;
 };

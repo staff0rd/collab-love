@@ -1,15 +1,6 @@
-import { type FormEvent, useEffect } from "react";
+import { useEffect } from "react";
 
-import { Button } from "@/components/ui/button.tsx";
-import {
-  Sheet,
-  SheetBody,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet.tsx";
+import FormSheet from "../components/FormSheet.tsx";
 
 import FeatureRequestFields from "./FeatureRequestFields.tsx";
 import type { FeatureRequest } from "./getFeatureRequests.ts";
@@ -43,50 +34,18 @@ const FeatureRequestModal = ({ isOpen, item, onClose, onSaved }: FeatureRequestM
     heading = "Edit request";
   }
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    void form.handleSave();
-  };
-
   return (
-    <Sheet
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) {
-          onClose();
-        }
-      }}
+    <FormSheet
+      isOpen={isOpen}
+      title={heading}
+      description="Capture something your household should build so it doesn't get lost."
+      error={form.error}
+      canSave={form.canSave}
+      onSave={form.handleSave}
+      onClose={onClose}
     >
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>{heading}</SheetTitle>
-          <SheetDescription>
-            Capture something your household should build so it doesn&apos;t get lost.
-          </SheetDescription>
-        </SheetHeader>
-
-        <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-          <SheetBody className="flex flex-col gap-4">
-            <FeatureRequestFields form={form} />
-
-            {form.error && (
-              <p role="alert" className="text-sm text-destructive">
-                {form.error}
-              </p>
-            )}
-          </SheetBody>
-
-          <SheetFooter>
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!form.canSave}>
-              Save
-            </Button>
-          </SheetFooter>
-        </form>
-      </SheetContent>
-    </Sheet>
+      <FeatureRequestFields form={form} />
+    </FormSheet>
   );
 };
 
