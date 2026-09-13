@@ -13,6 +13,7 @@
     "assets:generate": "capacitor-assets generate --ios",
     "supabase:deploy": "supabase db push",
     "supabase:config": "scripts/push-supabase-config.sh",
+    "supabase:functions": "supabase functions deploy notify-devices",
     "verify:lint": "oxlint --config .oxlintrc.json --fix .",
     "verify:format": "oxfmt .",
     "verify:build": "npm run build",

@@ -193,3 +193,51 @@ Services ID defaults to `love.collab.app.web`; override it by setting an `APPLE_
 env var on the workflow step if that ever changes.
 
 The minted secret is masked in the workflow logs (`::add-mask::`), so it is never printed.
+
+## 10. Silent push to refresh the widget
+
+The lock screen widget reads an App Group snapshot that only the app can write, so a change made on one device does not reach the other device's widget until that app is next foregrounded. A database webhook on `household_events` calls the `notify-devices` edge function, which sends a `content-available` push to every device in the household except those of the user who made the change.
+
+The chain is: a write to `scheduled_items` → the `log_household_event` trigger appends to `household_events` → the `household_events_notify_devices` trigger posts to the function with `pg_net` → the function reads `device_tokens` with the service role and sends to APNs. Only `scheduled_items` is covered; widening it is a change to the trigger's `when` clause.
+
+### Apple Developer
+
+1. **App ID** — under _Identifiers_, enable **Push Notifications** on `love.collab.app`. `match` regenerates a profile from the App ID's current capabilities but does not enable them, so this is a portal step. Run `assist run match:sync` on a Mac afterwards or CI's `beta` lane archives with a profile that has no `aps-environment`.
+2. **Key** — create a _Key_ with **Apple Push Notifications service (APNs)** enabled and download the `.p8` (you only get one download). Note the **Key ID** and your **Team ID**. This is a different key from the Sign in with Apple one.
+
+### Function secrets
+
+The `.p8` never goes in the repo. Set it on the linked project, from the directory holding the downloaded key:
+
+```sh
+supabase secrets set \
+  APNS_KEY_ID=<10-char key id> \
+  APNS_TEAM_ID=<your team id> \
+  APNS_PRIVATE_KEY="$(cat AuthKey_<key id>.p8)"
+```
+
+The function signs its own ES256 provider JWT from these and reuses it for 50 minutes; Apple rejects a provider that re-signs more often than roughly hourly with `TooManyProviderTokenUpdates`.
+
+It sends to `api.push.apple.com` and retries on `api.sandbox.push.apple.com` when Apple answers `BadDeviceToken`, so a device running a debug build and a device on TestFlight are both reachable without a second setting.
+
+### Deploy the function
+
+```sh
+assist run supabase:functions
+```
+
+### Vault secrets
+
+The webhook trigger reads the function's URL and the service role key from Vault, because a migration is in git and the key is not. Seed them once in the **SQL editor** (they are secrets, so `scripts/db-query.sh` will not do it — it only runs reads):
+
+```sql
+select vault.create_secret(
+  'https://<project ref>.supabase.co/functions/v1/notify-devices',
+  'notify_devices_url'
+);
+select vault.create_secret('<service role key>', 'notify_devices_service_key');
+```
+
+Replace a value later with `select vault.update_secret('<id>', '<new value>')`, the id coming from `select id, name from vault.secrets`.
+
+Until both exist the trigger logs `notify-devices is not configured` and sends nothing, which is also what a local `supabase start` does — no local database posts a household's writes at the production project.

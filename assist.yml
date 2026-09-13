@@ -11,6 +11,12 @@ run:
       - push
   - name: supabase:config
     command: scripts/push-supabase-config.sh
+  - name: supabase:functions
+    command: supabase
+    args:
+      - functions
+      - deploy
+      - notify-devices
   - name: match:sync
     command: bash
     args:

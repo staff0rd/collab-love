@@ -23,6 +23,7 @@
 		7C06733006BA78ABC2590505 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B446DD168E14D7AAEAE0EE21 /* MainViewController.swift */; };
 		858D5834992625C01D6C97C9 /* ScheduledItemSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F170A690F177A6DFA1A62B /* ScheduledItemSnapshot.swift */; };
 		9D2367A6A7AE8E802D893078 /* WidgetBridgePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA535376D5A5A7FED7D9B885 /* WidgetBridgePlugin.swift */; };
+		3E91A0C74D5B2F108AC61B34 /* SilentPushPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2F84D1C09E37A25D14EF60 /* SilentPushPlugin.swift */; };
 		B31754927EB7D58EBD4DA1A2 /* NextUpWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64718B88C45C64B0C2096439 /* NextUpWidget.swift */; };
 		C24D5255B4E58F43C80F9CDD /* CollabLoveWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15EBD28AB48B0A5DAC5CC659 /* CollabLoveWidgetBundle.swift */; };
 		DFD87C7088D90DD432783EF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A71BB8AE0E180AF8B68478C /* Foundation.framework */; };
@@ -77,6 +78,7 @@
 		C156CEDFC4D8CDACB4191A05 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		C92D44CB79C45B16D320643B /* CollabLoveWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = CollabLoveWidget.entitlements; sourceTree = "<group>"; };
 		CA535376D5A5A7FED7D9B885 /* WidgetBridgePlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WidgetBridgePlugin.swift; sourceTree = "<group>"; };
+		6B2F84D1C09E37A25D14EF60 /* SilentPushPlugin.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SilentPushPlugin.swift; sourceTree = "<group>"; };
 		EB7B2ADB96E243C504A71865 /* CollabLoveWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CollabLoveWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED609E25C213CAF9E655B9E7 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FAE044BF96CC8896398257DB /* DueLabel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DueLabel.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
 				CA535376D5A5A7FED7D9B885 /* WidgetBridgePlugin.swift */,
+				6B2F84D1C09E37A25D14EF60 /* SilentPushPlugin.swift */,
 				B446DD168E14D7AAEAE0EE21 /* MainViewController.swift */,
 			);
 			path = App;
@@ -296,6 +299,7 @@
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				858D5834992625C01D6C97C9 /* ScheduledItemSnapshot.swift in Sources */,
 				9D2367A6A7AE8E802D893078 /* WidgetBridgePlugin.swift in Sources */,
+				3E91A0C74D5B2F108AC61B34 /* SilentPushPlugin.swift in Sources */,
 				7C06733006BA78ABC2590505 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
