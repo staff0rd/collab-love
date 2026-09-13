@@ -12,7 +12,15 @@
     "ios:open": "cap open ios",
     "assets:generate": "capacitor-assets generate --ios",
     "supabase:deploy": "supabase db push",
-    "supabase:config": "scripts/push-supabase-config.sh"
+    "supabase:config": "scripts/push-supabase-config.sh",
+    "verify:lint": "oxlint --config .oxlintrc.json --fix .",
+    "verify:format": "oxfmt .",
+    "verify:build": "npm run build",
+    "verify:boot": "node scripts/boot-check.mjs",
+    "verify:knip": "knip --no-progress --treat-config-hints-as-errors",
+    "verify:duplicate-code": "jscpd --format \"typescript,tsx\" --exit-code 1 --ignore \"**/*.test.*\" -r consoleFull src",
+    "verify:circular-deps": "skott --displayMode=raw --showCircularDependencies --exitCodeOnCircularDependencies=1 src/main.tsx",
+    "verify:maintainability": "assist complexity maintainability ./src --threshold 60"
   },
   "dependencies": {
     "@capacitor-community/apple-sign-in": "^7.1.0",
@@ -53,6 +61,7 @@
     "oxfmt": "^0.57.0",
     "oxlint": "^1.72.0",
     "puppeteer": "^25.3.0",
+    "skott": "0.35.11",
     "tailwindcss": "^4.3.2",
     "typescript": "~6.0.3",
     "vite": "^8.1.3"
