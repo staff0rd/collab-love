@@ -11,6 +11,7 @@ struct NextUpView: View {
             content
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .widgetURL(DeepLink.home)
     }
 
     @ViewBuilder
@@ -20,7 +21,9 @@ struct NextUpView: View {
                 NextUpMessage(headline: "Nothing scheduled", detail: "for the next two weeks")
             } else {
                 ForEach(snapshot.entries.prefix(visibleRows)) { row in
-                    NextUpRow(entry: row, now: entry.date)
+                    Link(destination: DeepLink.item(row.itemId)) {
+                        NextUpRow(entry: row, now: entry.date)
+                    }
                 }
             }
         } else {

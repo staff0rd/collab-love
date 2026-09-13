@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		207BA4463234A4097BDE8BA1 /* NextUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E02D5449E8D62C3F890DB6 /* NextUpView.swift */; };
+		20B7E4419F3D41A6C0517E82 /* DeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C8A61D5F0B74E2A9D14C7B3 /* DeepLink.swift */; };
 		233D39509B99C2324C4AF0E1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C156CEDFC4D8CDACB4191A05 /* SwiftUI.framework */; };
 		28135697883CC205E1F9E979 /* ScheduledItemSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23F170A690F177A6DFA1A62B /* ScheduledItemSnapshot.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
@@ -60,6 +61,7 @@
 		21F653C723CB5872FD99CF54 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		23F170A690F177A6DFA1A62B /* ScheduledItemSnapshot.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScheduledItemSnapshot.swift; sourceTree = "<group>"; };
 		2983ACDC9369D432D4ED79DF /* NextUpProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NextUpProvider.swift; sourceTree = "<group>"; };
+		3C8A61D5F0B74E2A9D14C7B3 /* DeepLink.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		2A71BB8AE0E180AF8B68478C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
 		50379B222058CBB4000EE86E /* capacitor.config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = capacitor.config.json; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 				2983ACDC9369D432D4ED79DF /* NextUpProvider.swift */,
 				20E02D5449E8D62C3F890DB6 /* NextUpView.swift */,
 				FAE044BF96CC8896398257DB /* DueLabel.swift */,
+				3C8A61D5F0B74E2A9D14C7B3 /* DeepLink.swift */,
 				ED609E25C213CAF9E655B9E7 /* Info.plist */,
 				C92D44CB79C45B16D320643B /* CollabLoveWidget.entitlements */,
 			);
@@ -309,6 +312,7 @@
 				F4665689F22CB9713B5FB836 /* NextUpProvider.swift in Sources */,
 				207BA4463234A4097BDE8BA1 /* NextUpView.swift in Sources */,
 				E02226E816CE7D34E9A9C93F /* DueLabel.swift in Sources */,
+				20B7E4419F3D41A6C0517E82 /* DeepLink.swift in Sources */,
 				28135697883CC205E1F9E979 /* ScheduledItemSnapshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -6,7 +6,7 @@ import { useAuth } from "../auth/useAuth.ts";
 import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 
 import { scheduledItemSnapshot } from "./scheduledItemSnapshot.ts";
-import { writeScheduledItemSnapshot } from "./writeScheduledItemSnapshot.ts";
+import { writeScheduledItemSnapshot } from "./scheduledItemSnapshotStore.ts";
 
 export const useWidgetSnapshot = (items: ScheduledItem[], loading: boolean): void => {
   const { session } = useAuth();

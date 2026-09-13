@@ -17,18 +17,28 @@ struct ScheduledItemSnapshot: Decodable {
 
 enum WidgetSnapshotStore {
     static let appGroup = "group.love.collab.app"
-    static let key = "scheduled-item-snapshot"
+
+    private static let key = "scheduled-item-snapshot"
+    private static var sharedDefaults: UserDefaults? { UserDefaults(suiteName: appGroup) }
 
     static func write(_ value: String) -> Bool {
-        guard let defaults = UserDefaults(suiteName: appGroup) else {
+        guard let defaults = sharedDefaults else {
             return false
         }
         defaults.set(value, forKey: key)
         return true
     }
 
+    static func clear() -> Bool {
+        guard let defaults = sharedDefaults else {
+            return false
+        }
+        defaults.removeObject(forKey: key)
+        return true
+    }
+
     static func read() -> ScheduledItemSnapshot? {
-        guard let defaults = UserDefaults(suiteName: appGroup),
+        guard let defaults = sharedDefaults,
               let data = defaults.string(forKey: key)?.data(using: .utf8)
         else {
             return nil
