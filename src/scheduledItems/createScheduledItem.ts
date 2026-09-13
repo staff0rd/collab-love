@@ -12,6 +12,7 @@ export type NewScheduledItem = {
 };
 
 export const scheduledItemToRow = (item: NewScheduledItem) => ({
+  last_intent: null,
   notes: item.notes,
   owner_user_id: item.ownerUserId,
   recurrence: item.recurrence,
