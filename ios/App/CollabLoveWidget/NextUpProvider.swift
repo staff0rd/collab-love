@@ -1,5 +1,7 @@
 import WidgetKit
 
+private let snapshotHorizonDays = 14
+
 struct NextUpEntry: TimelineEntry {
     let date: Date
     let snapshot: ScheduledItemSnapshot?
@@ -16,13 +18,18 @@ struct NextUpProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<NextUpEntry>) -> Void) {
         let entry = currentEntry()
-        completion(Timeline(entries: [entry], policy: .after(nextMidnight(after: entry.date))))
+        let midnights = midnights(after: entry.date, days: snapshotHorizonDays)
+        // Each entry re-labels the same snapshot against its own date, so a run of midnight
+        // entries rolls the day labels over even when the reload request is budgeted away.
+        let entries = [entry] + midnights.map { NextUpEntry(date: $0, snapshot: entry.snapshot) }
+        completion(Timeline(entries: entries, policy: midnights.first.map { .after($0) } ?? .atEnd))
     }
 
-    private func nextMidnight(after date: Date) -> Date {
+    private func midnights(after date: Date, days: Int) -> [Date] {
         let calendar = Calendar.current
-        let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) ?? date
-        return calendar.startOfDay(for: tomorrow)
+        return (1...days).compactMap { day in
+            calendar.date(byAdding: .day, value: day, to: date).map(calendar.startOfDay)
+        }
     }
 
     private func currentEntry() -> NextUpEntry {
