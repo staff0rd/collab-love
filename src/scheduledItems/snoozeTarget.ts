@@ -21,15 +21,15 @@ const ONE_DAY = 1;
 const ONE_WEEK = 7;
 const ONE_MONTH = 1;
 
-const snoozeDay = (target: SnoozeTarget, now: Date): Date => {
+const snoozeDay = (target: SnoozeTarget, from: Date): Date => {
   if (target === "tomorrow") {
-    return addDays(now, ONE_DAY);
+    return addDays(from, ONE_DAY);
   }
   if (target === "nextWeek") {
-    return addDays(now, ONE_WEEK);
+    return addDays(from, ONE_WEEK);
   }
-  return shiftMonths(now, ONE_MONTH);
+  return shiftMonths(from, ONE_MONTH);
 };
 
-export const snoozeTargetDate = (target: SnoozeTarget, originalTime: Date, now: Date): Date =>
-  atTimeOf(snoozeDay(target, now), originalTime);
+export const snoozeTargetDate = (target: SnoozeTarget, originalTime: Date, from: Date): Date =>
+  atTimeOf(snoozeDay(target, from), originalTime);
