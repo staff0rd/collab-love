@@ -8,16 +8,16 @@ import type { ScheduledItem } from "../scheduledItems/getScheduledItems.ts";
 import { scheduledItemSnapshot } from "./scheduledItemSnapshot.ts";
 import { writeScheduledItemSnapshot } from "./scheduledItemSnapshotStore.ts";
 
-export const useWidgetSnapshot = (items: ScheduledItem[], loading: boolean): void => {
+export const useWidgetSnapshot = (items: ScheduledItem[], ready: boolean): void => {
   const { session } = useAuth();
   const userId = session?.user.id ?? null;
 
   useEffect(() => {
-    if (!Capacitor.isNativePlatform() || loading || userId === null) {
+    if (!Capacitor.isNativePlatform() || !ready || userId === null) {
       return;
     }
     writeScheduledItemSnapshot(scheduledItemSnapshot(items, userId, new Date())).catch((cause) => {
       console.error("Failed to write the widget snapshot", cause);
     });
-  }, [items, loading, userId]);
+  }, [items, ready, userId]);
 };
