@@ -25,3 +25,16 @@ run:
 commit:
   push: true
   pull: true
+releases:
+  streams:
+    - repo: staff0rd/collab-love
+      name: collab-love
+      workflow: web-deploy.yml
+      nodes:
+        - id: web-prod
+          kind: build
+        - id: testflight
+          environment: testflight
+      edges:
+        - - web-prod
+          - testflight
