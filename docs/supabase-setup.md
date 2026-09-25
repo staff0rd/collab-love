@@ -203,17 +203,17 @@ The chain is: a write to `scheduled_items` → the `log_household_event` trigger
 ### Apple Developer
 
 1. **App ID** — under _Identifiers_, enable **Push Notifications** on `love.collab.app`. `match` regenerates a profile from the App ID's current capabilities but does not enable them, so this is a portal step. Run `assist run match:sync` on a Mac afterwards or CI's `beta` lane archives with a profile that has no `aps-environment`.
-2. **Key** — create a _Key_ with **Apple Push Notifications service (APNs)** enabled and download the `.p8` (you only get one download). Note the **Key ID** and your **Team ID**. This is a different key from the Sign in with Apple one.
+2. **Key** — create a _Key_ with **Apple Push Notifications service (APNs)** enabled, scoped to **Sandbox & Production** so the one key signs for both hosts, and download the `.p8` (you only get one download). Note the **Key ID** and your **Team ID**. This is a third key, separate from the Sign in with Apple one and the App Store Connect API one. Leave the App ID's _Apple Push Notification service SSL Certificates_ panel empty — that is the older certificate-based auth, which expires yearly and is per-App-ID; the `.p8` replaces it.
 
 ### Function secrets
 
-The `.p8` never goes in the repo. Set it on the linked project, from the directory holding the downloaded key:
+The `.p8` never goes in the repo. It lives in 1Password at `op://Private/collab-love APNs key/AuthKey_8T2FM45363.p8`, and is set on the linked project from there:
 
 ```sh
 supabase secrets set \
-  APNS_KEY_ID=<10-char key id> \
-  APNS_TEAM_ID=<your team id> \
-  APNS_PRIVATE_KEY="$(cat AuthKey_<key id>.p8)"
+  APNS_KEY_ID=8T2FM45363 \
+  APNS_TEAM_ID=D663PHG24B \
+  APNS_PRIVATE_KEY="$(op read 'op://Private/collab-love APNs key/AuthKey_8T2FM45363.p8')"
 ```
 
 The function signs its own ES256 provider JWT from these and reuses it for 50 minutes; Apple rejects a provider that re-signs more often than roughly hourly with `TooManyProviderTokenUpdates`.
