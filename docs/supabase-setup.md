@@ -228,7 +228,7 @@ assist run supabase:functions
 
 ### Vault secrets
 
-The webhook trigger reads the function's URL and the service role key from Vault, because a migration is in git and the key is not. Seed them once in the **SQL editor** (they are secrets, so `scripts/db-query.sh` will not do it — it only runs reads):
+The webhook trigger reads the function's URL and the service role key from Vault, because a migration is in git and the key is not. Seed them once in the **SQL editor**, which is the only route: `vault.create_secret` is executable by `supabase_admin`, `postgres` and `service_role`, and the Management API query endpoint behind `scripts/db-query.sh` connects as `supabase_read_only_user` whatever `read_only` is set to, so it fails with "permission denied for function create_secret".
 
 ```sql
 select vault.create_secret(
