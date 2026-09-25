@@ -216,6 +216,8 @@ supabase secrets set \
   APNS_PRIVATE_KEY="$(op read 'op://Private/collab-love APNs key/AuthKey_8T2FM45363.p8')"
 ```
 
+`NOTIFY_DEVICES_SECRET` is the fourth secret, and is what the webhook proves itself with. It is a random value belonging to this one call, not a project key: `verify_jwt` is off for this function because satisfying it would admit any signed-in member's JWT, and because the alternative is keeping a credential that bypasses RLS in the database purely to authenticate an HTTP call. Rotating it means setting it here and updating the matching Vault secret below.
+
 The function signs its own ES256 provider JWT from these and reuses it for 50 minutes; Apple rejects a provider that re-signs more often than roughly hourly with `TooManyProviderTokenUpdates`.
 
 It sends to `api.push.apple.com` and retries on `api.sandbox.push.apple.com` when Apple answers `BadDeviceToken`, so a device running a debug build and a device on TestFlight are both reachable without a second setting.
@@ -228,14 +230,14 @@ assist run supabase:functions
 
 ### Vault secrets
 
-The webhook trigger reads the function's URL and the service role key from Vault, because a migration is in git and the key is not. Seed them once in the **SQL editor**, which is the only route: `vault.create_secret` is executable by `supabase_admin`, `postgres` and `service_role`, and the Management API query endpoint behind `scripts/db-query.sh` connects as `supabase_read_only_user` whatever `read_only` is set to, so it fails with "permission denied for function create_secret".
+The webhook trigger reads the function's URL and `NOTIFY_DEVICES_SECRET` from Vault, because a migration is in git and the secret is not. Seed them once in the **SQL editor**, which is the only route: `vault.create_secret` is executable by `supabase_admin`, `postgres` and `service_role`, and the Management API query endpoint behind `scripts/db-query.sh` connects as `supabase_read_only_user` whatever `read_only` is set to, so it fails with "permission denied for function create_secret".
 
 ```sql
 select vault.create_secret(
   'https://<project ref>.supabase.co/functions/v1/notify-devices',
   'notify_devices_url'
 );
-select vault.create_secret('<service role key>', 'notify_devices_service_key');
+select vault.create_secret('<the NOTIFY_DEVICES_SECRET value>', 'notify_devices_secret');
 ```
 
 Replace a value later with `select vault.update_secret('<id>', '<new value>')`, the id coming from `select id, name from vault.secrets`.

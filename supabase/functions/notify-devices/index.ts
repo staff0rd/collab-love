@@ -18,19 +18,17 @@ const json = (status: number, body: unknown): Response =>
     status,
   });
 
-const isFromDatabase = (request: Request): boolean => {
-  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  return (
-    serviceKey !== undefined && request.headers.get("authorization") === `Bearer ${serviceKey}`
-  );
+const isFromWebhook = (request: Request): boolean => {
+  const secret = Deno.env.get("NOTIFY_DEVICES_SECRET");
+  return secret !== undefined && request.headers.get("authorization") === `Bearer ${secret}`;
 };
 
 const reject = (request: Request): Response | null => {
   if (request.method !== "POST") {
     return json(METHOD_NOT_ALLOWED, { error: "Only POST is accepted" });
   }
-  if (!isFromDatabase(request)) {
-    return json(UNAUTHORIZED, { error: "Not called with the service role key" });
+  if (!isFromWebhook(request)) {
+    return json(UNAUTHORIZED, { error: "Not called with the webhook secret" });
   }
   return null;
 };
