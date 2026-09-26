@@ -1,5 +1,6 @@
 import { apnsCredentials } from "./apnsCredentials.ts";
 import { apnsProviderToken } from "./apnsProviderToken.ts";
+import { deleteDeviceTokens } from "./deleteDeviceTokens.ts";
 import { householdDeviceTokens } from "./householdDeviceTokens.ts";
 import { sendSilentPush, type PushOutcome, type PushResult } from "./sendSilentPush.ts";
 
@@ -43,6 +44,15 @@ const actorOf = (payload: NotifyRequest): string | null => {
 const tally = (results: PushResult[], outcome: PushOutcome): number =>
   results.filter((result) => result.outcome === outcome).length;
 
+const pruneUnregistered = async (results: PushResult[]): Promise<void> => {
+  const dead = results
+    .filter((result) => result.outcome === "unregistered")
+    .map((result) => result.token);
+  if (dead.length > NO_TOKENS) {
+    await deleteDeviceTokens(dead);
+  }
+};
+
 const notify = async (householdId: string, actor: string | null): Promise<Response> => {
   const tokens = await householdDeviceTokens(householdId, actor);
   if (tokens.length === NO_TOKENS) {
@@ -53,6 +63,7 @@ const notify = async (householdId: string, actor: string | null): Promise<Respon
   for (const result of results.filter((candidate) => candidate.outcome !== "delivered")) {
     console.error(`APNs ${result.outcome} for ${result.token}: ${result.reason ?? "no reason"}`);
   }
+  await pruneUnregistered(results);
   return json(OK, {
     delivered: tally(results, "delivered"),
     rejected: tally(results, "rejected"),
