@@ -20,6 +20,12 @@ enum SilentPushDelivery {
         }
     }
 
+    static var hasPending: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return !pending.isEmpty
+    }
+
     static func finish(_ result: UIBackgroundFetchResult) {
         lock.lock()
         let handlers = pending
@@ -47,6 +53,9 @@ public class SilentPushPlugin: CAPPlugin, CAPBridgedPlugin {
             name: SilentPushDelivery.received,
             object: nil
         )
+        if SilentPushDelivery.hasPending {
+            didReceiveSilentPush()
+        }
     }
 
     deinit {
